@@ -1,5 +1,5 @@
 <?php
-namespace Grimzy\LaravelSpatial\Tests;
+namespace Grimzy\LaravelSpatial\Tests\Feature;
 
 use Symfony\Component\Finder\Finder;
 

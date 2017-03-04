@@ -1,8 +1,8 @@
 <?php
-namespace Grimzy\LaravelSpatial\Tests;
+namespace Grimzy\LaravelSpatial\Tests\Feature;
 
 use Grimzy\LaravelSpatial\SpatialServiceProvider;
-use Grimzy\LaravelSpatial\Tests\Models\GeometryModel;
+use Grimzy\LaravelSpatial\Tests\Feature\Models\GeometryModel;
 use Grimzy\LaravelSpatial\Types\Point;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Testing\TestCase;
@@ -16,7 +16,7 @@ class SpatialTest extends TestCase
      */
     public function createApplication()
     {
-        $app = require __DIR__.'/../vendor/laravel/laravel/bootstrap/app.php';
+        $app = require __DIR__ . '/../../vendor/laravel/laravel/bootstrap/app.php';
         $app->register(SpatialServiceProvider::class);
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
