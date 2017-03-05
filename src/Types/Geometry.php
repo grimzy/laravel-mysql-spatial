@@ -51,9 +51,14 @@ abstract class Geometry implements GeometryInterface, \JsonSerializable
 
     public static function fromWKB($wkb)
     {
+        // mysql adds 4 NUL bytes at the start of the binary
+        $prefix = "\0\0\0\0";
+        if (substr($wkb, 0, strlen($prefix)) == $prefix) {
+            $wkb = substr($wkb, strlen($prefix));
+        }
+
         $parser = new Parser(new Factory());
-//        return $parser->parse(ltrim($wkb)); // using ltrim to remove the 4 nul bytes at the start of the string
-        return $parser->parse(substr($wkb, 4)); // mysql adds 4 NUL bytes at the start of the binary
+        return $parser->parse($wkb);
     }
 
     public static function fromWKT($wkt)
