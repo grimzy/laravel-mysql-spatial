@@ -1,6 +1,4 @@
 <?php
-namespace Grimzy\LaravelSpatial\Tests\Feature\Models;
-
 use Grimzy\LaravelSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
 

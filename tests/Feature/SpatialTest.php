@@ -1,8 +1,5 @@
 <?php
-namespace Grimzy\LaravelSpatial\Tests\Feature;
-
 use Grimzy\LaravelSpatial\SpatialServiceProvider;
-use Grimzy\LaravelSpatial\Tests\Feature\Models\GeometryModel;
 use Grimzy\LaravelSpatial\Types\Point;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Testing\TestCase;
@@ -21,7 +18,7 @@ class SpatialTest extends TestCase
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
-        $app['config']->set('database.default','mysql');
+        $app['config']->set('database.default', 'mysql');
         $app['config']->set('database.connections.mysql.host', '172.17.0.2');
         $app['config']->set('database.connections.mysql.database', 'db_test');
         $app['config']->set('database.connections.mysql.username', 'test_user');
@@ -53,12 +50,12 @@ class SpatialTest extends TestCase
         parent::tearDown();
     }
 
-    private function onMigrations(\Closure $closure) {
+    private function onMigrations(\Closure $closure)
+    {
         $fileSystem = new Filesystem();
-        $classFinder = new ClassFinder();
+        $classFinder = new Tools\ClassFinder();
 
-        foreach($fileSystem->files(__DIR__ . "/Migrations") as $file)
-        {
+        foreach ($fileSystem->files(__DIR__ . "/Migrations") as $file) {
             $fileSystem->requireOnce($file);
             $migrationClass = $classFinder->findClass($file);
 
@@ -66,27 +63,18 @@ class SpatialTest extends TestCase
         }
     }
 
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testBasicTest()
+    // TODO: Test with a model missing $spatialFields to expect SpatialFieldNotDefinedException
+
+    public function testInsert()
     {
-        $response = $this->get('/');
-        $response->assertStatus(200);
-    }
-
-    // TODO: Test with a model missing $spatialFields to expect SpecialFieldNotDefinedException
-
-    public function testInsert() {
         $geo = new GeometryModel();
         $geo->location = new Point(1, 2);
         $geo->save();
         $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
     }
 
-    public function testUpdate() {
+    public function testUpdate()
+    {
         $geo = new GeometryModel();
         $geo->location = new Point(1, 2);
         $geo->save();
@@ -99,7 +87,7 @@ class SpatialTest extends TestCase
 
         $all = GeometryModel::all();
         $this->assertCount(1, $all);
-        
+
         $updated = $all->first();
         $this->assertInstanceOf(Point::class, $updated->location);
         $this->assertEquals(2, $updated->location->getLat());
