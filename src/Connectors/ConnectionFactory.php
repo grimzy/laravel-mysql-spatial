@@ -13,7 +13,7 @@ class ConnectionFactory extends \Illuminate\Database\Connectors\ConnectionFactor
      * @param string $prefix
      * @param array $config
      *
-     * @return MysqlConnection
+     * @return \Illuminate\Database\ConnectionInterface
      */
     protected function createConnection($driver, $connection, $database, $prefix = '', array $config = [])
     {
