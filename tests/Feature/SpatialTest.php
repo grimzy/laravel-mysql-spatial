@@ -19,10 +19,10 @@ class SpatialTest extends TestCase
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
         $app['config']->set('database.default', 'mysql');
-        $app['config']->set('database.connections.mysql.host', '172.17.0.2');
-        $app['config']->set('database.connections.mysql.database', 'db_test');
-        $app['config']->set('database.connections.mysql.username', 'test_user');
-        $app['config']->set('database.connections.mysql.password', '123456');
+        $app['config']->set('database.connections.mysql.host', env('DOCKER_DB_HOST', '127.0.0.1'));
+        $app['config']->set('database.connections.mysql.database', 'test');
+        $app['config']->set('database.connections.mysql.username', 'root');
+        $app['config']->set('database.connections.mysql.password', '');
 
         return $app;
     }

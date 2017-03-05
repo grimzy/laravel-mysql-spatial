@@ -62,30 +62,30 @@ class BuilderTest extends BaseTestCase
         $builder->update(['point' => new Point(1, 3)]);
     }
 
-//    public function testUpdateLinestring()
-//    {
-//        $this->queryBuilder
-//            ->shouldReceive('raw')
-//            ->with("ST_GeogFromText('LINESTRING(0 0, 1 1, 2 2)')")
-//            ->andReturn(new Expression("ST_GeogFromText('LINESTRING(0 0, 1 1, 2 2)')"));
-//
-//        $this->queryBuilder
-//            ->shouldReceive('update')
-//            ->andReturn(1);
-//
-//        $linestring = new LineString([new Point(0, 0), new Point(1, 1), new Point(2, 2)]);
-//
-//        $builder = Mockery::mock(Builder::class, [$this->queryBuilder])->makePartial();
-//        $builder->shouldAllowMockingProtectedMethods();
-//        $builder
-//            ->shouldReceive('addUpdatedAtColumn')
-//            ->andReturn(['linestring' => $linestring]);
-//
-//        $builder
-//            ->shouldReceive('asWKT')->with($linestring)->once();
-//
-//        $builder->update(['linestring' => $linestring]);
-//    }
+    public function testUpdateLinestring()
+    {
+        $this->queryBuilder
+            ->shouldReceive('raw')
+            ->with("ST_GeogFromText('LINESTRING(0 0, 1 1, 2 2)')")
+            ->andReturn(new Expression("ST_GeogFromText('LINESTRING(0 0, 1 1, 2 2)')"));
+
+        $this->queryBuilder
+            ->shouldReceive('update')
+            ->andReturn(1);
+
+        $linestring = new LineString([new Point(0, 0), new Point(1, 1), new Point(2, 2)]);
+
+        $builder = Mockery::mock(Builder::class, [$this->queryBuilder])->makePartial();
+        $builder->shouldAllowMockingProtectedMethods();
+        $builder
+            ->shouldReceive('addUpdatedAtColumn')
+            ->andReturn(['linestring' => $linestring]);
+
+        $builder
+            ->shouldReceive('asWKT')->with($linestring)->once();
+
+        $builder->update(['linestring' => $linestring]);
+    }
 }
 
 class TestBuilderModel extends Model
