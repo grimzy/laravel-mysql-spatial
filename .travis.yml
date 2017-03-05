@@ -12,3 +12,5 @@ services:
 
 before_install:
   - mysql -e 'CREATE DATABASE test;'
+
+install: composer install
