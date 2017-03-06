@@ -1,7 +1,7 @@
 <?php
 namespace Grimzy\LaravelSpatial;
 
-class MysqlConnection extends \Illuminate\Database\MysqlConnection
+class MysqlConnection extends \Illuminate\Database\MySqlConnection
 {
 //    public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
 //    {
