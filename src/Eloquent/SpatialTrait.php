@@ -73,7 +73,8 @@ trait SpatialTrait
 
     public function scopeDistance($query, $distance, $point, $column_name) {
         // TODO: check if array, and transform to string delimited by ,
-        // TODO: remove the objects with a distance of 0?
-        return $query->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) <= {$distance}");
+        return $query
+          ->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) <= {$distance}")
+          ->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) != 0");
     }
 }
