@@ -77,4 +77,8 @@ trait SpatialTrait
           ->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) <= {$distance}")
           ->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) != 0");
     }
+
+    public function scopeBounding($query, Geometry $bounds, $column_name) {
+        return $query->whereRaw("MBRIntersects(ST_GeomFromText('{$bounds->toWkt()}'), `{$column_name}`)");
+    }
 }
