@@ -52,10 +52,11 @@ class SpatialTest extends TestCase
 
     protected function assertDatabaseHas($table, array $data, $connection = null)
     {
-        if(method_exists($this, 'seeInDatabase')) {
+        if (method_exists($this, 'seeInDatabase')) {
             $this->seeInDatabase($table, $data, $connection);
+        } else {
+            parent::assertDatabaseHas($table, $data, $connection);
         }
-        parent::assertDatabaseHas($table, $data, $connection);
     }
 
     private function onMigrations(\Closure $closure)
@@ -100,5 +101,38 @@ class SpatialTest extends TestCase
         $this->assertInstanceOf(Point::class, $updated->location);
         $this->assertEquals(2, $updated->location->getLat());
         $this->assertEquals(3, $updated->location->getLng());
+    }
+
+    public function testDistance()
+    {
+        $loc1 = new GeometryModel();
+        $loc1->location = new Point(40.767864, -73.971732);
+        $loc1->save();
+
+        $loc2 = new GeometryModel();
+        $loc2->location = new Point(40.767664, -73.971271); // Distance from loc1: 44.7414064845878
+        $loc2->save();
+
+        $loc3 = new GeometryModel();
+        $loc3->location = new Point(40.761434, -73.977619);
+        $loc3->save();
+
+        $a = GeometryModel::distance(45, $loc1->location, 'location')->get();
+        $this->assertCount(2, $a);
+        $this->assertTrue($a->contains($loc1));
+        $this->assertTrue($a->contains($loc2));
+        $this->assertFalse($a->contains($loc3));
+
+        $b = GeometryModel::distance(45, $loc1->location, 'location', true)->get();
+        $this->assertCount(1, $b);
+        $this->assertFalse($b->contains($loc1));
+        $this->assertTrue($b->contains($loc2));
+        $this->assertFalse($b->contains($loc3));
+
+        $c = GeometryModel::distance(44.741406484587, $loc1->location, 'location')->get();
+        $this->assertCount(1, $c);
+        $this->assertTrue($c->contains($loc1));
+        $this->assertFalse($c->contains($loc2));
+        $this->assertFalse($c->contains($loc3));
     }
 }

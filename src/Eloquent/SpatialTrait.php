@@ -4,6 +4,7 @@ namespace Grimzy\LaravelSpatial\Eloquent;
 use Grimzy\LaravelSpatial\Exceptions\SpatialFieldsNotDefinedException;
 use Grimzy\LaravelSpatial\Types\Geometry;
 use Grimzy\LaravelSpatial\Types\GeometryInterface;
+use Grimzy\LaravelSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 trait SpatialTrait
@@ -71,12 +72,14 @@ trait SpatialTrait
         }
     }
 
-    public function scopeDistance($query, $distance, $point, $column_name) {
-        // TODO: check if array, and transform to string delimited by ,
-        // TODO: what about mysql 5.5? distance_sphere? need test
-        return $query
-          ->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) <= {$distance}")
-          ->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) != 0");
+    public function scopeDistance($query, $distance, $geometry, $column_name, $exclude_self = false) {
+        // TODO: what about mysql 5.5?
+        $query->whereRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
+
+        if($exclude_self) {
+            $query->whereRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) != 0");
+        }
+        return $query;
     }
 
     public function scopeBounding($query, Geometry $bounds, $column_name) {

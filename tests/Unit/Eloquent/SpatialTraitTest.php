@@ -50,10 +50,9 @@ class TestModel extends Model
 {
     use \Grimzy\LaravelSpatial\Eloquent\SpatialTrait;
 
-    protected $postgisFields = [
+    protected $spatialFields = [
         'point' => Point::class
     ];
-
 
     public static $pdo;
 
@@ -96,7 +95,7 @@ class TestPDO extends PDO
     public $queries = [];
     public $counter = 1;
 
-    public function prepare($statement, $driver_options = null)
+    public function prepare($statement, $driver_options = array())
     {
         $this->queries[] = $statement;
 
