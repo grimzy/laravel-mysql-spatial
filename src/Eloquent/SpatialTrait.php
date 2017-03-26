@@ -36,7 +36,7 @@ trait SpatialTrait
         foreach ($this->attributes as $key => $value) {
             if ($value instanceof GeometryInterface) {
                 $this->geometries[$key] = $value; //Preserve the geometry objects prior to the insert
-                $this->attributes[$key] = $this->getConnection()->raw(sprintf("ST_GeomFromText('%s')", $value->toWKT()));
+                $this->attributes[$key] = $this->getConnection()->raw(sprintf("GeomFromText('%s')", $value->toWKT()));
             }
         }
 
@@ -73,12 +73,13 @@ trait SpatialTrait
 
     public function scopeDistance($query, $distance, $point, $column_name) {
         // TODO: check if array, and transform to string delimited by ,
+        // TODO: what about mysql 5.5? distance_sphere? need test
         return $query
           ->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) <= {$distance}")
           ->whereRaw("st_distance_sphere(`{$column_name}`, POINT({$point->getLng()}, {$point->getLat()})) != 0");
     }
 
     public function scopeBounding($query, Geometry $bounds, $column_name) {
-        return $query->whereRaw("MBRIntersects(ST_GeomFromText('{$bounds->toWkt()}'), `{$column_name}`)");
+        return $query->whereRaw("MBRIntersects(GeomFromText('{$bounds->toWkt()}'), `{$column_name}`)");
     }
 }

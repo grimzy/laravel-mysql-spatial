@@ -33,7 +33,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->point = new Point(1, 2);
         $this->model->save();
 
-        $this->assertContains("ST_GeomFromText('POINT(2 1)')", $this->queries[0]);
+        $this->assertContains("GeomFromText('POINT(2 1)')", $this->queries[0]);
     }
 
     public function testUpdatePointHasCorrectSql()
@@ -42,7 +42,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->point = new Point(2, 4);
         $this->model->save();
 
-        $this->assertContains("ST_GeomFromText('POINT(4 2)')", $this->queries[0]);
+        $this->assertContains("GeomFromText('POINT(4 2)')", $this->queries[0]);
     }
 }
 

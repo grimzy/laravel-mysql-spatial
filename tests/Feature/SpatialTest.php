@@ -19,7 +19,7 @@ class SpatialTest extends TestCase
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
         $app['config']->set('database.default', 'mysql');
-        $app['config']->set('database.connections.mysql.host', env('DOCKER_DB_HOST', '127.0.0.1'));
+        $app['config']->set('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
         $app['config']->set('database.connections.mysql.database', 'test');
         $app['config']->set('database.connections.mysql.username', 'root');
         $app['config']->set('database.connections.mysql.password', '');
@@ -48,6 +48,14 @@ class SpatialTest extends TestCase
         });
 
         parent::tearDown();
+    }
+
+    protected function assertDatabaseHas($table, array $data, $connection = null)
+    {
+        if(method_exists($this, 'seeInDatabase')) {
+            $this->seeInDatabase($table, $data, $connection);
+        }
+        parent::assertDatabaseHas($table, $data, $connection);
     }
 
     private function onMigrations(\Closure $closure)
