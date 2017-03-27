@@ -15,7 +15,6 @@ services:
   - mysql
 
 before_install:
-  - bash .travis.install-mysql-5.7.sh
   - mysql -e 'CREATE DATABASE test;'
 
 install: composer install
