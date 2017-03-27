@@ -1,6 +1,7 @@
 <?php
 namespace Grimzy\LaravelSpatial\Schema\Grammars;
 
+use Grimzy\LaravelSpatial\Schema\Blueprint;
 use Illuminate\Support\Fluent;
 
 class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
@@ -91,5 +92,33 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     public function typeGeometrycollection(Fluent $column)
     {
         return 'GEOMETRYCOLLECTION';
+    }
+
+    /**
+     * Compile a spatial index key command.
+     *
+     * @param  \Grimzy\LaravelSpatial\Schema\Blueprint  $blueprint
+     * @param  \Illuminate\Support\Fluent  $command
+     * @return string
+     */
+    public function compileSpatial(Blueprint $blueprint, Fluent $command)
+    {
+        return $this->compileKey($blueprint, $command, 'spatial');
+    }
+
+    /**
+     * Compile a drop index command.
+     *
+     * @param  \Grimzy\LaravelSpatial\Schema\Blueprint  $blueprint
+     * @param  \Illuminate\Support\Fluent  $command
+     * @return string
+     */
+    public function compileDropSpatial(Blueprint $blueprint, Fluent $command)
+    {
+        $table = $this->wrapTable($blueprint);
+
+        $index = $this->wrap($command->index);
+
+        return "alter table {$table} drop index {$index}";
     }
 }

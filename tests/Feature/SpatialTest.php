@@ -45,7 +45,7 @@ class SpatialTest extends TestCase
     {
         $this->onMigrations(function ($migrationClass) {
             (new $migrationClass)->down();
-        });
+        }, true);
 
         parent::tearDown();
     }
@@ -59,12 +59,15 @@ class SpatialTest extends TestCase
         }
     }
 
-    private function onMigrations(\Closure $closure)
+    private function onMigrations(\Closure $closure, $reverse_sort = false)
     {
         $fileSystem = new Filesystem();
         $classFinder = new Tools\ClassFinder();
 
-        foreach ($fileSystem->files(__DIR__ . "/Migrations") as $file) {
+        $migrations = $fileSystem->files(__DIR__ . "/Migrations");
+        $reverse_sort ? rsort($migrations, SORT_STRING) : sort($migrations, SORT_STRING);
+
+        foreach ($migrations as $file) {
             $fileSystem->requireOnce($file);
             $migrationClass = $classFinder->findClass($file);
 

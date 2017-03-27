@@ -31,7 +31,7 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param      $column
      * @return \Illuminate\Support\Fluent
      */
-    public function linestring($column)
+    public function lineString($column)
     {
         return $this->addColumn('linestring', $column);
     }
@@ -53,7 +53,7 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param      $column
      * @return \Illuminate\Support\Fluent
      */
-    public function multipoint($column)
+    public function multiPoint($column)
     {
         return $this->addColumn('multipoint', $column);
     }
@@ -64,7 +64,7 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param      $column
      * @return \Illuminate\Support\Fluent
      */
-    public function multilinestring($column)
+    public function multiLineString($column)
     {
         return $this->addColumn('multilinestring', $column);
     }
@@ -75,7 +75,7 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param      $column
      * @return \Illuminate\Support\Fluent
      */
-    public function multipolygon($column)
+    public function multiPolygon($column)
     {
         return $this->addColumn('multipolygon', $column);
     }
@@ -86,8 +86,30 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param      $column
      * @return \Illuminate\Support\Fluent
      */
-    public function geometrycollection($column)
+    public function geometryCollection($column)
     {
         return $this->addColumn('geometrycollection', $column);
+    }
+
+    /**
+     * Specify a spatial index for the table
+     *
+     * @param  string|array  $columns
+     * @param  string  $name
+     * @return \Illuminate\Support\Fluent
+     */
+    public function spatialIndex($columns, $name = null) {
+        return $this->indexCommand('spatial', $columns, $name);
+    }
+
+    /**
+     * Indicate that the given index should be dropped.
+     *
+     * @param  string|array  $index
+     * @return \Illuminate\Support\Fluent
+     */
+    public function dropSpatial($index)
+    {
+        return $this->dropIndexCommand('dropIndex', 'spatial', $index);
     }
 }
