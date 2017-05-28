@@ -20,8 +20,9 @@ class BlueprintTest extends BaseTestCase
     public function testGeometry()
     {
         $this->blueprint
-            ->shouldReceive('addCommand')
-            ->with('geometry', ['col', null, 2, true]);
+            ->shouldReceive('addColumn')
+            ->with('geometry', 'col')
+            ->once();
 
         $this->blueprint->geometry('col');
     }
@@ -29,8 +30,9 @@ class BlueprintTest extends BaseTestCase
     public function testPoint()
     {
         $this->blueprint
-            ->shouldReceive('addCommand')
-            ->with('point', ['col', null, 2, true]);
+            ->shouldReceive('addColumn')
+            ->with('point', 'col')
+            ->once();
 
         $this->blueprint->point('col');
     }
@@ -38,8 +40,9 @@ class BlueprintTest extends BaseTestCase
     public function testLinestring()
     {
         $this->blueprint
-            ->shouldReceive('addCommand')
-            ->with('linestring', ['col', null, 2, true]);
+            ->shouldReceive('addColumn')
+            ->with('linestring', 'col')
+            ->once();
 
         $this->blueprint->linestring('col');
     }
@@ -47,8 +50,9 @@ class BlueprintTest extends BaseTestCase
     public function testPolygon()
     {
         $this->blueprint
-            ->shouldReceive('addCommand')
-            ->with('polygon', ['col', null, 2, true]);
+            ->shouldReceive('addColumn')
+            ->with('polygon', 'col')
+            ->once();
 
         $this->blueprint->polygon('col');
     }
@@ -56,8 +60,9 @@ class BlueprintTest extends BaseTestCase
     public function testMultiPoint()
     {
         $this->blueprint
-            ->shouldReceive('addCommand')
-            ->with('multipoint', ['col', null, 2, true]);
+            ->shouldReceive('addColumn')
+            ->with('multipoint', 'col')
+            ->once();
 
         $this->blueprint->multipoint('col');
     }
@@ -65,8 +70,9 @@ class BlueprintTest extends BaseTestCase
     public function testMultiLineString()
     {
         $this->blueprint
-            ->shouldReceive('addCommand')
-            ->with('multilinestring', ['col', null, 2, true]);
+            ->shouldReceive('addColumn')
+            ->with('multilinestring', 'col')
+            ->once();
 
         $this->blueprint->multilinestring('col');
     }
@@ -74,8 +80,9 @@ class BlueprintTest extends BaseTestCase
     public function testMulltiPolygon()
     {
         $this->blueprint
-            ->shouldReceive('addCommand')
-            ->with('multipolygon', ['col', null, 2, true]);
+            ->shouldReceive('addColumn')
+            ->with('multipolygon', 'col')
+            ->once();
 
         $this->blueprint->multipolygon('col');
     }
@@ -83,8 +90,9 @@ class BlueprintTest extends BaseTestCase
     public function testGeometryCollection()
     {
         $this->blueprint
-            ->shouldReceive('addCommand')
-            ->with('geometrycollection', ['col', null, 2, true]);
+            ->shouldReceive('addColumn')
+            ->with('geometrycollection', 'col')
+            ->once();
 
         $this->blueprint->geometrycollection('col');
     }

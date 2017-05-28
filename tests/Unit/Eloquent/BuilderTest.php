@@ -9,82 +9,76 @@ use Grimzy\LaravelSpatial\Types\Point;
 use Grimzy\LaravelSpatial\Types\Polygon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Database\Query\Expression;
+use Illuminate\Database\Query\Grammars\MySqlGrammar;
 use Mockery;
 
 class BuilderTest extends BaseTestCase
 {
     protected $builder;
-
-    /**
-     * @var \Mockery\MockInterface $queryBuilder
-     */
     protected $queryBuilder;
 
     protected function setUp()
     {
         $connection = Mockery::mock(MysqlConnection::class)->makePartial();
-        $this->queryBuilder = Mockery::mock(QueryBuilder::class, [$connection])->makePartial();
+        $grammar = Mockery::mock(MySqlGrammar::class)->makePartial();
+        $this->queryBuilder = Mockery::mock(QueryBuilder::class, [$connection, $grammar]);
 
         $this->queryBuilder
             ->shouldReceive('from')
+            ->once()
             ->andReturn($this->queryBuilder);
-
-        $this->queryBuilder
-            ->shouldReceive('take')
-            ->with(1)
-            ->andReturn($this->queryBuilder);
-
-        $this->queryBuilder
-            ->shouldReceive('get')
-            ->andReturn([]);
 
         $this->builder = new Builder($this->queryBuilder);
         $this->builder->setModel(new TestBuilderModel());
     }
 
-    public function testUpdate()
+    public function testUpdatePoint()
     {
         $this->queryBuilder
             ->shouldReceive('raw')
             ->with("GeomFromText('POINT(2 1)')")
-            ->andReturn(new Expression("GeomFromText('POINT(2 1)')"));
+            ->once();
 
         $this->queryBuilder
-            ->shouldReceive('update');
+            ->shouldReceive('update')
+            ->once();
 
-        $builder = Mockery::mock(Builder::class, [$this->queryBuilder])->makePartial();
-        $builder->shouldAllowMockingProtectedMethods();
-        $builder
-            ->shouldReceive('addUpdatedAtColumn')
-            ->andReturn(['point' => new Point(1, 2)]);
-
-        $builder->update(['point' => new Point(1, 3)]);
+        $this->builder->update(['point' => new Point(1, 2)]);
     }
 
     public function testUpdateLinestring()
     {
         $this->queryBuilder
             ->shouldReceive('raw')
-            ->with("ST_GeogFromText('LINESTRING(0 0, 1 1, 2 2)')")
-            ->andReturn(new Expression("ST_GeogFromText('LINESTRING(0 0, 1 1, 2 2)')"));
+            ->with("GeomFromText('LINESTRING(0 0,1 1,2 2)')")
+            ->once();
 
         $this->queryBuilder
             ->shouldReceive('update')
-            ->andReturn(1);
+            ->once();
 
         $linestring = new LineString([new Point(0, 0), new Point(1, 1), new Point(2, 2)]);
 
-        $builder = Mockery::mock(Builder::class, [$this->queryBuilder])->makePartial();
-        $builder->shouldAllowMockingProtectedMethods();
-        $builder
-            ->shouldReceive('addUpdatedAtColumn')
-            ->andReturn(['linestring' => $linestring]);
+        $this->builder->update(['linestring' => $linestring]);
+    }
 
-        $builder
-            ->shouldReceive('asWKT')->with($linestring)->once();
+    public function testUpdatePolygon()
+    {
+        $this->queryBuilder
+            ->shouldReceive('raw')
+            ->with("GeomFromText('POLYGON((0 0,1 0),(1 0,1 1),(1 1,0 0))')")
+            ->once();
 
-        $builder->update(['linestring' => $linestring]);
+        $this->queryBuilder
+            ->shouldReceive('update')
+            ->once();
+
+        $linestrings[] = new LineString([new Point(0, 0), new Point(0, 1)]);
+        $linestrings[] = new LineString([new Point(0, 1), new Point(1, 1)]);
+        $linestrings[] = new LineString([new Point(1, 1), new Point(0, 0)]);
+        $polygon = new Polygon($linestrings);
+
+        $this->builder->update(['polygon' => $polygon]);
     }
 }
 
@@ -92,9 +86,6 @@ class TestBuilderModel extends Model
 {
     use SpatialTrait;
 
-    protected $spatialFields = [
-        'point' => Point::class,
-        'linestring' => LineString::class,
-        'polygon' => Polygon::class
-    ];
+    public $timestamps = false;
+    protected $spatialFields = ['point', 'linestring', 'polygon'];
 }
