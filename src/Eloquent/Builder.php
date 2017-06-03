@@ -17,12 +17,6 @@ class Builder extends EloquentBuilder
         return parent::update($values);
     }
 
-//    protected function getSpatialFields()
-//    {
-//        return $this->getModel()->getSpatialFields();
-//    }
-
-
     protected function asWKT(GeometryInterface $geometry)
     {
         return $this->getQuery()->raw("GeomFromText('" . $geometry->toWKT() . "')");

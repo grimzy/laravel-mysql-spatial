@@ -18,7 +18,7 @@ class ConnectionFactory extends \Illuminate\Database\Connectors\ConnectionFactor
     protected function createConnection($driver, $connection, $database, $prefix = '', array $config = [])
     {
         if ($this->container->bound($key = "db.connection.{$driver}")) {
-            return $this->container->make($key, [$connection, $database, $prefix, $config]);
+            return $this->container->make($key, [$connection, $database, $prefix, $config]);    // @codeCoverageIgnore
         }
 
         if ($driver === 'mysql') {

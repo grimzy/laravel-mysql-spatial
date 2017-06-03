@@ -108,7 +108,7 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param  string|array  $index
      * @return \Illuminate\Support\Fluent
      */
-    public function dropSpatial($index)
+    public function dropSpatialIndex($index)
     {
         return $this->dropIndexCommand('dropIndex', 'spatial', $index);
     }

@@ -105,20 +105,4 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     {
         return $this->compileKey($blueprint, $command, 'spatial');
     }
-
-    /**
-     * Compile a drop index command.
-     *
-     * @param  \Grimzy\LaravelSpatial\Schema\Blueprint  $blueprint
-     * @param  \Illuminate\Support\Fluent  $command
-     * @return string
-     */
-    public function compileDropSpatial(Blueprint $blueprint, Fluent $command)
-    {
-        $table = $this->wrapTable($blueprint);
-
-        $index = $this->wrap($command->index);
-
-        return "alter table {$table} drop index {$index}";
-    }
 }
