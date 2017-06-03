@@ -26,7 +26,7 @@ class UpdateLocationTable extends Migration
     public function down()
     {
         Schema::table('geometry', function (Blueprint $table) {
-            $table->dropSpatial(['location']);
+            $table->dropSpatialIndex(['location']); // either an array of column names or the index name
         });
     }
 }

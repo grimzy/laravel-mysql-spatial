@@ -2,11 +2,11 @@
 use Grimzy\LaravelSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
 
-class GeometryModel extends Model
+class NoSpatialFieldsModel extends Model
 {
     use SpatialTrait;
 
-    protected $table = 'geometry';
+    protected $table = 'no_spatial_fields';
 
-    protected $spatialFields = ['location', 'line'];
+    public $timestamps = false;
 }

@@ -25,6 +25,11 @@ class CreateLocationTable extends Migration
             $table->geometryCollection('multi_geometries')->default(null)->nullable();
             $table->timestamps();
         });
+
+        Schema::create('no_spatial_fields', function (Blueprint $table) {
+            $table->increments('id');
+            $table->geometry('geometry')->default(null)->nullable();
+        });
     }
 
     /**
@@ -35,5 +40,6 @@ class CreateLocationTable extends Migration
     public function down()
     {
         Schema::drop('geometry');
+        Schema::drop('no_spatial_fields');
     }
 }
