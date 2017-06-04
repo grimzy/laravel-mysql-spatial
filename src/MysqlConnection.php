@@ -4,13 +4,28 @@ namespace Grimzy\LaravelMysqlSpatial;
 
 class MysqlConnection extends \Illuminate\Database\MySqlConnection
 {
-//    public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
-//    {
-//        parent::__construct($pdo, $database, $tablePrefix, $config);
-//
-//        // Prevent geography type fields from throwing a 'type not found' error.
-//        $this->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('geography', 'string');
-//    }
+    public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
+    {
+        parent::__construct($pdo, $database, $tablePrefix, $config);
+
+        if(class_exists('Doctrine\DBAL\Types\Type')) {
+            // Prevent geometry type fields from throwing a 'type not found' error when changing them
+            $geometries = [
+                'geometry',
+                'point',
+                'linestring',
+                'polygon',
+                'multipoint',
+                'multilinestring',
+                'multipolygon',
+                'geometrycollection',
+            ];
+            $dbPlatform = $this->getDoctrineSchemaManager()->getDatabasePlatform();
+            foreach($geometries as $type) {
+                $dbPlatform->registerDoctrineTypeMapping($type, 'string');
+            }
+        }
+    }
 
     /**
      * Get the default schema grammar instance.

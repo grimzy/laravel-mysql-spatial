@@ -154,6 +154,59 @@ Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/
 
 > For [`MyISAM`](https://dev.mysql.com/doc/refman/5.7/en/myisam-storage-engine.html) and (as of MySQL 5.7.5) `InnoDB` tables, MySQL can create spatial indexes using syntax similar to that for creating regular indexes, but using the `SPATIAL` keyword. Columns in spatial indexes must be declared `NOT NULL`.
 
+From the command line:
+
+```shell
+php artisan make:migration update_places_table
+```
+
+Then edit the migration you just created:
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class UpdatePlacesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        // MySQL < 5.7.5: table has to be MyISAM
+        // \DB::statement('ALTER TABLE places ENGINE = MyISAM');
+
+        Schema::table('places', function (Blueprint $table) {
+            // Make sure point is not nullable
+            $table->point('location')->change();
+          
+            // Add a spatial index on the location field
+            $table->spatialIndex('location');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('places', function (Blueprint $table) {
+            $table->dropSpatialIndex(['location']); // either an array of column names or the index name
+        });
+
+        // \DB::statement('ALTER TABLE places ENGINE = InnoDB');
+
+        Schema::table('places', function (Blueprint $table) {
+            $table->point('location')->nullable()->change();
+        });
+    }
+}
+```
 ## Models
 
 Available geometry classes:
