@@ -1,8 +1,9 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use GeoIO\WKB\Parser\Parser;
-use Grimzy\LaravelSpatial\Exceptions\UnknownWKTTypeException;
+use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownWKTTypeException;
 
 abstract class Geometry implements GeometryInterface, \JsonSerializable
 {
@@ -13,7 +14,7 @@ abstract class Geometry implements GeometryInterface, \JsonSerializable
         4 => MultiPoint::class,
         5 => MultiLineString::class,
         6 => MultiPolygon::class,
-        7 => GeometryCollection::class
+        7 => GeometryCollection::class,
     ];
 
     public static function getWKTArgument($value)
@@ -45,7 +46,7 @@ abstract class Geometry implements GeometryInterface, \JsonSerializable
             case 'GEOMETRYCOLLECTION':
                 return GeometryCollection::class;
             default:
-                throw new UnknownWKTTypeException('Type was ' . $type);
+                throw new UnknownWKTTypeException('Type was '.$type);
         }
     }
 
@@ -58,6 +59,7 @@ abstract class Geometry implements GeometryInterface, \JsonSerializable
         }
 
         $parser = new Parser(new Factory());
+
         return $parser->parse($wkb);
     }
 

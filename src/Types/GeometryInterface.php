@@ -1,5 +1,6 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 interface GeometryInterface
 {
@@ -10,5 +11,4 @@ interface GeometryInterface
     public function __toString();
 
     public static function fromString($wktArgument);
-
 }

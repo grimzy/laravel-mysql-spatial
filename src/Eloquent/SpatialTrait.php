@@ -1,10 +1,10 @@
 <?php
-namespace Grimzy\LaravelSpatial\Eloquent;
 
-use Grimzy\LaravelSpatial\Exceptions\SpatialFieldsNotDefinedException;
-use Grimzy\LaravelSpatial\Types\Geometry;
-use Grimzy\LaravelSpatial\Types\GeometryInterface;
-use Grimzy\LaravelSpatial\Types\Point;
+namespace Grimzy\LaravelMysqlSpatial\Eloquent;
+
+use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
+use Grimzy\LaravelMysqlSpatial\Types\Geometry;
+use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 trait SpatialTrait
@@ -25,7 +25,7 @@ trait SpatialTrait
      *
      * @param  \Illuminate\Database\Query\Builder $query
      *
-     * @return \Grimzy\LaravelSpatial\Eloquent\Builder
+     * @return \Grimzy\LaravelMysqlSpatial\Eloquent\Builder
      */
     public function newEloquentBuilder($query)
     {
@@ -68,47 +68,54 @@ trait SpatialTrait
         if (property_exists($this, 'spatialFields')) {
             return $this->spatialFields;
         } else {
-            throw new SpatialFieldsNotDefinedException(__CLASS__ . ' has to define $spatialFields');
+            throw new SpatialFieldsNotDefinedException(__CLASS__.' has to define $spatialFields');
         }
     }
 
-    public function scopeDistance($query, $distance, $geometry, $column_name, $exclude_self = false) {
+    public function scopeDistance($query, $distance, $geometry, $column_name, $exclude_self = false)
+    {
         $query->whereRaw("st_distance(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
 
-        if($exclude_self) {
+        if ($exclude_self) {
             $query->whereRaw("st_distance(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) != 0");
         }
+
         return $query;
     }
 
-    public function scopeDistanceSphere($query, $distance, $geometry, $column_name, $exclude_self = false) {
+    public function scopeDistanceSphere($query, $distance, $geometry, $column_name, $exclude_self = false)
+    {
         $query->whereRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
 
-        if($exclude_self) {
+        if ($exclude_self) {
             $query->whereRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) != 0");
         }
+
         return $query;
     }
 
-    public function scopeDistanceValue($query, $geometry, $column_name) {
+    public function scopeDistanceValue($query, $geometry, $column_name)
+    {
         $columns = $query->getQuery()->columns;
 
-        if(!$columns) {
+        if (! $columns) {
             $query->select('*');
         }
         $query->selectRaw("st_distance(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) as distance");
     }
 
-    public function scopeDistanceSphereValue($query, $geometry, $column_name) {
+    public function scopeDistanceSphereValue($query, $geometry, $column_name)
+    {
         $columns = $query->getQuery()->columns;
 
-        if(!$columns) {
+        if (! $columns) {
             $query->select('*');
         }
         $query->selectRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) as distance");
     }
 
-    public function scopeBounding($query, Geometry $bounds, $column_name) {
+    public function scopeBounding($query, Geometry $bounds, $column_name)
+    {
         return $query->whereRaw("st_intersects(GeomFromText('{$bounds->toWkt()}'), `{$column_name}`)");
     }
 }

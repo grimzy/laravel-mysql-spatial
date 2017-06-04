@@ -1,17 +1,18 @@
 <?php
-namespace Grimzy\LaravelSpatial;
 
-use Grimzy\LaravelSpatial\Connectors\ConnectionFactory;
+namespace Grimzy\LaravelMysqlSpatial;
+
+use Grimzy\LaravelMysqlSpatial\Connectors\ConnectionFactory;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\DatabaseServiceProvider;
 
 /**
  * Class DatabaseServiceProvider
- * @package Grimzy\LaravelSpatial
+ *
+ * @package Grimzy\LaravelMysqlSpatial
  */
 class SpatialServiceProvider extends DatabaseServiceProvider
 {
-
     /**
      * Register the service provider.
      *

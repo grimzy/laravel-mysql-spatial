@@ -1,5 +1,6 @@
 <?php
-namespace Grimzy\LaravelSpatial\Schema;
+
+namespace Grimzy\LaravelMysqlSpatial\Schema;
 
 class Blueprint extends \Illuminate\Database\Schema\Blueprint
 {
@@ -94,18 +95,19 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     /**
      * Specify a spatial index for the table
      *
-     * @param  string|array  $columns
-     * @param  string  $name
+     * @param  string|array $columns
+     * @param  string $name
      * @return \Illuminate\Support\Fluent
      */
-    public function spatialIndex($columns, $name = null) {
+    public function spatialIndex($columns, $name = null)
+    {
         return $this->indexCommand('spatial', $columns, $name);
     }
 
     /**
      * Indicate that the given index should be dropped.
      *
-     * @param  string|array  $index
+     * @param  string|array $index
      * @return \Illuminate\Support\Fluent
      */
     public function dropSpatialIndex($index)

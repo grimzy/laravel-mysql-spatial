@@ -1,5 +1,6 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use ArrayAccess;
 use ArrayIterator;
@@ -85,7 +86,7 @@ abstract class PointCollection implements IteratorAggregate, Arrayable, ArrayAcc
 
     public function offsetSet($offset, $value)
     {
-        if (!($value instanceof Point)) {
+        if (! ($value instanceof Point)) {
             throw new InvalidArgumentException('$value must be an instance of Point');
         }
 

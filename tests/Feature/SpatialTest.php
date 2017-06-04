@@ -1,11 +1,11 @@
 <?php
-use Grimzy\LaravelSpatial\SpatialServiceProvider;
-use Grimzy\LaravelSpatial\Types\GeometryCollection;
-use Grimzy\LaravelSpatial\Types\LineString;
-use Grimzy\LaravelSpatial\Types\MultiPoint;
-use Grimzy\LaravelSpatial\Types\MultiPolygon;
-use Grimzy\LaravelSpatial\Types\Point;
-use Grimzy\LaravelSpatial\Types\Polygon;
+use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
+use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
+use Grimzy\LaravelMysqlSpatial\Types\LineString;
+use Grimzy\LaravelMysqlSpatial\Types\MultiPoint;
+use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Testing\TestCase;
 
@@ -85,7 +85,7 @@ class SpatialTest extends TestCase
         $geo->geometry = new Point(1, 2);
         $geo->save();
 
-        $this->setExpectedException(\Grimzy\LaravelSpatial\Exceptions\SpatialFieldsNotDefinedException::class);
+        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException::class);
         NoSpatialFieldsModel::all();
 
     }
@@ -280,9 +280,9 @@ class SpatialTest extends TestCase
     public function testBounding() {
         $point = new Point(0, 0);
 
-        $linestring1 = \Grimzy\LaravelSpatial\Types\LineString::fromWkt("LINESTRING(1 1, 2 2)");
-        $linestring2 = \Grimzy\LaravelSpatial\Types\LineString::fromWkt("LINESTRING(20 20, 24 24)");
-        $linestring3 = \Grimzy\LaravelSpatial\Types\LineString::fromWkt("LINESTRING(0 10, 10 10)");
+        $linestring1 = \Grimzy\LaravelMysqlSpatial\Types\LineString::fromWkt("LINESTRING(1 1, 2 2)");
+        $linestring2 = \Grimzy\LaravelMysqlSpatial\Types\LineString::fromWkt("LINESTRING(20 20, 24 24)");
+        $linestring3 = \Grimzy\LaravelMysqlSpatial\Types\LineString::fromWkt("LINESTRING(0 10, 10 10)");
 
         $geo1 = new GeometryModel();
         $geo1->location = $point;

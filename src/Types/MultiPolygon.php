@@ -1,5 +1,6 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use Countable;
 use InvalidArgumentException;
@@ -28,13 +29,13 @@ class MultiPolygon extends Geometry implements Countable
 
     public function toWKT()
     {
-        return sprintf('MULTIPOLYGON(%s)', (string)$this);
+        return sprintf('MULTIPOLYGON(%s)', (string) $this);
     }
 
     public function __toString()
     {
         return implode(',', array_map(function (Polygon $polygon) {
-            return sprintf('(%s)', (string)$polygon);
+            return sprintf('(%s)', (string) $polygon);
         }, $this->polygons));
     }
 
@@ -98,7 +99,7 @@ class MultiPolygon extends Geometry implements Countable
             if ($i % 2 !== 0) {
                 list($end, $start) = explode(',', $parts[$i]);
                 $polygons[$i - 1] .= $end;
-                $polygons[++$i] = $start . $parts[$i];
+                $polygons[++$i] = $start.$parts[$i];
             } else {
                 $polygons[] = $parts[$i];
             }

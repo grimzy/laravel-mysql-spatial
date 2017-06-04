@@ -1,5 +1,6 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use Countable;
 use InvalidArgumentException;
@@ -38,7 +39,7 @@ class MultiLineString extends Geometry implements Countable
 
     public function toWKT()
     {
-        return sprintf('MULTILINESTRING(%s)', (string)$this);
+        return sprintf('MULTILINESTRING(%s)', (string) $this);
     }
 
     public static function fromString($wktArgument)
@@ -48,14 +49,13 @@ class MultiLineString extends Geometry implements Countable
             return LineString::fromString($data);
         }, $str);
 
-
         return new static($linestrings);
     }
 
     public function __toString()
     {
         return implode(',', array_map(function (LineString $linestring) {
-            return sprintf('(%s)', (string)$linestring);
+            return sprintf('(%s)', (string) $linestring);
         }, $this->getLineStrings()));
     }
 

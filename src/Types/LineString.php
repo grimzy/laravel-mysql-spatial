@@ -1,5 +1,6 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 class LineString extends PointCollection implements GeometryInterface
 {

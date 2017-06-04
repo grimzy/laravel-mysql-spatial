@@ -3,7 +3,7 @@ namespace Schema;
 
 use BaseTestCase;
 use Mockery;
-use Grimzy\LaravelSpatial\Schema\Blueprint;
+use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 
 class BlueprintTest extends BaseTestCase
 {

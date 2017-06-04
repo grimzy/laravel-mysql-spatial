@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Grimzy\\LaravelSpatial\\": "src/"
+            "Grimzy\\LaravelMysqlSpatial\\": "src/"
         }
     },
     "autoload-dev" : {

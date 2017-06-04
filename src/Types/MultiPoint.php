@@ -1,11 +1,12 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 class MultiPoint extends PointCollection implements GeometryInterface, \JsonSerializable
 {
     public function toWKT()
     {
-        return sprintf('MULTIPOINT(%s)', (string)$this);
+        return sprintf('MULTIPOINT(%s)', (string) $this);
     }
 
     public static function fromWkt($wkt)

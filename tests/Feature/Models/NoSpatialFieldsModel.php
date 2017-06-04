@@ -1,5 +1,5 @@
 <?php
-use Grimzy\LaravelSpatial\Eloquent\SpatialTrait;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class NoSpatialFieldsModel extends Model

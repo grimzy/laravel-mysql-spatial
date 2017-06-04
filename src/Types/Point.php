@@ -1,17 +1,17 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
 
-use GeoJson\GeoJson;
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 class Point extends Geometry
 {
     protected $lat;
+
     protected $lng;
 
     public function __construct($lat, $lng)
     {
-        $this->lat = (float)$lat;
-        $this->lng = (float)$lng;
+        $this->lat = (float) $lat;
+        $this->lng = (float) $lng;
     }
 
     public function getLat()
@@ -21,7 +21,7 @@ class Point extends Geometry
 
     public function setLat($lat)
     {
-        $this->lat = (float)$lat;
+        $this->lat = (float) $lat;
     }
 
     public function getLng()
@@ -31,24 +31,24 @@ class Point extends Geometry
 
     public function setLng($lng)
     {
-        $this->lng = (float)$lng;
+        $this->lng = (float) $lng;
     }
 
     public function toPair()
     {
-        return $this->getLng() . ' ' . $this->getLat();
+        return $this->getLng().' '.$this->getLat();
     }
 
     public static function fromPair($pair)
     {
         list($lng, $lat) = explode(' ', trim($pair));
 
-        return new static((float)$lat, (float)$lng);
+        return new static((float) $lat, (float) $lng);
     }
 
     public function toWKT()
     {
-        return sprintf('POINT(%s)', (string)$this);
+        return sprintf('POINT(%s)', (string) $this);
     }
 
     public static function fromString($wktArgument)
@@ -58,7 +58,7 @@ class Point extends Geometry
 
     public function __toString()
     {
-        return $this->getLng() . ' ' . $this->getLat();
+        return $this->getLng().' '.$this->getLat();
     }
 
     /**

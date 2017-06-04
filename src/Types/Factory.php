@@ -1,5 +1,6 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 class Factory implements \GeoIO\Factory
 {
@@ -42,5 +43,4 @@ class Factory implements \GeoIO\Factory
     {
         return new GeometryCollection($geometries);
     }
-
 }

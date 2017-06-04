@@ -1,5 +1,6 @@
 <?php
-namespace Grimzy\LaravelSpatial;
+
+namespace Grimzy\LaravelMysqlSpatial;
 
 class MysqlConnection extends \Illuminate\Database\MySqlConnection
 {
@@ -20,7 +21,6 @@ class MysqlConnection extends \Illuminate\Database\MySqlConnection
     {
         return $this->withTablePrefix(new Schema\Grammars\MySqlGrammar());
     }
-
 
     public function getSchemaBuilder()
     {

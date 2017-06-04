@@ -1,7 +1,7 @@
 <?php
 
-use Grimzy\LaravelSpatial\Types\LineString;
-use Grimzy\LaravelSpatial\Types\Point;
+use Grimzy\LaravelMysqlSpatial\Types\LineString;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 
 class LineStringTest extends BaseTestCase
 {

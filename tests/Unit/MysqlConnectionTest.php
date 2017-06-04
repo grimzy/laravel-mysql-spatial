@@ -1,7 +1,7 @@
 <?php
 
-use Grimzy\LaravelSpatial\MysqlConnection;
-use Grimzy\LaravelSpatial\Schema\Builder;
+use Grimzy\LaravelMysqlSpatial\MysqlConnection;
+use Grimzy\LaravelMysqlSpatial\Schema\Builder;
 use Stubs\PDOStub;
 
 class MysqlConnectionTest extends PHPUnit_Framework_TestCase

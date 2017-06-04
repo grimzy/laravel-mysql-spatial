@@ -1,14 +1,14 @@
 <?php
-namespace Grimzy\LaravelSpatial\Types;
+
+namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use Countable;
 
 class Polygon extends MultiLineString implements Countable
 {
-
     public function toWKT()
     {
-        return sprintf('POLYGON(%s)', (string)$this);
+        return sprintf('POLYGON(%s)', (string) $this);
     }
 
     /**

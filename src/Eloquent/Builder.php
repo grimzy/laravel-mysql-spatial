@@ -1,7 +1,8 @@
 <?php
-namespace Grimzy\LaravelSpatial\Eloquent;
 
-use Grimzy\LaravelSpatial\Types\GeometryInterface;
+namespace Grimzy\LaravelMysqlSpatial\Eloquent;
+
+use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class Builder extends EloquentBuilder
@@ -19,6 +20,6 @@ class Builder extends EloquentBuilder
 
     protected function asWKT(GeometryInterface $geometry)
     {
-        return $this->getQuery()->raw("GeomFromText('" . $geometry->toWKT() . "')");
+        return $this->getQuery()->raw("GeomFromText('".$geometry->toWKT()."')");
     }
 }

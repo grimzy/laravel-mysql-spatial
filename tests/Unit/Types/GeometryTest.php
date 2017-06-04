@@ -1,13 +1,13 @@
 <?php
 
-use Grimzy\LaravelSpatial\Types\Geometry;
-use Grimzy\LaravelSpatial\Types\GeometryCollection;
-use Grimzy\LaravelSpatial\Types\LineString;
-use Grimzy\LaravelSpatial\Types\MultiLineString;
-use Grimzy\LaravelSpatial\Types\MultiPoint;
-use Grimzy\LaravelSpatial\Types\MultiPolygon;
-use Grimzy\LaravelSpatial\Types\Point;
-use Grimzy\LaravelSpatial\Types\Polygon;
+use Grimzy\LaravelMysqlSpatial\Types\Geometry;
+use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
+use Grimzy\LaravelMysqlSpatial\Types\LineString;
+use Grimzy\LaravelMysqlSpatial\Types\MultiLineString;
+use Grimzy\LaravelMysqlSpatial\Types\MultiPoint;
+use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 
 class GeometryTest extends BaseTestCase
 {

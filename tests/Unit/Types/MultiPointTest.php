@@ -1,7 +1,7 @@
 <?php
 
-use Grimzy\LaravelSpatial\Types\Point;
-use Grimzy\LaravelSpatial\Types\MultiPoint;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Grimzy\LaravelMysqlSpatial\Types\MultiPoint;
 
 class MultiPointTest extends BaseTestCase
 {
