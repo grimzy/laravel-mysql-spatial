@@ -24,7 +24,7 @@ class SpatialTest extends TestCase
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
         $app['config']->set('database.default', 'mysql');
-        $app['config']->set('database.connections.mysql.host', env('DB_HOST', '172.17.0.2'));   // TODO: do not commit ip change
+        $app['config']->set('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
         $app['config']->set('database.connections.mysql.database', 'test');
         $app['config']->set('database.connections.mysql.username', 'root');
         $app['config']->set('database.connections.mysql.password', '');
