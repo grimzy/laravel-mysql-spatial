@@ -1,12 +1,12 @@
 {
-    "name": "grimzy/laravel-mysql-spatial",
+    "name": "astrogin/laravel-mysql-spatial",
     "description": "MySQL spatial data types extension for Laravel.",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Joseph Estefane",
-            "email": "estefanejoe@gmail.com"
+            "name": "Andrey",
+            "email": "astrogin24@gmail.com"
         }
     ],
     "require": {
