@@ -6,14 +6,19 @@ php:
   - '7.0'
   - '7.1'
 
-services:
-  - mysql
+env:
+ - MYSQL_VERSION=5.6
+ - MYSQL_VERSION=5.7
+ - MYSQL_VERSION=8.0
 
-sudo: true
+sudo: required
+
+services:
+  - docker
 
 before_install:
-  - bash .travis.install-mysql-5.7.sh
-  - mysql -e 'CREATE DATABASE test;'
+  - bash ./start_db.sh
+  - docker ps -a
 
 install: composer install
 
@@ -26,5 +31,4 @@ script:
 after_script:
   - php vendor/bin/coveralls -v
   - vendor/bin/test-reporter
-
 
