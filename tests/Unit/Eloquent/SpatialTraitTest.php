@@ -36,14 +36,14 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("GeomFromText('POINT(2 1)')", $this->queries[0]);
+        $this->assertContains("ST_GeomFromText('POINT(2 1)')", $this->queries[0]);
         $this->assertTrue($this->model->exists);
 
         $this->model->point = new Point(1, 2);
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("GeomFromText('POINT(2 1)')", $this->queries[1]);
+        $this->assertContains("ST_GeomFromText('POINT(2 1)')", $this->queries[1]);
     }
 
     public function testInsertUpdateLineStringHasCorrectSql()
@@ -57,14 +57,14 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("GeomFromText('LINESTRING(2 1,3 2)')", $this->queries[0]);
+        $this->assertContains("ST_GeomFromText('LINESTRING(2 1,3 2)')", $this->queries[0]);
         $this->assertTrue($this->model->exists);
 
         $this->model->linestring = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2]);
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("GeomFromText('LINESTRING(2 1,3 2)')", $this->queries[1]);
+        $this->assertContains("ST_GeomFromText('LINESTRING(2 1,3 2)')", $this->queries[1]);
     }
 
     public function testInsertUpdatePolygonHasCorrectSql()
@@ -82,13 +82,13 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("GeomFromText('POLYGON((2 1,3 2),(2 3,1 2))')", $this->queries[0]);
+        $this->assertContains("ST_GeomFromText('POLYGON((2 1,3 2),(2 3,1 2))')", $this->queries[0]);
         $this->assertTrue($this->model->exists);
 
         $this->model->polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("GeomFromText('POLYGON((2 1,3 2),(2 3,1 2))')", $this->queries[1]);
+        $this->assertContains("ST_GeomFromText('POLYGON((2 1,3 2),(2 3,1 2))')", $this->queries[1]);
     }
 
     public function testInsertUpdateMultiPointHasCorrectSql()
@@ -102,14 +102,14 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("GeomFromText('MULTIPOINT((2 1),(3 2))')", $this->queries[0]);
+        $this->assertContains("ST_GeomFromText('MULTIPOINT((2 1),(3 2))')", $this->queries[0]);
         $this->assertTrue($this->model->exists);
 
         $this->model->multipoint = new \Grimzy\LaravelMysqlSpatial\Types\MultiPoint([$point1, $point2]);
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("GeomFromText('MULTIPOINT((2 1),(3 2))')", $this->queries[1]);
+        $this->assertContains("ST_GeomFromText('MULTIPOINT((2 1),(3 2))')", $this->queries[1]);
     }
 
     public function testInsertUpdateMultiLineStringHasCorrectSql()
@@ -127,13 +127,13 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("GeomFromText('MULTILINESTRING((2 1,3 2),(2 3,1 2))')", $this->queries[0]);
+        $this->assertContains("ST_GeomFromText('MULTILINESTRING((2 1,3 2),(2 3,1 2))')", $this->queries[0]);
         $this->assertTrue($this->model->exists);
 
         $this->model->multilinestring = new \Grimzy\LaravelMysqlSpatial\Types\MultiLineString([$linestring1, $linestring2]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("GeomFromText('MULTILINESTRING((2 1,3 2),(2 3,1 2))')", $this->queries[1]);
+        $this->assertContains("ST_GeomFromText('MULTILINESTRING((2 1,3 2),(2 3,1 2))')", $this->queries[1]);
     }
 
     public function testInsertUpdateMultiPolygonHasCorrectSql()
@@ -160,13 +160,13 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("GeomFromText('MULTIPOLYGON(((2 1,3 2),(2 3,1 2)),((5 4,6 5),(5 6,4 5)))')", $this->queries[0]);
+        $this->assertContains("ST_GeomFromText('MULTIPOLYGON(((2 1,3 2),(2 3,1 2)),((5 4,6 5),(5 6,4 5)))')", $this->queries[0]);
         $this->assertTrue($this->model->exists);
 
         $this->model->multipolygon = new \Grimzy\LaravelMysqlSpatial\Types\MultiPolygon([$polygon1, $polygon2]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("GeomFromText('MULTIPOLYGON(((2 1,3 2),(2 3,1 2)),((5 4,6 5),(5 6,4 5)))')", $this->queries[1]);
+        $this->assertContains("ST_GeomFromText('MULTIPOLYGON(((2 1,3 2),(2 3,1 2)),((5 4,6 5),(5 6,4 5)))')", $this->queries[1]);
     }
 
     public function testInsertUpdateGeometryCollectionHasCorrectSql()
@@ -182,13 +182,13 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("GeomFromText('GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(3 2,3 3))')", $this->queries[0]);
+        $this->assertContains("ST_GeomFromText('GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(3 2,3 3))')", $this->queries[0]);
         $this->assertTrue($this->model->exists);
 
         $this->model->geometrycollection = new \Grimzy\LaravelMysqlSpatial\Types\GeometryCollection([$point1, $linestring1]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("GeomFromText('GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(3 2,3 3))')", $this->queries[1]);
+        $this->assertContains("ST_GeomFromText('GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(3 2,3 3))')", $this->queries[1]);
     }
 
     public function testScopeDistance()
@@ -199,7 +199,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
+        $this->assertContains("st_distance(`point`, ST_GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
     }
 
     public function testScopeDistanceExcludingSelf()
@@ -210,8 +210,8 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
-        $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) != 0", $q->wheres[1]['sql']);
+        $this->assertContains("st_distance(`point`, ST_GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
+        $this->assertContains("st_distance(`point`, ST_GeomFromText('POINT(2 1)')) != 0", $q->wheres[1]['sql']);
     }
 
     public function testScopeDistanceSphere()
@@ -222,7 +222,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
+        $this->assertContains("st_distance_sphere(`point`, ST_GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
     }
 
     public function testScopeDistanceSphereExcludingSelf()
@@ -233,8 +233,8 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) != 0", $q->wheres[1]['sql']);
+        $this->assertContains("st_distance_sphere(`point`, ST_GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
+        $this->assertContains("st_distance_sphere(`point`, ST_GeomFromText('POINT(2 1)')) != 0", $q->wheres[1]['sql']);
     }
 
     public function testScopeDistanceValue()
@@ -247,7 +247,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->columns);
         $this->assertContains("*", $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
+        $this->assertContains("st_distance(`point`, ST_GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
     }
 
     public function testScopeDistanceValueWithSelect()
@@ -260,7 +260,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->columns);
         $this->assertContains("some_column", $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
+        $this->assertContains("st_distance(`point`, ST_GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
     }
 
     public function testScopeDistanceSphereValue()
@@ -273,7 +273,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->columns);
         $this->assertContains("*", $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
+        $this->assertContains("st_distance_sphere(`point`, ST_GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
     }
 
     public function testScopeDistanceSphereValueWithSelect()
@@ -286,7 +286,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->columns);
         $this->assertContains("some_column", $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
+        $this->assertContains("st_distance_sphere(`point`, ST_GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
     }
 
     public function testScopeBounding()
@@ -307,7 +307,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_intersects(GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'), `point`)", $q->wheres[0]['sql']);
+        $this->assertContains("st_intersects(ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'), `point`)", $q->wheres[0]['sql']);
     }
 }
 
