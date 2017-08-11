@@ -8,3 +8,5 @@ docker run -d --name spatial-mysql-$MYSQL_VERSION \
     -e MYSQL_DATABASE=test \
     -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
     mysql:$MYSQL_VERSION --character-set-server=utf8 --collation-server=utf8_general_ci
+
+docker inpect spatial-mysql-$MYSQL_VERSION

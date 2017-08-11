@@ -18,6 +18,7 @@ services:
   - docker
 
 before_install:
+  - netstat -pna | grep 3306
   - bash ./start_db.sh
   - docker ps -a
 
