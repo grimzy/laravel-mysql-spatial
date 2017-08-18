@@ -118,4 +118,50 @@ trait SpatialTrait
     {
         return $query->whereRaw("st_intersects(GeomFromText('{$bounds->toWkt()}'), `{$column_name}`)");
     }
+
+    public function scopeComparison($query, $geometry_column, $geometry, $relationship)
+    {
+        $query->whereRaw("st_{$relationship}(`{$geometry_column}`, GeomFromText('{$geometry->toWkt()}'))");
+        return $query;
+    }
+
+    public function scopeWithin($query, $geometry_column, $polygon)
+    {
+        return $this->scopeComparison($query, $geometry_column, $polygon, 'within');
+    }
+
+    public function scopeCrosses($query, $geometry_column, $geometry)
+    {
+        return $this->scopeComparison($query, $geometry_column, $geometry, 'crosses');
+    }
+
+    public function scopeContains($query, $geometry_column, $geometry)
+    {
+        return $this->scopeComparison($query, $geometry_column, $geometry, 'contains');
+    }
+
+    public function scopeDisjoint($query, $geometry_column, $geometry)
+    {
+        return $this->scopeComparison($query, $geometry_column, $geometry, 'disjoint');
+    }
+
+    public function scopeEquals($query, $geometry_column, $geometry)
+    {
+        return $this->scopeComparison($query, $geometry_column, $geometry, 'equals');
+    }
+
+    public function scopeIntersects($query, $geometry_column, $geometry)
+    {
+        return $this->scopeComparison($query, $geometry_column, $geometry, 'intersects');
+    }
+
+    public function scopeOverlaps($query, $geometry_column, $geometry)
+    {
+        return $this->scopeComparison($query, $geometry_column, $geometry, 'overlaps');
+    }
+
+    public function scopeTouches($query, $geometry_column, $geometry)
+    {
+        return $this->scopeComparison($query, $geometry_column, $geometry, 'touches');
+    }
 }
