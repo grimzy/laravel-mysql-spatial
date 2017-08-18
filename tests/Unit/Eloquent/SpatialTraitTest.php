@@ -309,6 +309,27 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $this->assertContains("st_intersects(GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'), `point`)", $q->wheres[0]['sql']);
     }
+
+    public function testScopeWithin()
+    {
+        $point1 = new Point(1, 1);
+        $point2 = new Point(1, 2);
+        $linestring1 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2]);
+        $point3 = new Point(1, 2);
+        $point4 = new Point(2, 2);
+        $linestring2 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point3, $point4]);
+        $point5 = new Point(2, 2);
+        $point6 = new Point(1, 1);
+        $linestring3 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point5, $point6]);
+
+        $polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2, $linestring3]);
+        $query = TestModel::Within('point',$polygon);
+
+        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
+        $q = $query->getQuery();
+        $this->assertNotEmpty($q->wheres);
+        $this->assertContains("st_within(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+    }
 }
 
 class TestModel extends Model
