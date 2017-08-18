@@ -161,7 +161,7 @@ trait SpatialTrait
         return $this->scopeComparison($query, $geometryColumn, $geometry, 'overlaps');
     }
 
-    public function scopeTouches($query, $geometryColumn, $geometry)
+    public function scopeDoesTouch($query, $geometryColumn, $geometry)
     {
         return $this->scopeComparison($query, $geometryColumn, $geometry, 'touches');
     }

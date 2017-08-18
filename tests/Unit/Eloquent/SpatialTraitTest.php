@@ -391,9 +391,9 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertContains("st_overlaps(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
-    public function testScopeTouches()
+    public function testScopeDoesTouch()
     {
-        $query = TestModel::Touches('point',$this->buildTestPolygon());
+        $query = TestModel::DoesTouches('point',$this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
