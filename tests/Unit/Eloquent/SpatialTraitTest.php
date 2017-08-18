@@ -393,7 +393,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeDoesTouch()
     {
-        $query = TestModel::DoesTouches('point',$this->buildTestPolygon());
+        $query = TestModel::DoesTouch('point',$this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
