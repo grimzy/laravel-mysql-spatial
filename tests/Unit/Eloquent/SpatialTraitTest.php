@@ -318,7 +318,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_within(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_within(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
     public function testScopeWithin()
@@ -328,7 +328,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_within(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_within(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
     public function testScopeCrosses()
@@ -338,7 +338,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_crosses(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_crosses(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
     public function testScopeContains()
@@ -348,7 +348,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_contains(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_contains(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
     public function testScopeDisjoint()
@@ -358,7 +358,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_disjoint(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_disjoint(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
     public function testScopeEquals()
@@ -368,7 +368,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_equals(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_equals(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
     public function testScopeIntersects()
@@ -378,7 +378,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_intersects(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_intersects(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
     public function testScopeOverlaps()
@@ -388,7 +388,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_overlaps(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_overlaps(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 
     public function testScopeDoesTouch()
@@ -398,7 +398,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_touches(`point`, GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
+        $this->assertContains("st_touches(`point`, ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'))", $q->wheres[0]['sql']);
     }
 }
 
