@@ -30,7 +30,7 @@
     "autoload-dev" : {
         "classmap" : [
             "tests/Unit",
-            "tests/Feature"
+            "tests/Integration"
         ]
     },
     "extra": {
