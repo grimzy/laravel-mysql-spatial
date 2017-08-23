@@ -225,25 +225,6 @@ class SpatialTest extends TestCase
         $loc3 = new GeometryModel();
         $loc3->location = new Point(40.761434, -73.977619); // Distance from loc1: 870.06424066202
         $loc3->save();
-
-        $a = GeometryModel::distanceSphere(200, $loc1->location, 'location')->get();
-        $this->assertCount(2, $a);
-        $this->assertTrue($a->contains($loc1));
-        $this->assertTrue($a->contains($loc2));
-        $this->assertFalse($a->contains($loc3));
-
-        // Excluding self
-        $b = GeometryModel::distanceSphere(200, $loc1->location, 'location', true)->get();
-        $this->assertCount(1, $b);
-        $this->assertFalse($b->contains($loc1));
-        $this->assertTrue($b->contains($loc2));
-        $this->assertFalse($b->contains($loc3));
-
-        $c = GeometryModel::distanceSphere(44.741406484587, $loc1->location, 'location')->get();
-        $this->assertCount(1, $c);
-        $this->assertTrue($c->contains($loc1));
-        $this->assertFalse($c->contains($loc2));
-        $this->assertFalse($c->contains($loc3));
     }
 
     public function testDistanceValue()
@@ -260,21 +241,6 @@ class SpatialTest extends TestCase
         $this->assertCount(2, $a);
         $this->assertEquals(0, $a[0]->distance);
         $this->assertEquals(1.4142135623, $a[1]->distance); // PHP floats' 11th+ digits don't matter
-    }
-
-    public function testDistanceSphereValue() {
-        $loc1 = new GeometryModel();
-        $loc1->location = new Point(40.767864, -73.971732);
-        $loc1->save();
-
-        $loc2 = new GeometryModel();
-        $loc2->location = new Point(40.767664, -73.971271); // Distance from loc1: 44.741406484588
-        $loc2->save();
-
-        $a = GeometryModel::distanceSphereValue($loc1->location, 'location')->get();
-        $this->assertCount(2, $a);
-        $this->assertEquals(0, $a[0]->distance);
-        $this->assertEquals(44.7414064845, $a[1]->distance); // PHP floats' 11th+ digits don't matter
     }
 
     public function testBounding() {
