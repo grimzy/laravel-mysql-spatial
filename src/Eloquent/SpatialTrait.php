@@ -83,17 +83,6 @@ trait SpatialTrait
         return $query;
     }
 
-    public function scopeDistanceSphere($query, $distance, $geometry, $column_name, $exclude_self = false)
-    {
-        $query->whereRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
-
-        if ($exclude_self) {
-            $query->whereRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) != 0");
-        }
-
-        return $query;
-    }
-
     public function scopeDistanceValue($query, $geometry, $column_name)
     {
         $columns = $query->getQuery()->columns;
@@ -102,16 +91,6 @@ trait SpatialTrait
             $query->select('*');
         }
         $query->selectRaw("st_distance(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) as distance");
-    }
-
-    public function scopeDistanceSphereValue($query, $geometry, $column_name)
-    {
-        $columns = $query->getQuery()->columns;
-
-        if (! $columns) {
-            $query->select('*');
-        }
-        $query->selectRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) as distance");
     }
 
     public function scopeBounding($query, Geometry $bounds, $column_name)

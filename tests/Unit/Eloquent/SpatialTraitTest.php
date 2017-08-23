@@ -214,29 +214,6 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) != 0", $q->wheres[1]['sql']);
     }
 
-    public function testScopeDistanceSphere()
-    {
-        $point = new Point(1, 2);
-        $query = TestModel::DistanceSphere(10, $point, 'point');
-
-        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
-        $q = $query->getQuery();
-        $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
-    }
-
-    public function testScopeDistanceSphereExcludingSelf()
-    {
-        $point = new Point(1, 2);
-        $query = TestModel::DistanceSphere(10, $point, 'point', true);
-
-        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
-        $q = $query->getQuery();
-        $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) <= 10", $q->wheres[0]['sql']);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) != 0", $q->wheres[1]['sql']);
-    }
-
     public function testScopeDistanceValue()
     {
         $point = new Point(1, 2);
@@ -261,32 +238,6 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertContains("some_column", $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
         $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
-    }
-
-    public function testScopeDistanceSphereValue()
-    {
-        $point = new Point(1, 2);
-        $query = TestModel::DistanceSphereValue($point, 'point');
-
-        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
-        $q = $query->getQuery();
-        $this->assertNotEmpty($q->columns);
-        $this->assertContains("*", $q->columns[0]);
-        $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
-    }
-
-    public function testScopeDistanceSphereValueWithSelect()
-    {
-        $point = new Point(1, 2);
-        $query = TestModel::select('some_column')->distanceSphereValue($point, 'point');
-
-        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
-        $q = $query->getQuery();
-        $this->assertNotEmpty($q->columns);
-        $this->assertContains("some_column", $q->columns[0]);
-        $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertContains("st_distance_sphere(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
     }
 
     private function buildTestPolygon(){
