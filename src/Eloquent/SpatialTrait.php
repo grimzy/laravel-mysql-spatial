@@ -37,7 +37,7 @@ trait SpatialTrait
         foreach ($this->attributes as $key => $value) {
             if ($value instanceof GeometryInterface) {
                 $this->geometries[$key] = $value; //Preserve the geometry objects prior to the insert
-                $this->attributes[$key] = $this->getConnection()->raw(sprintf("GeomFromText('%s')", $value->toWKT()));
+                $this->attributes[$key] = $this->getConnection()->raw(sprintf("ST_GeomFromText('%s')", $value->toWKT()));
             }
         }
 
@@ -74,10 +74,10 @@ trait SpatialTrait
 
     public function scopeDistance($query, $distance, $geometry, $column_name, $exclude_self = false)
     {
-        $query->whereRaw("st_distance(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
+        $query->whereRaw("st_distance(`{$column_name}`, ST_GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
 
         if ($exclude_self) {
-            $query->whereRaw("st_distance(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) != 0");
+            $query->whereRaw("st_distance(`{$column_name}`, ST_GeomFromText('{$geometry->toWkt()}')) != 0");
         }
 
         return $query;
@@ -85,10 +85,10 @@ trait SpatialTrait
 
     public function scopeDistanceSphere($query, $distance, $geometry, $column_name, $exclude_self = false)
     {
-        $query->whereRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
+        $query->whereRaw("st_distance_sphere(`{$column_name}`, ST_GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
 
         if ($exclude_self) {
-            $query->whereRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) != 0");
+            $query->whereRaw("st_distance_sphere(`{$column_name}`, ST_GeomFromText('{$geometry->toWkt()}')) != 0");
         }
 
         return $query;
@@ -101,7 +101,7 @@ trait SpatialTrait
         if (! $columns) {
             $query->select('*');
         }
-        $query->selectRaw("st_distance(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) as distance");
+        $query->selectRaw("st_distance(`{$column_name}`, ST_GeomFromText('{$geometry->toWkt()}')) as distance");
     }
 
     public function scopeDistanceSphereValue($query, $geometry, $column_name)
@@ -111,17 +111,17 @@ trait SpatialTrait
         if (! $columns) {
             $query->select('*');
         }
-        $query->selectRaw("st_distance_sphere(`{$column_name}`, GeomFromText('{$geometry->toWkt()}')) as distance");
+        $query->selectRaw("st_distance_sphere(`{$column_name}`, ST_GeomFromText('{$geometry->toWkt()}')) as distance");
     }
 
     public function scopeBounding($query, Geometry $bounds, $column_name)
     {
-        return $query->whereRaw("st_intersects(GeomFromText('{$bounds->toWkt()}'), `{$column_name}`)");
+        return $query->whereRaw("st_intersects(ST_GeomFromText('{$bounds->toWkt()}'), `{$column_name}`)");
     }
 
     public function scopeComparison($query, $geometryColumn, $geometry, $relationship)
     {
-        $query->whereRaw("st_{$relationship}(`{$geometryColumn}`, GeomFromText('{$geometry->toWkt()}'))");
+        $query->whereRaw("st_{$relationship}(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}'))");
 
         return $query;
     }

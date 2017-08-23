@@ -36,7 +36,7 @@ class BuilderTest extends BaseTestCase
     {
         $this->queryBuilder
             ->shouldReceive('raw')
-            ->with("GeomFromText('POINT(2 1)')")
+            ->with("ST_GeomFromText('POINT(2 1)')")
             ->once();
 
         $this->queryBuilder
@@ -50,7 +50,7 @@ class BuilderTest extends BaseTestCase
     {
         $this->queryBuilder
             ->shouldReceive('raw')
-            ->with("GeomFromText('LINESTRING(0 0,1 1,2 2)')")
+            ->with("ST_GeomFromText('LINESTRING(0 0,1 1,2 2)')")
             ->once();
 
         $this->queryBuilder
@@ -66,7 +66,7 @@ class BuilderTest extends BaseTestCase
     {
         $this->queryBuilder
             ->shouldReceive('raw')
-            ->with("GeomFromText('POLYGON((0 0,1 0),(1 0,1 1),(1 1,0 0))')")
+            ->with("ST_GeomFromText('POLYGON((0 0,1 0),(1 0,1 1),(1 1,0 0))')")
             ->once();
 
         $this->queryBuilder

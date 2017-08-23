@@ -16,7 +16,7 @@ Please check the documentation for your MySQL version. MySQL's Extension for Spa
 Add the package using composer:
 
 ```shell
-composer require grimzy/laravel-mysql-spatial
+composer require astrogin/laravel-mysql-spatial
 ```
 
 Register the service provider in `config/app.php`:
