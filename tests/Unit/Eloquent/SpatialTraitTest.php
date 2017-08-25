@@ -253,15 +253,6 @@ class SpatialTraitTest extends BaseTestCase
         return new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2, $linestring3]);
     }
 
-    public function testScopeBounding()
-    {
-        $query = TestModel::Bounding($this->buildTestPolygon(), 'point');
-        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
-        $q = $query->getQuery();
-        $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_intersects(GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'), `point`)", $q->wheres[0]['sql']);
-    }
-
     public function testScopeComparison()
     {
         $query = TestModel::Comparison('point',$this->buildTestPolygon(),'within');
@@ -357,7 +348,7 @@ class TestModel extends Model
 {
     use \Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 
-    protected $spatialFields = ['point'];   // TODO: only required when fetching, not saving
+    protected $spatialFields = ['point'];   // only required when fetching, not saving
 
     public $timestamps = false;
 

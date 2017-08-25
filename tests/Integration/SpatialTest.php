@@ -194,37 +194,22 @@ class SpatialTest extends TestCase
 
         $a = GeometryModel::distance(2, $loc1->location, 'location')->get();
         $this->assertCount(2, $a);
-        $this->assertTrue($a->contains($loc1));
-        $this->assertTrue($a->contains($loc2));
-        $this->assertFalse($a->contains($loc3));
+        $this->assertTrue($a->contains('location', $loc1->location));
+        $this->assertTrue($a->contains('location', $loc2->location));
+        $this->assertFalse($a->contains('location', $loc3->location));
 
         // Excluding self
         $b = GeometryModel::distance(2, $loc1->location, 'location', true)->get();
         $this->assertCount(1, $b);
-        $this->assertFalse($b->contains($loc1));
-        $this->assertTrue($b->contains($loc2));
-        $this->assertFalse($b->contains($loc3));
+        $this->assertFalse($b->contains('location',$loc1->location));
+        $this->assertTrue($b->contains('location',$loc2->location));
+        $this->assertFalse($b->contains('location',$loc3->location));
 
         $c = GeometryModel::distance(1, $loc1->location, 'location')->get();
         $this->assertCount(1, $c);
-        $this->assertTrue($c->contains($loc1));
-        $this->assertFalse($c->contains($loc2));
-        $this->assertFalse($c->contains($loc3));
-    }
-
-    public function testDistanceSphere()
-    {
-        $loc1 = new GeometryModel();
-        $loc1->location = new Point(40.767864, -73.971732);
-        $loc1->save();
-
-        $loc2 = new GeometryModel();
-        $loc2->location = new Point(40.767664, -73.971271); // Distance from loc1: 44.741406484588
-        $loc2->save();
-
-        $loc3 = new GeometryModel();
-        $loc3->location = new Point(40.761434, -73.977619); // Distance from loc1: 870.06424066202
-        $loc3->save();
+        $this->assertTrue($c->contains('location', $loc1->location));
+        $this->assertFalse($c->contains('location', $loc2->location));
+        $this->assertFalse($c->contains('location', $loc3->location));
     }
 
     public function testDistanceValue()
@@ -241,37 +226,5 @@ class SpatialTest extends TestCase
         $this->assertCount(2, $a);
         $this->assertEquals(0, $a[0]->distance);
         $this->assertEquals(1.4142135623, $a[1]->distance); // PHP floats' 11th+ digits don't matter
-    }
-
-    public function testBounding() {
-        $point = new Point(0, 0);
-
-        $linestring1 = \Grimzy\LaravelMysqlSpatial\Types\LineString::fromWkt("LINESTRING(1 1, 2 2)");
-        $linestring2 = \Grimzy\LaravelMysqlSpatial\Types\LineString::fromWkt("LINESTRING(20 20, 24 24)");
-        $linestring3 = \Grimzy\LaravelMysqlSpatial\Types\LineString::fromWkt("LINESTRING(0 10, 10 10)");
-
-        $geo1 = new GeometryModel();
-        $geo1->location = $point;
-        $geo1->line = $linestring1;
-        $geo1->save();
-
-        $geo2 = new GeometryModel();
-        $geo2->location = $point;
-        $geo2->line = $linestring2;
-        $geo2->save();
-
-        $geo3 = new GeometryModel();
-        $geo3->location = $point;
-        $geo3->line = $linestring3;
-        $geo3->save();
-
-        $polygon = Polygon::fromWKT("POLYGON((0 10,10 10,10 0,0 0,0 10))");
-
-        $result = GeometryModel::Bounding($polygon, 'line')->get();
-        $this->assertCount(2, $result);
-        $this->assertTrue($result->contains($geo1));
-        $this->assertFalse($result->contains($geo2));
-        $this->assertTrue($result->contains($geo3));
-
     }
 }
