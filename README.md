@@ -248,7 +248,7 @@ Available scopes:
 - `equals($geometryColumn, $geometry)`
 - `intersects($geometryColumn, $geometry)`
 - `overlaps($geometryColumn, $geometry)`
-- `touches($geometryColumn, $geometry)`
+- `doesTouch($geometryColumn, $geometry)`
 
 *Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)).*
 

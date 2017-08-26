@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
  * @method static equals($geometryColumn, $geometry)
  * @method static intersects($geometryColumn, $geometry)
  * @method static overlaps($geometryColumn, $geometry)
- * @method static touches($geometryColumn, $geometry)
+ * @method static doesTouch($geometryColumn, $geometry)
  */
 trait SpatialTrait
 {
