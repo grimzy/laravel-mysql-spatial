@@ -1,15 +1,16 @@
 <?php
+
 namespace Tools;
 
 use Symfony\Component\Finder\Finder;
 
 class ClassFinder
 {
-
     /**
      * Find all the class and interface names in a given directory.
      *
-     * @param  string $directory
+     * @param string $directory
+     *
      * @return array
      */
     public function findClasses($directory)
@@ -26,7 +27,8 @@ class ClassFinder
     /**
      * Extract the class name from the file at the given path.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string|null
      */
     public function findClass($path)
@@ -39,7 +41,7 @@ class ClassFinder
             if ($this->tokenIsNamespace($token)) {
                 $namespace = $this->getNamespace($key + 2, $tokens);
             } elseif ($this->tokenIsClassOrInterface($token)) {
-                return ltrim($namespace . '\\' . $this->getClass($key + 2, $tokens), '\\');
+                return ltrim($namespace.'\\'.$this->getClass($key + 2, $tokens), '\\');
             }
         }
     }
@@ -47,8 +49,9 @@ class ClassFinder
     /**
      * Find the namespace in the tokens starting at a given key.
      *
-     * @param  int $key
-     * @param  array $tokens
+     * @param int   $key
+     * @param array $tokens
+     *
      * @return string
      */
     protected function getNamespace($key, array $tokens)
@@ -69,8 +72,9 @@ class ClassFinder
     /**
      * Find the class in the tokens starting at a given key.
      *
-     * @param  int $key
-     * @param  array $tokens
+     * @param int   $key
+     * @param array $tokens
+     *
      * @return string
      */
     protected function getClass($key, array $tokens)
@@ -91,7 +95,8 @@ class ClassFinder
     /**
      * Determine if the given token is a namespace keyword.
      *
-     * @param  array|string $token
+     * @param array|string $token
+     *
      * @return bool
      */
     protected function tokenIsNamespace($token)
@@ -102,7 +107,8 @@ class ClassFinder
     /**
      * Determine if the given token is a class or interface keyword.
      *
-     * @param  array|string $token
+     * @param array|string $token
+     *
      * @return bool
      */
     protected function tokenIsClassOrInterface($token)
@@ -113,7 +119,8 @@ class ClassFinder
     /**
      * Determine if the given token is part of the namespace.
      *
-     * @param  array|string $token
+     * @param array|string $token
+     *
      * @return bool
      */
     protected function isPartOfNamespace($token)
@@ -124,7 +131,8 @@ class ClassFinder
     /**
      * Determine if the given token is part of the class.
      *
-     * @param  array|string $token
+     * @param array|string $token
+     *
      * @return bool
      */
     protected function isPartOfClass($token)
@@ -135,12 +143,12 @@ class ClassFinder
     /**
      * Determine if the given token is whitespace.
      *
-     * @param  array|string $token
+     * @param array|string $token
+     *
      * @return bool
      */
     protected function isWhitespace($token)
     {
         return is_array($token) && $token[0] == T_WHITESPACE;
     }
-
 }

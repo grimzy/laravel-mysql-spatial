@@ -1,4 +1,5 @@
 <?php
+
 use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
@@ -18,7 +19,7 @@ class SpatialTest extends TestCase
      */
     public function createApplication()
     {
-        $app = require __DIR__ . '/../../vendor/laravel/laravel/bootstrap/app.php';
+        $app = require __DIR__.'/../../vendor/laravel/laravel/bootstrap/app.php';
         $app->register(SpatialServiceProvider::class);
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
@@ -42,14 +43,14 @@ class SpatialTest extends TestCase
         parent::setUp();
 
         $this->onMigrations(function ($migrationClass) {
-            (new $migrationClass)->up();
+            (new $migrationClass())->up();
         });
     }
 
     public function tearDown()
     {
         $this->onMigrations(function ($migrationClass) {
-            (new $migrationClass)->down();
+            (new $migrationClass())->down();
         }, true);
 
         parent::tearDown();
@@ -69,7 +70,7 @@ class SpatialTest extends TestCase
         $fileSystem = new Filesystem();
         $classFinder = new Tools\ClassFinder();
 
-        $migrations = $fileSystem->files(__DIR__ . "/Migrations");
+        $migrations = $fileSystem->files(__DIR__.'/Migrations');
         $reverse_sort ? rsort($migrations, SORT_STRING) : sort($migrations, SORT_STRING);
 
         foreach ($migrations as $file) {
@@ -80,14 +81,14 @@ class SpatialTest extends TestCase
         }
     }
 
-    public function testSpatialFieldsNotDefinedException() {
+    public function testSpatialFieldsNotDefinedException()
+    {
         $geo = new NoSpatialFieldsModel();
         $geo->geometry = new Point(1, 2);
         $geo->save();
 
         $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException::class);
         NoSpatialFieldsModel::all();
-
     }
 
     public function testInsertPoint()
@@ -113,7 +114,7 @@ class SpatialTest extends TestCase
         $geo = new GeometryModel();
 
         $geo->location = new Point(1, 2);
-        $geo->shape = Polygon::fromWKT("POLYGON((0 10,10 10,10 0,0 0,0 10))");
+        $geo->shape = Polygon::fromWKT('POLYGON((0 10,10 10,10 0,0 0,0 10))');
         $geo->save();
         $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
     }
@@ -135,8 +136,8 @@ class SpatialTest extends TestCase
         $geo->location = new Point(1, 2);
 
         $geo->multi_shapes = new MultiPolygon([
-            Polygon::fromWKT("POLYGON((0 10,10 10,10 0,0 0,0 10))"),
-            Polygon::fromWKT("POLYGON((0 0,0 5,5 5,5 0,0 0))")
+            Polygon::fromWKT('POLYGON((0 10,10 10,10 0,0 0,0 10))'),
+            Polygon::fromWKT('POLYGON((0 0,0 5,5 5,5 0,0 0))'),
         ]);
         $geo->save();
         $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
@@ -149,9 +150,9 @@ class SpatialTest extends TestCase
         $geo->location = new Point(1, 2);
 
         $geo->multi_geometries = new GeometryCollection([
-            Polygon::fromWKT("POLYGON((0 10,10 10,10 0,0 0,0 10))"),
-            Polygon::fromWKT("POLYGON((0 0,0 5,5 5,5 0,0 0))"),
-            new Point(0, 0)
+            Polygon::fromWKT('POLYGON((0 10,10 10,10 0,0 0,0 10))'),
+            Polygon::fromWKT('POLYGON((0 0,0 5,5 5,5 0,0 0))'),
+            new Point(0, 0),
         ]);
         $geo->save();
         $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
@@ -262,7 +263,8 @@ class SpatialTest extends TestCase
         $this->assertEquals(1.4142135623, $a[1]->distance); // PHP floats' 11th+ digits don't matter
     }
 
-    public function testDistanceSphereValue() {
+    public function testDistanceSphereValue()
+    {
         $loc1 = new GeometryModel();
         $loc1->location = new Point(40.767864, -73.971732);
         $loc1->save();

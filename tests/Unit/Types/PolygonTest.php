@@ -16,13 +16,12 @@ class PolygonTest extends BaseTestCase
                 new Point(0, 1),
                 new Point(1, 1),
                 new Point(1, 0),
-                new Point(0, 0)
+                new Point(0, 0),
             ]
         );
 
         $this->polygon = new Polygon([$collection]);
     }
-
 
     public function testFromWKT()
     {
@@ -44,6 +43,5 @@ class PolygonTest extends BaseTestCase
             '{"type":"Polygon","coordinates":[[[0,0],[1,0],[1,1],[0,1],[0,0]]]}',
             json_encode($this->polygon)
         );
-
     }
 }

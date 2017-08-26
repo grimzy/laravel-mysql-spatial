@@ -5,9 +5,10 @@ namespace Grimzy\LaravelMysqlSpatial\Schema;
 class Blueprint extends \Illuminate\Database\Schema\Blueprint
 {
     /**
-     * Add a geometry column on the table
+     * Add a geometry column on the table.
      *
-     * @param   string $column
+     * @param string $column
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function geometry($column)
@@ -16,9 +17,10 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
-     * Add a point column on the table
+     * Add a point column on the table.
      *
-     * @param      $column
+     * @param   $column
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function point($column)
@@ -27,9 +29,10 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
-     * Add a linestring column on the table
+     * Add a linestring column on the table.
      *
-     * @param      $column
+     * @param   $column
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function lineString($column)
@@ -38,9 +41,10 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
-     * Add a polygon column on the table
+     * Add a polygon column on the table.
      *
-     * @param      $column
+     * @param   $column
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function polygon($column)
@@ -49,9 +53,10 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
-     * Add a multipoint column on the table
+     * Add a multipoint column on the table.
      *
-     * @param      $column
+     * @param   $column
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function multiPoint($column)
@@ -60,9 +65,10 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
-     * Add a multilinestring column on the table
+     * Add a multilinestring column on the table.
      *
-     * @param      $column
+     * @param   $column
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function multiLineString($column)
@@ -71,9 +77,10 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
-     * Add a multipolygon column on the table
+     * Add a multipolygon column on the table.
      *
-     * @param      $column
+     * @param   $column
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function multiPolygon($column)
@@ -82,9 +89,10 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
-     * Add a geometrycollection column on the table
+     * Add a geometrycollection column on the table.
      *
-     * @param      $column
+     * @param   $column
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function geometryCollection($column)
@@ -93,10 +101,11 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
-     * Specify a spatial index for the table
+     * Specify a spatial index for the table.
      *
-     * @param  string|array $columns
-     * @param  string $name
+     * @param string|array $columns
+     * @param string       $name
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function spatialIndex($columns, $name = null)
@@ -107,7 +116,8 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     /**
      * Indicate that the given index should be dropped.
      *
-     * @param  string|array $index
+     * @param string|array $index
+     *
      * @return \Illuminate\Support\Fluent
      */
     public function dropSpatialIndex($index)

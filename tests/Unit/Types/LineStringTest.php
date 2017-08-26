@@ -31,7 +31,7 @@ class LineStringTest extends BaseTestCase
     {
         $linestring = new LineString($this->points);
 
-        $this->assertEquals('0 0,1 1,2 2', (string)$linestring);
+        $this->assertEquals('0 0,1 1,2 2', (string) $linestring);
     }
 
     public function testJsonSerialize()

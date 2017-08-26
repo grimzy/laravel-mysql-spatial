@@ -14,6 +14,7 @@ class GeometryCollection extends Geometry implements Countable
 
     /**
      * @param GeometryInterface[] $geometries
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(array $geometries)
@@ -42,8 +43,8 @@ class GeometryCollection extends Geometry implements Countable
     public function __toString()
     {
         return implode(',', array_map(function (GeometryInterface $geometry) {
-                return $geometry->toWKT();
-            }, $this->geometries));
+            return $geometry->toWKT();
+        }, $this->geometries));
     }
 
     public static function fromString($wktArgument)
@@ -51,10 +52,10 @@ class GeometryCollection extends Geometry implements Countable
         $geometry_strings = preg_split('/,\s*(?=[A-Za-z])/', $wktArgument);
 
         return new static(array_map(function ($geometry_string) {
-                $klass = Geometry::getWKTClass($geometry_string);
+            $klass = Geometry::getWKTClass($geometry_string);
 
-                return call_user_func($klass.'::fromWKT', $geometry_string);
-            }, $geometry_strings));
+            return call_user_func($klass.'::fromWKT', $geometry_string);
+        }, $geometry_strings));
     }
 
     public function count()
@@ -63,7 +64,7 @@ class GeometryCollection extends Geometry implements Countable
     }
 
     /**
-     * Convert to GeoJson GeometryCollection that is jsonable to GeoJSON
+     * Convert to GeoJson GeometryCollection that is jsonable to GeoJSON.
      *
      * @return \GeoJson\Geometry\GeometryCollection
      */
