@@ -11,12 +11,23 @@ Laravel package to easily work with [MySQL Spatial Data Types](https://dev.mysql
 
 Please check the documentation for your MySQL version. MySQL's Extension for Spatial Data was added in MySQL 5.5 but many Spatial Functions were changed in 5.6 and 5.7.
 
+**Versions**
+
+- `1.x.x`: MySQL 5.6 (also supports MySQL 5.5 but not all spatial analysis functions)
+- `2.x.x`: MySQL 5.7 and 8.0
+
 ## Installation
 
 Add the package using composer:
 
 ```shell
 composer require grimzy/laravel-mysql-spatial
+```
+
+For MySQL 5.6 and 5.5:
+
+```shell
+composer require grimzy/laravel-mysql-spatial:^1.0
 ```
 
 Register the service provider in `config/app.php`:
@@ -211,14 +222,35 @@ class UpdatePlacesTable extends Migration
 
 Available geometry classes:
 
-- Point
-- LineString
-- Polygon
-- MultiPoint
-- MultiLineString
-- MultiPolygon
-- GeometryCollection
+- `Point($lat, $lng)`
+- `MultiPoint(Point[])`
+- `LineString(Point[])`
+- `MultiLineString(LineString[])`
+- `Polygon(LineString[])`
+- `MultiPolygon(Polygon[])`
+- `GeometryCollection(Geometry[])` *(a collection of spatial models)*
 
+## Scopes: Spatial analysis functions
+
+Spatial analysis functions are implemented using [Eloquent Local Scopes](https://laravel.com/docs/5.4/eloquent#local-scopes).
+
+Available scopes:
+
+- `distance($geometryColumn, $geometry, $distance)`
+- `distanceExcludingSelf($geometryColumn, $geometry, $distance)`
+- `distanceSphere($geometryColumn, $geometry, $distance)`
+- `distanceSphereExcludingSelf($geometryColumn, $geometry, $distance)`
+- `comparison($geometryColumn, $geometry, $relationship)`
+- `within($geometryColumn, $polygon)`
+- `crosses($geometryColumn, $geometry)`
+- `contains($geometryColumn, $geometry)`
+- `disjoint($geometryColumn, $geometry)`
+- `equals($geometryColumn, $geometry)`
+- `intersects($geometryColumn, $geometry)`
+- `overlaps($geometryColumn, $geometry)`
+- `touches($geometryColumn, $geometry)`
+
+*Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)).*
 
 ## Credits
 

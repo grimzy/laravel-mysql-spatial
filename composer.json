@@ -35,7 +35,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-mysql-5.6": "1.0.x-dev"
         }
     }
 }
