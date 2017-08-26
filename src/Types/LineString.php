@@ -32,7 +32,7 @@ class LineString extends PointCollection implements GeometryInterface
     }
 
     /**
-     * Convert to GeoJson LineString that is jsonable to GeoJSON
+     * Convert to GeoJson LineString that is jsonable to GeoJSON.
      *
      * @return \GeoJson\Geometry\LineString
      */

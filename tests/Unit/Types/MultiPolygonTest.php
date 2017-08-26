@@ -20,7 +20,7 @@ class MultiPolygonTest extends BaseTestCase
                 new Point(0, 1),
                 new Point(1, 1),
                 new Point(1, 0),
-                new Point(0, 0)
+                new Point(0, 0),
             ]
         );
 
@@ -30,7 +30,7 @@ class MultiPolygonTest extends BaseTestCase
                 new Point(10, 20),
                 new Point(20, 20),
                 new Point(20, 10),
-                new Point(10, 10)
+                new Point(10, 10),
             ]
         );
 
@@ -42,10 +42,9 @@ class MultiPolygonTest extends BaseTestCase
                 new Point(100, 200),
                 new Point(200, 200),
                 new Point(200, 100),
-                new Point(100, 100)
+                new Point(100, 100),
             ]
         );
-
 
         $polygon2 = new Polygon([$collection3]);
 
@@ -61,7 +60,6 @@ class MultiPolygonTest extends BaseTestCase
 
         $this->assertEquals(2, $polygon->count());
     }
-
 
     public function testToWKT()
     {

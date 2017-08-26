@@ -51,13 +51,14 @@ class MultiPolygon extends Geometry implements Countable
 
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
-     * Count elements of an object
+     * Count elements of an object.
      *
      * @link http://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
-     *       </p>
-     *       <p>
-     *       The return value is cast to an integer.
+     *             </p>
+     *             <p>
+     *             The return value is cast to an integer.
      */
     public function count()
     {
@@ -65,7 +66,7 @@ class MultiPolygon extends Geometry implements Countable
     }
 
     /**
-     * Get the polygons that make up this MultiPolygon
+     * Get the polygons that make up this MultiPolygon.
      *
      * @return array|Polygon[]
      */
@@ -80,7 +81,7 @@ class MultiPolygon extends Geometry implements Countable
      * ")), ((",
      * "-1 -1,-1 -2,-2 -2,-2 -1,-1 -1",
      * ")), ((",
-     * "-1 -1,-1 -2,-2 -2,-2 -1,-1 -1))"
+     * "-1 -1,-1 -2,-2 -2,-2 -1,-1 -1))".
      *
      * Into:
      * "((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1))",
@@ -88,6 +89,7 @@ class MultiPolygon extends Geometry implements Countable
      * "((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1))"
      *
      * @param array $parts
+     *
      * @return array
      */
     protected static function assembleParts(array $parts)
@@ -109,7 +111,7 @@ class MultiPolygon extends Geometry implements Countable
     }
 
     /**
-     * Convert to GeoJson MultiPolygon that is jsonable to GeoJSON
+     * Convert to GeoJson MultiPolygon that is jsonable to GeoJSON.
      *
      * @return \GeoJson\Geometry\MultiPolygon
      */

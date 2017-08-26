@@ -8,11 +8,11 @@ use PDO;
 class ConnectionFactory extends \Illuminate\Database\Connectors\ConnectionFactory
 {
     /**
-     * @param string $driver
+     * @param string       $driver
      * @param \Closure|PDO $connection
-     * @param string $database
-     * @param string $prefix
-     * @param array $config
+     * @param string       $database
+     * @param string       $prefix
+     * @param array        $config
      *
      * @return \Illuminate\Database\ConnectionInterface
      */

@@ -12,7 +12,7 @@ class Polygon extends MultiLineString implements Countable
     }
 
     /**
-     * Convert to GeoJson Polygon that is jsonable to GeoJSON
+     * Convert to GeoJson Polygon that is jsonable to GeoJSON.
      *
      * @return \GeoJson\Geometry\Polygon
      */

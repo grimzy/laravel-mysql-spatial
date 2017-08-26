@@ -8,7 +8,7 @@ class MysqlConnection extends \Illuminate\Database\MySqlConnection
     {
         parent::__construct($pdo, $database, $tablePrefix, $config);
 
-        if(class_exists('Doctrine\DBAL\Types\Type')) {
+        if (class_exists('Doctrine\DBAL\Types\Type')) {
             // Prevent geometry type fields from throwing a 'type not found' error when changing them
             $geometries = [
                 'geometry',
@@ -21,7 +21,7 @@ class MysqlConnection extends \Illuminate\Database\MySqlConnection
                 'geometrycollection',
             ];
             $dbPlatform = $this->getDoctrineSchemaManager()->getDatabasePlatform();
-            foreach($geometries as $type) {
+            foreach ($geometries as $type) {
                 $dbPlatform->registerDoctrineTypeMapping($type, 'string');
             }
         }

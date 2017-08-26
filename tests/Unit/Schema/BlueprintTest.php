@@ -1,9 +1,10 @@
 <?php
+
 namespace Schema;
 
 use BaseTestCase;
-use Mockery;
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+use Mockery;
 
 class BlueprintTest extends BaseTestCase
 {
@@ -96,6 +97,4 @@ class BlueprintTest extends BaseTestCase
 
         $this->blueprint->geometrycollection('col');
     }
-
-
 }

@@ -222,7 +222,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->columns);
-        $this->assertContains("*", $q->columns[0]);
+        $this->assertContains('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
         $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
     }
@@ -235,12 +235,13 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->columns);
-        $this->assertContains("some_column", $q->columns[0]);
+        $this->assertContains('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
         $this->assertContains("st_distance(`point`, GeomFromText('POINT(2 1)')) as distance", $q->columns[1]->getValue());
     }
 
-    private function buildTestPolygon(){
+    private function buildTestPolygon()
+    {
         $point1 = new Point(1, 1);
         $point2 = new Point(1, 2);
         $linestring1 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2]);
@@ -250,12 +251,13 @@ class SpatialTraitTest extends BaseTestCase
         $point5 = new Point(2, 2);
         $point6 = new Point(1, 1);
         $linestring3 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point5, $point6]);
+
         return new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2, $linestring3]);
     }
 
     public function testScopeComparison()
     {
-        $query = TestModel::Comparison('point',$this->buildTestPolygon(),'within');
+        $query = TestModel::Comparison('point', $this->buildTestPolygon(), 'within');
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -265,7 +267,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeWithin()
     {
-        $query = TestModel::Within('point',$this->buildTestPolygon());
+        $query = TestModel::Within('point', $this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -275,7 +277,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeCrosses()
     {
-        $query = TestModel::Crosses('point',$this->buildTestPolygon());
+        $query = TestModel::Crosses('point', $this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -285,7 +287,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeContains()
     {
-        $query = TestModel::Contains('point',$this->buildTestPolygon());
+        $query = TestModel::Contains('point', $this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -295,7 +297,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeDisjoint()
     {
-        $query = TestModel::Disjoint('point',$this->buildTestPolygon());
+        $query = TestModel::Disjoint('point', $this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -305,7 +307,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeEquals()
     {
-        $query = TestModel::Equals('point',$this->buildTestPolygon());
+        $query = TestModel::Equals('point', $this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -315,7 +317,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeIntersects()
     {
-        $query = TestModel::Intersects('point',$this->buildTestPolygon());
+        $query = TestModel::Intersects('point', $this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -325,7 +327,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeOverlaps()
     {
-        $query = TestModel::Overlaps('point',$this->buildTestPolygon());
+        $query = TestModel::Overlaps('point', $this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -335,7 +337,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testScopeDoesTouch()
     {
-        $query = TestModel::DoesTouch('point',$this->buildTestPolygon());
+        $query = TestModel::DoesTouch('point', $this->buildTestPolygon());
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();

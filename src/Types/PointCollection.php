@@ -77,6 +77,7 @@ abstract class PointCollection implements IteratorAggregate, Arrayable, ArrayAcc
 
     /**
      * @param mixed $offset
+     *
      * @return null|Point
      */
     public function offsetGet($offset)
@@ -86,7 +87,7 @@ abstract class PointCollection implements IteratorAggregate, Arrayable, ArrayAcc
 
     public function offsetSet($offset, $value)
     {
-        if (! ($value instanceof Point)) {
+        if (!($value instanceof Point)) {
             throw new InvalidArgumentException('$value must be an instance of Point');
         }
 

@@ -23,7 +23,7 @@ trait SpatialTrait
     /**
      * Create a new Eloquent query builder for the model.
      *
-     * @param  \Illuminate\Database\Query\Builder $query
+     * @param \Illuminate\Database\Query\Builder $query
      *
      * @return \Grimzy\LaravelMysqlSpatial\Eloquent\Builder
      */
@@ -87,7 +87,7 @@ trait SpatialTrait
     {
         $columns = $query->getQuery()->columns;
 
-        if (! $columns) {
+        if (!$columns) {
             $query->select('*');
         }
         $query->selectRaw("st_distance(`{$geometryColumn}`, GeomFromText('{$geometry->toWkt()}')) as distance");

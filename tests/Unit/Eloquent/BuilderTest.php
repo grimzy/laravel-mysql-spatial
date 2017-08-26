@@ -1,4 +1,6 @@
-<?php namespace Eloquent;
+<?php
+
+namespace Eloquent;
 
 use BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Eloquent\Builder;

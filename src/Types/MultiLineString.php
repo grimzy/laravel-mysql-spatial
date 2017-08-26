@@ -65,7 +65,7 @@ class MultiLineString extends Geometry implements Countable
     }
 
     /**
-     * Convert to GeoJson Point that is jsonable to GeoJSON
+     * Convert to GeoJson Point that is jsonable to GeoJSON.
      *
      * @return \GeoJson\Geometry\MultiLineString
      */

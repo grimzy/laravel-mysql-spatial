@@ -19,7 +19,7 @@ class GeometryCollectionTest extends BaseTestCase
                 new Point(0, 1),
                 new Point(1, 1),
                 new Point(1, 0),
-                new Point(0, 0)
+                new Point(0, 0),
             ]
         );
 
@@ -28,11 +28,10 @@ class GeometryCollectionTest extends BaseTestCase
         $this->collection = new GeometryCollection([$collection, $point]);
     }
 
-
     public function testFromWKT()
     {
         /**
-         * @var GeometryCollection $geometryCollection
+         * @var GeometryCollection
          */
         $geometryCollection = GeometryCollection::fromWKT('GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))');
         $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
@@ -61,6 +60,5 @@ class GeometryCollectionTest extends BaseTestCase
             '{"type":"GeometryCollection","geometries":[{"type":"LineString","coordinates":[[0,0],[1,0],[1,1],[0,1],[0,0]]},{"type":"Point","coordinates":[200,100]}]}',
             json_encode($this->collection->jsonSerialize())
         );
-
     }
 }
