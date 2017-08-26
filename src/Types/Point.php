@@ -62,7 +62,7 @@ class Point extends Geometry
     }
 
     /**
-     * Convert to GeoJson Point that is jsonable to GeoJSON
+     * Convert to GeoJson Point that is jsonable to GeoJSON.
      *
      * @return \GeoJson\Geometry\Point
      */

@@ -8,9 +8,10 @@ use Illuminate\Support\Fluent;
 class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
 {
     /**
-     * Adds a statement to add a geometry column
+     * Adds a statement to add a geometry column.
      *
      * @param \Illuminate\Support\Fluent $column
+     *
      * @return string
      */
     public function typeGeometry(Fluent $column)
@@ -19,9 +20,10 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     }
 
     /**
-     * Adds a statement to add a point column
+     * Adds a statement to add a point column.
      *
      * @param \Illuminate\Support\Fluent $column
+     *
      * @return string
      */
     public function typePoint(Fluent $column)
@@ -30,9 +32,10 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     }
 
     /**
-     * Adds a statement to add a linestring column
+     * Adds a statement to add a linestring column.
      *
      * @param \Illuminate\Support\Fluent $column
+     *
      * @return string
      */
     public function typeLinestring(Fluent $column)
@@ -41,9 +44,10 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     }
 
     /**
-     * Adds a statement to add a polygon column
+     * Adds a statement to add a polygon column.
      *
      * @param \Illuminate\Support\Fluent $column
+     *
      * @return string
      */
     public function typePolygon(Fluent $column)
@@ -52,9 +56,10 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     }
 
     /**
-     * Adds a statement to add a multipoint column
+     * Adds a statement to add a multipoint column.
      *
      * @param \Illuminate\Support\Fluent $column
+     *
      * @return string
      */
     public function typeMultipoint(Fluent $column)
@@ -63,9 +68,10 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     }
 
     /**
-     * Adds a statement to add a multilinestring column
+     * Adds a statement to add a multilinestring column.
      *
      * @param \Illuminate\Support\Fluent $column
+     *
      * @return string
      */
     public function typeMultilinestring(Fluent $column)
@@ -74,9 +80,10 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     }
 
     /**
-     * Adds a statement to add a multipolygon column
+     * Adds a statement to add a multipolygon column.
      *
      * @param \Illuminate\Support\Fluent $column
+     *
      * @return string
      */
     public function typeMultipolygon(Fluent $column)
@@ -85,9 +92,10 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     }
 
     /**
-     * Adds a statement to add a geometrycollection column
+     * Adds a statement to add a geometrycollection column.
      *
      * @param \Illuminate\Support\Fluent $column
+     *
      * @return string
      */
     public function typeGeometrycollection(Fluent $column)
@@ -98,8 +106,9 @@ class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
     /**
      * Compile a spatial index key command.
      *
-     * @param  \Grimzy\LaravelMysqlSpatial\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param \Grimzy\LaravelMysqlSpatial\Schema\Blueprint $blueprint
+     * @param \Illuminate\Support\Fluent                   $command
+     *
      * @return string
      */
     public function compileSpatial(Blueprint $blueprint, Fluent $command)

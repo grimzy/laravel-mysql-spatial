@@ -50,7 +50,7 @@ class PointTest extends BaseTestCase
         $this->assertSame(1.3, $point->getLng());
         $this->assertSame(2.0, $point->getLat());
 
-        $this->assertEquals('1.3 2', (string)$point);
+        $this->assertEquals('1.3 2', (string) $point);
     }
 
     public function testJsonSerialize()

@@ -40,7 +40,7 @@ class MultiPoint extends PointCollection implements GeometryInterface, \JsonSeri
     }
 
     /**
-     * Convert to GeoJson MultiPoint that is jsonable to GeoJSON
+     * Convert to GeoJson MultiPoint that is jsonable to GeoJSON.
      *
      * @return \GeoJson\Geometry\MultiPoint
      */

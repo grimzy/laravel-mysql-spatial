@@ -1,8 +1,8 @@
 <?php
 
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
-use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\MultiLineString;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 
 class MultiLineStringTest extends BaseTestCase
 {
@@ -22,7 +22,7 @@ class MultiLineStringTest extends BaseTestCase
                 new Point(0, 1),
                 new Point(1, 1),
                 new Point(1, 0),
-                new Point(0, 0)
+                new Point(0, 0),
             ]
         );
 
