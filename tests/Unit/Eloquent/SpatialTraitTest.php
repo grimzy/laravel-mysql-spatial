@@ -194,7 +194,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistance()
     {
         $point = new Point(1, 2);
-        $query = TestModel::Distance(10, $point, 'point');
+        $query = TestModel::Distance('point', $point, 10);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -205,7 +205,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceExcludingSelf()
     {
         $point = new Point(1, 2);
-        $query = TestModel::Distance(10, $point, 'point', true);
+        $query = TestModel::Distance('point', $point, 10, true);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -217,7 +217,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceSphere()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceSphere(10, $point, 'point');
+        $query = TestModel::DistanceSphere('point', $point, 10);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -228,7 +228,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceSphereExcludingSelf()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceSphere(10, $point, 'point', true);
+        $query = TestModel::DistanceSphere('point', $point, 10, true);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -240,7 +240,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceValue()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceValue($point, 'point');
+        $query = TestModel::DistanceValue('point', $point);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -253,7 +253,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceValueWithSelect()
     {
         $point = new Point(1, 2);
-        $query = TestModel::select('some_column')->distanceValue($point, 'point');
+        $query = TestModel::select('some_column')->distanceValue('point', $point);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -266,7 +266,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceSphereValue()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceSphereValue($point, 'point');
+        $query = TestModel::DistanceSphereValue('point', $point);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -279,7 +279,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceSphereValueWithSelect()
     {
         $point = new Point(1, 2);
-        $query = TestModel::select('some_column')->distanceSphereValue($point, 'point');
+        $query = TestModel::select('some_column')->distanceSphereValue('point', $point);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -300,15 +300,6 @@ class SpatialTraitTest extends BaseTestCase
         $point6 = new Point(1, 1);
         $linestring3 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point5, $point6]);
         return new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2, $linestring3]);
-    }
-
-    public function testScopeBounding()
-    {
-        $query = TestModel::Bounding($this->buildTestPolygon(), 'point');
-        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
-        $q = $query->getQuery();
-        $this->assertNotEmpty($q->wheres);
-        $this->assertContains("st_intersects(ST_GeomFromText('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))'), `point`)", $q->wheres[0]['sql']);
     }
 
     public function testScopeComparison()
