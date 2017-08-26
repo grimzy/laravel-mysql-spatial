@@ -192,20 +192,20 @@ class SpatialTest extends TestCase
         $loc3->location = new Point(3, 3); // Distance from loc1: 2.8284271247462
         $loc3->save();
 
-        $a = GeometryModel::distance(2, $loc1->location, 'location')->get();
+        $a = GeometryModel::distance('location', $loc1->location, 2)->get();
         $this->assertCount(2, $a);
         $this->assertTrue($a->contains('location', $loc1->location));
         $this->assertTrue($a->contains('location', $loc2->location));
         $this->assertFalse($a->contains('location', $loc3->location));
 
         // Excluding self
-        $b = GeometryModel::distance(2, $loc1->location, 'location', true)->get();
+        $b = GeometryModel::distance('location', $loc1->location, 2, true)->get();
         $this->assertCount(1, $b);
         $this->assertFalse($b->contains('location',$loc1->location));
         $this->assertTrue($b->contains('location',$loc2->location));
         $this->assertFalse($b->contains('location',$loc3->location));
 
-        $c = GeometryModel::distance(1, $loc1->location, 'location')->get();
+        $c = GeometryModel::distance('location', $loc1->location, 1)->get();
         $this->assertCount(1, $c);
         $this->assertTrue($c->contains('location', $loc1->location));
         $this->assertFalse($c->contains('location', $loc2->location));
@@ -222,7 +222,7 @@ class SpatialTest extends TestCase
         $loc2->location = new Point(2, 2); // Distance from loc1: 1.4142135623731
         $loc2->save();
 
-        $a = GeometryModel::distanceValue($loc1->location, 'location')->get();
+        $a = GeometryModel::distanceValue('location', $loc1->location)->get();
         $this->assertCount(2, $a);
         $this->assertEquals(0, $a[0]->distance);
         $this->assertEquals(1.4142135623, $a[1]->distance); // PHP floats' 11th+ digits don't matter
