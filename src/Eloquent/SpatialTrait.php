@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 /**
  * Trait SpatialTrait
  *
- * @package Grimzy\LaravelMysqlSpatial\Eloquent
- *
  * @method static distance($geometryColumn, $geometry, $distance)
  * @method static distanceExcludingSelf($geometryColumn, $geometry, $distance)
  * @method static distanceSphere($geometryColumn, $geometry, $distance)

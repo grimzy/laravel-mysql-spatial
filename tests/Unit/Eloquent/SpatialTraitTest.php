@@ -194,7 +194,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistance()
     {
         $point = new Point(1, 2);
-        $query = TestModel::Distance('point', $point, 10);
+        $query = TestModel::distance('point', $point, 10);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -205,7 +205,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceExcludingSelf()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceExcludingSelf('point', $point, 10);
+        $query = TestModel::distanceExcludingSelf('point', $point, 10);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -217,7 +217,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceSphere()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceSphere('point', $point, 10);
+        $query = TestModel::distanceSphere('point', $point, 10);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -228,7 +228,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceSphereExcludingSelf()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceSphereExcludingSelf('point', $point, 10);
+        $query = TestModel::distanceSphereExcludingSelf('point', $point, 10);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -240,7 +240,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceValue()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceValue('point', $point);
+        $query = TestModel::distanceValue('point', $point);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
@@ -266,7 +266,7 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeDistanceSphereValue()
     {
         $point = new Point(1, 2);
-        $query = TestModel::DistanceSphereValue('point', $point);
+        $query = TestModel::distanceSphereValue('point', $point);
 
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
