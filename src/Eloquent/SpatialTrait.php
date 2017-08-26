@@ -8,7 +8,7 @@ use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 /**
- * Trait SpatialTrait
+ * Trait SpatialTrait.
  *
  * @method static distance($geometryColumn, $geometry, $distance)
  * @method static distanceExcludingSelf($geometryColumn, $geometry, $distance)
