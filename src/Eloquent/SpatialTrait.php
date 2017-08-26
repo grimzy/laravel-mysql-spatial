@@ -7,6 +7,25 @@ use Grimzy\LaravelMysqlSpatial\Types\Geometry;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
+/**
+ * Trait SpatialTrait
+ *
+ * @package Grimzy\LaravelMysqlSpatial\Eloquent
+ *
+ * @method static distance($geometryColumn, $geometry, $distance)
+ * @method static distanceExcludingSelf($geometryColumn, $geometry, $distance)
+ * @method static distanceSphere($geometryColumn, $geometry, $distance)
+ * @method static distanceSphereExcludingSelf($geometryColumn, $geometry, $distance)
+ * @method static comparison($geometryColumn, $geometry, $relationship)
+ * @method static within($geometryColumn, $polygon)
+ * @method static crosses($geometryColumn, $geometry)
+ * @method static contains($geometryColumn, $geometry)
+ * @method static disjoint($geometryColumn, $geometry)
+ * @method static equals($geometryColumn, $geometry)
+ * @method static intersects($geometryColumn, $geometry)
+ * @method static overlaps($geometryColumn, $geometry)
+ * @method static touches($geometryColumn, $geometry)
+ */
 trait SpatialTrait
 {
     /*
