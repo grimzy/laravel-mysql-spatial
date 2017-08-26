@@ -114,11 +114,6 @@ trait SpatialTrait
         $query->selectRaw("st_distance_sphere(`{$column_name}`, ST_GeomFromText('{$geometry->toWkt()}')) as distance");
     }
 
-    public function scopeBounding($query, Geometry $bounds, $column_name)
-    {
-        return $query->whereRaw("st_intersects(ST_GeomFromText('{$bounds->toWkt()}'), `{$column_name}`)");
-    }
-
     public function scopeComparison($query, $geometryColumn, $geometry, $relationship)
     {
         $query->whereRaw("st_{$relationship}(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}'))");
