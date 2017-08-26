@@ -72,24 +72,18 @@ trait SpatialTrait
         }
     }
 
-    public function scopeDistance($query, $geometryColumn, $geometry, $distance, $exclude_self = false)
+    public function scopeDistance($query, $geometryColumn, $geometry, $distance)
     {
         $query->whereRaw("st_distance(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
-
-        if ($exclude_self) {
-            $query->whereRaw("st_distance(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) != 0");
-        }
 
         return $query;
     }
 
-    public function scopeDistanceSphere($query, $geometryColumn, $geometry, $distance, $exclude_self = false)
+    public function scopeDistanceExcludingSelf($query, $geometryColumn, $geometry, $distance)
     {
-        $query->whereRaw("st_distance_sphere(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
+        $query = $this->scopeDistance($query, $geometryColumn, $geometry, $distance);
 
-        if ($exclude_self) {
-            $query->whereRaw("st_distance_sphere(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) != 0");
-        }
+        $query->whereRaw("st_distance(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) != 0");
 
         return $query;
     }
@@ -102,6 +96,22 @@ trait SpatialTrait
             $query->select('*');
         }
         $query->selectRaw("st_distance(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) as distance");
+    }
+
+    public function scopeDistanceSphere($query, $geometryColumn, $geometry, $distance)
+    {
+        $query->whereRaw("st_distance_sphere(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
+
+        return $query;
+    }
+
+    public function scopeDistanceSphereExcludingSelf($query, $geometryColumn, $geometry, $distance)
+    {
+        $query = $this->scopeDistanceSphere($query, $geometryColumn, $geometry, $distance);
+
+        $query->whereRaw("st_distance_sphere(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) != 0");
+
+        return $query;
     }
 
     public function scopeDistanceSphereValue($query, $geometryColumn, $geometry)

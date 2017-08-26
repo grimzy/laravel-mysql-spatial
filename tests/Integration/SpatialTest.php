@@ -199,7 +199,7 @@ class SpatialTest extends TestCase
         $this->assertFalse($a->contains('location', $loc3->location));
 
         // Excluding self
-        $b = GeometryModel::distance('location', $loc1->location, 2, true)->get();
+        $b = GeometryModel::distanceExcludingSelf('location', $loc1->location, 2)->get();
         $this->assertCount(1, $b);
         $this->assertFalse($b->contains('location', $loc1->location));
         $this->assertTrue($b->contains('location', $loc2->location));
@@ -233,7 +233,7 @@ class SpatialTest extends TestCase
         $this->assertFalse($a->contains('location', $loc3->location));
 
         // Excluding self
-        $b = GeometryModel::distanceSphere('location', $loc1->location, 200, true)->get();
+        $b = GeometryModel::distanceSphereExcludingSelf('location', $loc1->location, 200)->get();
         $this->assertCount(1, $b);
         $this->assertFalse($b->contains('location', $loc1->location));
         $this->assertTrue($b->contains('location', $loc2->location));
