@@ -8,9 +8,9 @@ use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Foundation\Testing\TestCase;
+use Laravel\BrowserKitTesting\TestCase as BaseTestCase;
 
-class SpatialTest extends TestCase
+class SpatialTest extends BaseTestCase
 {
     /**
      * Boots the application.
