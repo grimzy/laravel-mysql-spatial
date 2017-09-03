@@ -20,7 +20,8 @@
         "mockery/mockery": "^0.9.9",
         "laravel/laravel": "^5.2",
         "codeclimate/php-test-reporter": "dev-master",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "laravel/browser-kit-testing": "^2.0"
     },
     "autoload": {
         "psr-4": {
