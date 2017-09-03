@@ -30,7 +30,7 @@ For MySQL 5.6 and 5.5:
 composer require grimzy/laravel-mysql-spatial:^1.0
 ```
 
-Register the service provider in `config/app.php`:
+For Laravel versions before 5.5 or if not using auto-discovery, register the service provider in `config/app.php`:
 
 ```php
 'providers' => [
