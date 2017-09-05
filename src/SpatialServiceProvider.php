@@ -35,14 +35,14 @@ class SpatialServiceProvider extends DatabaseServiceProvider
         if (class_exists('Doctrine\DBAL\Types\Type')) {
             // Prevent geometry type fields from throwing a 'type not found' error when changing them
             $geometries = [
-                'geometry'           => "Grimzy\LaravelMysqlSpatial\Doctrine\Geometry",
-                'point'              => "Grimzy\LaravelMysqlSpatial\Doctrine\Point",
-                'linestring'         => "Grimzy\LaravelMysqlSpatial\Doctrine\LineString",
-                'polygon'            => "Grimzy\LaravelMysqlSpatial\Doctrine\Polygon",
-                'multipoint'         => "Grimzy\LaravelMysqlSpatial\Doctrine\MultiPoint",
-                'multilinestring'    => "Grimzy\LaravelMysqlSpatial\Doctrine\MultiLineString",
-                'multipolygon'       => "Grimzy\LaravelMysqlSpatial\Doctrine\MultiPolygon",
-                'geometrycollection' => "Grimzy\LaravelMysqlSpatial\Doctrine\GeometryCollection",
+                'geometry'           => \Grimzy\LaravelMysqlSpatial\Doctrine\Geometry::class,
+                'point'              => \Grimzy\LaravelMysqlSpatial\Doctrine\Point::class,
+                'linestring'         => \Grimzy\LaravelMysqlSpatial\Doctrine\LineString::class,
+                'polygon'            => \Grimzy\LaravelMysqlSpatial\Doctrine\Polygon::class,
+                'multipoint'         => \Grimzy\LaravelMysqlSpatial\Doctrine\MultiPoint::class,
+                'multilinestring'    => \Grimzy\LaravelMysqlSpatial\Doctrine\MultiLineString::class,
+                'multipolygon'       => \Grimzy\LaravelMysqlSpatial\Doctrine\MultiPolygon::class,
+                'geometrycollection' => \Grimzy\LaravelMysqlSpatial\Doctrine\GeometryCollection::class,
             ];
             $typeNames = array_keys(\Doctrine\DBAL\Types\Type::getTypesMap());
             foreach ($geometries as $type => $class) {
