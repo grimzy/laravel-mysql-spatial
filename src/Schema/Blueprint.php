@@ -2,7 +2,9 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Schema;
 
-class Blueprint extends \Illuminate\Database\Schema\Blueprint
+use Illuminate\Database\Schema\Blueprint as IlluminateBlueprint;
+
+class Blueprint extends IlluminateBlueprint
 {
     /**
      * Add a geometry column on the table.

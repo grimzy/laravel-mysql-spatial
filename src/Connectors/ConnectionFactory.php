@@ -3,9 +3,10 @@
 namespace Grimzy\LaravelMysqlSpatial\Connectors;
 
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
+use Illuminate\Database\Connectors\ConnectionFactory as IlluminateConnectionFactory;
 use PDO;
 
-class ConnectionFactory extends \Illuminate\Database\Connectors\ConnectionFactory
+class ConnectionFactory extends IlluminateConnectionFactory
 {
     /**
      * @param string       $driver
