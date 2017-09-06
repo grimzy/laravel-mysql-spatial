@@ -3,9 +3,10 @@
 namespace Grimzy\LaravelMysqlSpatial\Schema\Grammars;
 
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+use Illuminate\Database\Schema\Grammars\MySqlGrammar as IlluminateMySqlGrammar;
 use Illuminate\Support\Fluent;
 
-class MySqlGrammar extends \Illuminate\Database\Schema\Grammars\MySqlGrammar
+class MySqlGrammar extends IlluminateMySqlGrammar
 {
     /**
      * Adds a statement to add a geometry column.
