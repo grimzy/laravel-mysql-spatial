@@ -87,7 +87,7 @@ class SpatialTest extends BaseTestCase
         $geo->geometry = new Point(1, 2);
         $geo->save();
 
-        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException::class);
+        $this->expectException(\Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException::class);
         NoSpatialFieldsModel::all();
     }
 

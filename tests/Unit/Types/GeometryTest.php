@@ -1,5 +1,6 @@
 <?php
 
+use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownWKTTypeException;
 use Grimzy\LaravelMysqlSpatial\Types\Geometry;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
@@ -73,6 +74,8 @@ class GeometryTest extends BaseTestCase
             GeometryCollection::class,
             Geometry::getWKTClass('GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))')
         );
+        $this->expectException(UnknownWKTTypeException::class);
+        Geometry::getWKTClass('TRIANGLE((0 0, 0 9, 9 0, 0 0))');
     }
 
     public function testGetWKBClass()
