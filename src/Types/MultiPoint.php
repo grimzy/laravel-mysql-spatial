@@ -21,10 +21,6 @@ class MultiPoint extends PointCollection implements GeometryInterface, \JsonSeri
         $matches = [];
         preg_match_all('/\(\s*(\d+\s+\d+)\s*\)/', trim($wktArgument), $matches);
 
-        if (count($matches) < 2) {
-            return new static([]);
-        }
-
         $points = array_map(function ($pair) {
             return Point::fromPair($pair);
         }, $matches[1]);

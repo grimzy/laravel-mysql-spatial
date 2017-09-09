@@ -26,7 +26,7 @@ class MultiLineString extends Geometry implements Countable
         });
 
         if (count($linestrings) !== count($validated)) {
-            throw new InvalidArgumentException('$linestrings must be an array of Points');
+            throw new InvalidArgumentException('$linestrings must be an array of LineString');
         }
 
         $this->linestrings = $linestrings;
