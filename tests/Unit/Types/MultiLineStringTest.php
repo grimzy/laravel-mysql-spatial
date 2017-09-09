@@ -41,4 +41,17 @@ class MultiLineStringTest extends BaseTestCase
             json_encode($multilinestring)
         );
     }
+
+    public function testInvalidArgumentExceptionAtLeastOneEntry() {
+        $this->expectException(InvalidArgumentException::class);
+        $multilinestring = new MultiLineString([]);
+    }
+
+    public function testInvalidArgumentExceptionNotArrayOfLineString() {
+        $this->expectException(InvalidArgumentException::class);
+        $multilinestring = new MultiLineString([
+            new LineString([new Point(0, 0), new Point(1, 1)]),
+            new Point(0,1)
+        ]);
+    }
 }
