@@ -117,5 +117,12 @@ class GeometryTest extends BaseTestCase
             GeometryCollection::class,
             Geometry::fromWKB('0107000000020000000101000000000000000000f03f0000000000000040010200000002000000000000000000f03f000000000000004000000000000008400000000000001040')
         );
+
+        $prefix = "\0\0\0\0";
+        $this->assertInstanceOf(
+            Point::class,
+            Geometry::fromWKB($prefix . '0101000000000000000000f03f0000000000000040')
+        );
+
     }
 }
