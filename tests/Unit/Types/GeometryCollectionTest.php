@@ -21,50 +21,43 @@ class GeometryCollectionTest extends BaseTestCase
 
     public function testToWKT()
     {
-        $this->assertEquals(
-            'GEOMETRYCOLLECTION(LINESTRING(0 0,1 0,1 1,0 1,0 0),POINT(200 100))',
-            $this->getGeometryCollection()->toWKT()
-        );
+        $this->assertEquals('GEOMETRYCOLLECTION(LINESTRING(0 0,1 0,1 1,0 1,0 0),POINT(200 100))', $this->getGeometryCollection()->toWKT());
     }
 
     public function testJsonSerialize()
     {
-        $this->assertInstanceOf(
-            \GeoJson\Geometry\GeometryCollection::class,
-            $this->getGeometryCollection()->jsonSerialize()
-        );
+        $this->assertInstanceOf(\GeoJson\Geometry\GeometryCollection::class, $this->getGeometryCollection()->jsonSerialize());
 
-        $this->assertSame(
-            '{"type":"GeometryCollection","geometries":[{"type":"LineString","coordinates":[[0,0],[1,0],[1,1],[0,1],[0,0]]},{"type":"Point","coordinates":[200,100]}]}',
-            json_encode($this->getGeometryCollection()->jsonSerialize())
-        );
+        $this->assertSame('{"type":"GeometryCollection","geometries":[{"type":"LineString","coordinates":[[0,0],[1,0],[1,1],[0,1],[0,0]]},{"type":"Point","coordinates":[200,100]}]}', json_encode($this->getGeometryCollection()->jsonSerialize()));
     }
 
-    public function testInvalidArgumentExceptionNotArrayGeometries() {
+    public function testInvalidArgumentExceptionNotArrayGeometries()
+    {
         $this->assertException(InvalidArgumentException::class);
         $geometrycollection = new GeometryCollection([
             $this->getPoint(),
-            1
+            1,
         ]);
     }
 
-    private function getGeometryCollection() {
+    private function getGeometryCollection()
+    {
         return new GeometryCollection([$this->getLineString(), $this->getPoint()]);
     }
 
-    private function getLineString() {
-        return new LineString(
-            [
+    private function getLineString()
+    {
+        return new LineString([
                 new Point(0, 0),
                 new Point(0, 1),
                 new Point(1, 1),
                 new Point(1, 0),
                 new Point(0, 0),
-            ]
-        );
+            ]);
     }
 
-    private function getPoint() {
+    private function getPoint()
+    {
         return new Point(100, 200);
     }
 }
