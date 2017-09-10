@@ -36,15 +36,17 @@ class MultiPointTest extends BaseTestCase
         $this->assertInstanceOf(Point::class, $multipoint->toArray()[0]);
     }
 
-    public function testIteratorAggregate() {
+    public function testIteratorAggregate()
+    {
         $multipoint = MultiPoint::fromWKT('MULTIPOINT((0 0),(1 0),(1 1))');
 
-        foreach($multipoint as $value) {
+        foreach ($multipoint as $value) {
             $this->assertInstanceOf(Point::class, $value);
         }
     }
 
-    public function testArrayAccess() {
+    public function testArrayAccess()
+    {
         $point0 = new Point(0, 0);
         $point1 = new Point(1, 1);
         $multipoint = new MultiPoint([$point0, $point1]);
@@ -67,10 +69,10 @@ class MultiPointTest extends BaseTestCase
 
         $this->assertException(InvalidArgumentException::class);
         $multipoint[] = 1;
-
     }
 
-    public function testPrependPoint() {
+    public function testPrependPoint()
+    {
         $point1 = new Point(1, 1);
         $point2 = new Point(2, 2);
         $multipoint = new MultiPoint([$point1, $point2]);
@@ -83,7 +85,8 @@ class MultiPointTest extends BaseTestCase
         $this->assertEquals($point2, $multipoint->getPoints()[2]);
     }
 
-    public function testAppendPoint() {
+    public function testAppendPoint()
+    {
         $point0 = new Point(0, 0);
         $point1 = new Point(1, 1);
         $multipoint = new MultiPoint([$point0, $point1]);
@@ -96,7 +99,8 @@ class MultiPointTest extends BaseTestCase
         $this->assertEquals($point2, $multipoint->getPoints()[2]);
     }
 
-    public function testInsertPoint() {
+    public function testInsertPoint()
+    {
         $point1 = new Point(1, 1);
         $point3 = new Point(3, 3);
         $multipoint = new MultiPoint([$point1, $point3]);
@@ -109,7 +113,7 @@ class MultiPointTest extends BaseTestCase
         $this->assertEquals($point3, $multipoint->getPoints()[2]);
 
         $this->assertException(InvalidArgumentException::class);
-        $multipoint->insertPoint(100, new Point(100,100));
+        $multipoint->insertPoint(100, new Point(100, 100));
     }
 
     public function testJsonSerialize()
@@ -122,16 +126,18 @@ class MultiPointTest extends BaseTestCase
         $this->assertSame('{"type":"MultiPoint","coordinates":[[0,0],[1,0],[1,1]]}', json_encode($multipoint));
     }
 
-    public function testInvalidArgumentExceptionAtLeastOneEntry() {
+    public function testInvalidArgumentExceptionAtLeastOneEntry()
+    {
         $this->assertException(InvalidArgumentException::class);
         $multipoint = new MultiPoint([]);
     }
 
-    public function testInvalidArgumentExceptionNotArrayOfLineString() {
+    public function testInvalidArgumentExceptionNotArrayOfLineString()
+    {
         $this->assertException(InvalidArgumentException::class);
         $multipoint = new MultiPoint([
             new Point(0, 0),
-            1
+            1,
         ]);
     }
 }
