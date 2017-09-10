@@ -22,7 +22,7 @@ class MultiPolygon extends Geometry implements Countable
         });
 
         if (count($polygons) !== count($validated)) {
-            throw new InvalidArgumentException('$polygons must be an array of Points');
+            throw new InvalidArgumentException('$polygons must be an array of Polygon');
         }
         $this->polygons = $polygons;
     }

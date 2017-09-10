@@ -21,6 +21,7 @@ class UpdateLocationTable extends Migration
             $table->point('location')->change();
 
             // The other field changes are just here to test if change works with them, we're not changing anything
+            $table->geometry('geo')->default(null)->nullable()->change();
             $table->lineString('line')->default(null)->nullable()->change();
             $table->polygon('shape')->default(null)->nullable()->change();
             $table->multiPoint('multi_locations')->default(null)->nullable()->change();

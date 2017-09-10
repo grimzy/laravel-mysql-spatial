@@ -65,6 +65,15 @@ class SpatialTest extends BaseTestCase
         }
     }
 
+    protected function assertException($exceptionName)
+    {
+        if (method_exists(parent::class, 'expectException')) {
+            parent::expectException($exceptionName);
+        } else {
+            $this->setExpectedException($exceptionName);
+        }
+    }
+
     private function onMigrations(\Closure $closure, $reverse_sort = false)
     {
         $fileSystem = new Filesystem();
@@ -87,7 +96,7 @@ class SpatialTest extends BaseTestCase
         $geo->geometry = new Point(1, 2);
         $geo->save();
 
-        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException::class);
+        $this->assertException(\Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException::class);
         NoSpatialFieldsModel::all();
     }
 
