@@ -65,11 +65,11 @@ class SpatialTest extends BaseTestCase
         }
     }
 
-    protected function assertException($exceptionName) {
-        if(method_exists(parent::class, 'expectException')) {
+    protected function assertException($exceptionName)
+    {
+        if (method_exists(parent::class, 'expectException')) {
             parent::expectException($exceptionName);
-        }
-        else {
+        } else {
             $this->setExpectedException($exceptionName);
         }
     }
