@@ -65,7 +65,7 @@ class MultiPointTest extends BaseTestCase
         $multipoint[100] = $point100;
         $this->assertEquals($point100, $multipoint[100]);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->assertException(InvalidArgumentException::class);
         $multipoint[] = 1;
 
     }
@@ -108,7 +108,7 @@ class MultiPointTest extends BaseTestCase
         $this->assertEquals($point2, $multipoint->getPoints()[1]);
         $this->assertEquals($point3, $multipoint->getPoints()[2]);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->assertException(InvalidArgumentException::class);
         $multipoint->insertPoint(100, new Point(100,100));
     }
 
@@ -123,12 +123,12 @@ class MultiPointTest extends BaseTestCase
     }
 
     public function testInvalidArgumentExceptionAtLeastOneEntry() {
-        $this->expectException(InvalidArgumentException::class);
+        $this->assertException(InvalidArgumentException::class);
         $multipoint = new MultiPoint([]);
     }
 
     public function testInvalidArgumentExceptionNotArrayOfLineString() {
-        $this->expectException(InvalidArgumentException::class);
+        $this->assertException(InvalidArgumentException::class);
         $multipoint = new MultiPoint([
             new Point(0, 0),
             1
