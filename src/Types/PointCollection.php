@@ -67,7 +67,7 @@ abstract class PointCollection implements IteratorAggregate, Arrayable, ArrayAcc
             throw new InvalidArgumentException('$index is greater than the size of the array');
         }
 
-        array_splice($this->points, $offset, 0, [$point]);
+        array_splice($this->points, $index, 0, [$point]);
     }
 
     public function offsetExists($offset)
