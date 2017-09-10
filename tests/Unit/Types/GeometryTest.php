@@ -74,7 +74,7 @@ class GeometryTest extends BaseTestCase
             GeometryCollection::class,
             Geometry::getWKTClass('GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))')
         );
-        $this->expectException(UnknownWKTTypeException::class);
+        $this->assertException(UnknownWKTTypeException::class);
         Geometry::getWKTClass('TRIANGLE((0 0, 0 9, 9 0, 0 0))');
     }
 

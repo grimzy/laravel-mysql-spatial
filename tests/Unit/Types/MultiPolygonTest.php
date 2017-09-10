@@ -53,7 +53,7 @@ class MultiPolygonTest extends BaseTestCase
     }
 
     public function testInvalidArgumentExceptionNotArrayOfLineString() {
-        $this->expectException(InvalidArgumentException::class);
+        $this->assertException(InvalidArgumentException::class);
         $multipolygon = new MultiPolygon([
             $this->getPolygon1(),
             $this->getLineString1()

@@ -41,7 +41,7 @@ class GeometryCollectionTest extends BaseTestCase
     }
 
     public function testInvalidArgumentExceptionNotArrayGeometries() {
-        $this->expectException(InvalidArgumentException::class);
+        $this->assertException(InvalidArgumentException::class);
         $geometrycollection = new GeometryCollection([
             $this->getPoint(),
             1
