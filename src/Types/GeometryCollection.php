@@ -2,15 +2,21 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
+use ArrayAccess;
+use ArrayIterator;
 use Countable;
+use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
+use IteratorAggregate;
 
-class GeometryCollection extends Geometry implements Countable
+class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAccess, Arrayable, Countable
 {
     /**
+     * The items contained in the spatial collection.
+     *
      * @var GeometryInterface[]
      */
-    protected $geometries = [];
+    protected $items = [];
 
     /**
      * @param GeometryInterface[] $geometries
@@ -27,12 +33,12 @@ class GeometryCollection extends Geometry implements Countable
             throw new InvalidArgumentException('$geometries must be an array of Geometry objects');
         }
 
-        $this->geometries = $geometries;
+        $this->items = $geometries;
     }
 
     public function getGeometries()
     {
-        return $this->geometries;
+        return $this->items;
     }
 
     public function toWKT()
@@ -44,7 +50,7 @@ class GeometryCollection extends Geometry implements Countable
     {
         return implode(',', array_map(function (GeometryInterface $geometry) {
             return $geometry->toWKT();
-        }, $this->geometries));
+        }, $this->items));
     }
 
     public static function fromString($wktArgument)
@@ -58,9 +64,52 @@ class GeometryCollection extends Geometry implements Countable
         }, $geometry_strings));
     }
 
+    public function toArray()
+    {
+        return $this->items;
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->items);
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->items[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->offsetExists($offset) ? $this->items[$offset] : null;
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        if (! ($value instanceof GeometryInterface)) {
+            throw new InvalidArgumentException('$value must be an instance of GeometryInterface');
+        }
+
+        if (is_null($offset)) {
+            $this->items[] = $value;
+        } else {
+            $this->items[$offset] = $value;
+        }
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->items[$offset]);
+    }
+
     public function count()
     {
-        return count($this->geometries);
+        return count($this->items);
+    }
+
+    public function toJson($options = 0)
+    {
+        return json_encode($this, $options);
     }
 
     /**
@@ -71,7 +120,7 @@ class GeometryCollection extends Geometry implements Countable
     public function jsonSerialize()
     {
         $geometries = [];
-        foreach ($this->geometries as $geometry) {
+        foreach ($this->items as $geometry) {
             $geometries[] = $geometry->jsonSerialize();
         }
 
