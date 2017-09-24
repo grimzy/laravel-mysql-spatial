@@ -2,7 +2,7 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
-class LineString extends PointCollection implements GeometryInterface
+class LineString extends PointCollection
 {
     public function toWKT()
     {
@@ -39,7 +39,7 @@ class LineString extends PointCollection implements GeometryInterface
     public function jsonSerialize()
     {
         $points = [];
-        foreach ($this->points as $point) {
+        foreach ($this->items as $point) {
             $points[] = $point->jsonSerialize();
         }
 

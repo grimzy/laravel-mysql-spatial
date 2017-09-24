@@ -2,7 +2,7 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
-class MultiPoint extends PointCollection implements GeometryInterface, \JsonSerializable
+class MultiPoint extends PointCollection
 {
     public function toWKT()
     {
@@ -32,7 +32,7 @@ class MultiPoint extends PointCollection implements GeometryInterface, \JsonSeri
     {
         return implode(',', array_map(function (Point $point) {
             return sprintf('(%s)', $point->toPair());
-        }, $this->points));
+        }, $this->items));
     }
 
     /**
@@ -43,7 +43,7 @@ class MultiPoint extends PointCollection implements GeometryInterface, \JsonSeri
     public function jsonSerialize()
     {
         $points = [];
-        foreach ($this->points as $point) {
+        foreach ($this->items as $point) {
             $points[] = $point->jsonSerialize();
         }
 
