@@ -107,11 +107,6 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         return count($this->items);
     }
 
-    public function toJson($options = 0)
-    {
-        return json_encode($this, $options);
-    }
-
     /**
      * Convert to GeoJson GeometryCollection that is jsonable to GeoJSON.
      *
