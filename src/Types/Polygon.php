@@ -16,11 +16,11 @@ class Polygon extends MultiLineString
      */
     public function jsonSerialize()
     {
-        $linearrings = [];
-        foreach ($this->items as $linestring) {
-            $linearrings[] = new \GeoJson\Geometry\LinearRing($linestring->jsonSerialize()->getCoordinates());
+        $linearRings = [];
+        foreach ($this->items as $lineString) {
+            $linearRings[] = new \GeoJson\Geometry\LinearRing($lineString->jsonSerialize()->getCoordinates());
         }
 
-        return new \GeoJson\Geometry\Polygon($linearrings);
+        return new \GeoJson\Geometry\Polygon($linearRings);
     }
 }
