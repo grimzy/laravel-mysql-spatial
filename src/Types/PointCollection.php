@@ -36,7 +36,7 @@ abstract class PointCollection extends GeometryCollection
 
     public function offsetSet($offset, $value)
     {
-        if (! ($value instanceof Point)) {
+        if (!($value instanceof Point)) {
             throw new InvalidArgumentException('$value must be an instance of Point');
         }
 
@@ -55,7 +55,6 @@ abstract class PointCollection extends GeometryCollection
      * @param \Grimzy\LaravelMysqlSpatial\Types\Point $point
      *
      * @deprecated 2.1.0 Use array_unshift($multipoint, $point); instead
-     *
      * @see array_unshift
      * @see ArrayAccess
      */
@@ -68,7 +67,6 @@ abstract class PointCollection extends GeometryCollection
      * @param \Grimzy\LaravelMysqlSpatial\Types\Point $point
      *
      * @deprecated 2.1.0 Use $multipoint[] = $point; instead
-     *
      * @see ArrayAccess
      */
     public function appendPoint(Point $point)
@@ -81,7 +79,6 @@ abstract class PointCollection extends GeometryCollection
      * @param \Grimzy\LaravelMysqlSpatial\Types\Point $point
      *
      * @deprecated 2.1.0 Use array_splice($multipoint, $index, 0, [$point]); instead
-     *
      * @see array_splice
      * @see ArrayAccess
      */

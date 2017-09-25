@@ -55,7 +55,7 @@ class MultiLineString extends GeometryCollection
 
     public function offsetSet($offset, $value)
     {
-        if (! ($value instanceof LineString)) {
+        if (!($value instanceof LineString)) {
             throw new InvalidArgumentException('$value must be an instance of LineString');
         }
 
