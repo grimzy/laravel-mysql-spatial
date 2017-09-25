@@ -86,7 +86,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
 
     public function offsetSet($offset, $value)
     {
-        if (! ($value instanceof GeometryInterface)) {
+        if (!($value instanceof GeometryInterface)) {
             throw new InvalidArgumentException('$value must be an instance of GeometryInterface');
         }
 

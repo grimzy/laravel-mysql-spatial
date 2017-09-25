@@ -90,7 +90,7 @@ class MultiPolygon extends GeometryCollection
 
     public function offsetSet($offset, $value)
     {
-        if (! ($value instanceof Polygon)) {
+        if (!($value instanceof Polygon)) {
             throw new InvalidArgumentException('$value must be an instance of Polygon');
         }
 
