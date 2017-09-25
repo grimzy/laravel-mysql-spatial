@@ -7,23 +7,23 @@ use InvalidArgumentException;
 class MultiLineString extends GeometryCollection
 {
     /**
-     * @param LineString[] $linestrings
+     * @param LineString[] $lineStrings
      */
-    public function __construct(array $linestrings)
+    public function __construct(array $lineStrings)
     {
-        if (count($linestrings) < 1) {
-            throw new InvalidArgumentException('$linestrings must contain at least one entry');
+        if (count($lineStrings) < 1) {
+            throw new InvalidArgumentException('$lineStrings must contain at least one entry');
         }
 
-        $validated = array_filter($linestrings, function ($value) {
+        $validated = array_filter($lineStrings, function ($value) {
             return $value instanceof LineString;
         });
 
-        if (count($linestrings) !== count($validated)) {
-            throw new InvalidArgumentException('$linestrings must be an array of LineString');
+        if (count($lineStrings) !== count($validated)) {
+            throw new InvalidArgumentException('$lineStrings must be an array of LineString');
         }
 
-        parent::__construct($linestrings);
+        parent::__construct($lineStrings);
     }
 
     public function getLineStrings()
@@ -39,17 +39,17 @@ class MultiLineString extends GeometryCollection
     public static function fromString($wktArgument)
     {
         $str = preg_split('/\)\s*,\s*\(/', substr(trim($wktArgument), 1, -1));
-        $linestrings = array_map(function ($data) {
+        $lineStrings = array_map(function ($data) {
             return LineString::fromString($data);
         }, $str);
 
-        return new static($linestrings);
+        return new static($lineStrings);
     }
 
     public function __toString()
     {
-        return implode(',', array_map(function (LineString $linestring) {
-            return sprintf('(%s)', (string) $linestring);
+        return implode(',', array_map(function (LineString $lineString) {
+            return sprintf('(%s)', (string) $lineString);
         }, $this->getLineStrings()));
     }
 
@@ -69,12 +69,12 @@ class MultiLineString extends GeometryCollection
      */
     public function jsonSerialize()
     {
-        $linestrings = [];
+        $lineStrings = [];
 
-        foreach ($this->items as $linestring) {
-            $linestrings[] = $linestring->jsonSerialize();
+        foreach ($this->items as $lineString) {
+            $lineStrings[] = $lineString->jsonSerialize();
         }
 
-        return new \GeoJson\Geometry\MultiLineString($linestrings);
+        return new \GeoJson\Geometry\MultiLineString($lineStrings);
     }
 }
