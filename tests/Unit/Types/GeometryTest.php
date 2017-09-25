@@ -52,4 +52,11 @@ class GeometryTest extends BaseTestCase
         $prefix = "\0\0\0\0";
         $this->assertInstanceOf(Point::class, Geometry::fromWKB($prefix.'0101000000000000000000f03f0000000000000040'));
     }
+
+    public function testToJson()
+    {
+        $point = new Point(1, 1);
+
+        $this->assertSame('{"type":"Point","coordinates":[1,1]}', $point->toJson());
+    }
 }
