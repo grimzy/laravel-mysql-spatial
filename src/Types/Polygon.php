@@ -2,9 +2,7 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
-use Countable;
-
-class Polygon extends MultiLineString implements Countable
+class Polygon extends MultiLineString
 {
     public function toWKT()
     {
@@ -19,7 +17,7 @@ class Polygon extends MultiLineString implements Countable
     public function jsonSerialize()
     {
         $linearrings = [];
-        foreach ($this->linestrings as $linestring) {
+        foreach ($this->items as $linestring) {
             $linearrings[] = new \GeoJson\Geometry\LinearRing($linestring->jsonSerialize()->getCoordinates());
         }
 

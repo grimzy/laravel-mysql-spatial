@@ -1,8 +1,10 @@
 <?php
 
 use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
+use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 
 class GeometryCollectionTest extends BaseTestCase
 {
@@ -40,6 +42,53 @@ class GeometryCollectionTest extends BaseTestCase
         ]);
     }
 
+    public function testToArray()
+    {
+        $geometryCollection = $this->getGeometryCollection();
+
+        $this->assertInternalType('array', $geometryCollection->toArray());
+    }
+
+    public function testIteratorAggregate()
+    {
+        $geometryCollection = $this->getGeometryCollection();
+
+        foreach ($geometryCollection as $value) {
+            $this->assertInstanceOf(GeometryInterface::class, $value);
+        }
+    }
+
+    public function testArrayAccess()
+    {
+        $linestring = $this->getLineString();
+        $point = $this->getPoint();
+        $geometryCollection = new GeometryCollection([$linestring, $point]);
+
+        // assert getting
+        $this->assertEquals($linestring, $geometryCollection[0]);
+        $this->assertEquals($point, $geometryCollection[1]);
+
+        // assert setting
+        $polygon = $this->getPolygon();
+        $geometryCollection[] = $polygon;
+        $this->assertEquals($polygon, $geometryCollection[2]);
+
+        // assert unset
+        unset($geometryCollection[0]);
+        $this->assertNull($geometryCollection[0]);
+        $this->assertEquals($point, $geometryCollection[1]);
+        $this->assertEquals($polygon, $geometryCollection[2]);
+
+        // assert insert
+        $point100 = new Point(100, 100);
+        $geometryCollection[100] = $point100;
+        $this->assertEquals($point100, $geometryCollection[100]);
+
+        // assert invalid
+        $this->assertException(InvalidArgumentException::class);
+        $geometryCollection[] = 1;
+    }
+
     private function getGeometryCollection()
     {
         return new GeometryCollection([$this->getLineString(), $this->getPoint()]);
@@ -48,16 +97,29 @@ class GeometryCollectionTest extends BaseTestCase
     private function getLineString()
     {
         return new LineString([
-                new Point(0, 0),
-                new Point(0, 1),
-                new Point(1, 1),
-                new Point(1, 0),
-                new Point(0, 0),
-            ]);
+            new Point(0, 0),
+            new Point(0, 1),
+            new Point(1, 1),
+            new Point(1, 0),
+            new Point(0, 0),
+        ]);
     }
 
     private function getPoint()
     {
         return new Point(100, 200);
+    }
+
+    private function getPolygon()
+    {
+        return new Polygon([
+            new LineString([
+                new Point(0, 0),
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(0, 0),
+            ]),
+        ]);
     }
 }

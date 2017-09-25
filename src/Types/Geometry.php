@@ -4,8 +4,9 @@ namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use GeoIO\WKB\Parser\Parser;
 use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownWKTTypeException;
+use Illuminate\Contracts\Support\Jsonable;
 
-abstract class Geometry implements GeometryInterface, \JsonSerializable
+abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializable
 {
     protected static $wkb_types = [
         1 => Point::class,
@@ -68,5 +69,10 @@ abstract class Geometry implements GeometryInterface, \JsonSerializable
         $wktArgument = static::getWKTArgument($wkt);
 
         return static::fromString($wktArgument);
+    }
+
+    public function toJson($options = 0)
+    {
+        return json_encode($this, $options);
     }
 }

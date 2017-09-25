@@ -2,16 +2,10 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
-use Countable;
 use InvalidArgumentException;
 
-class MultiPolygon extends Geometry implements Countable
+class MultiPolygon extends GeometryCollection
 {
-    /**
-     * @var Polygon[]
-     */
-    protected $polygons;
-
     /**
      * @param Polygon[] $polygons
      */
@@ -24,7 +18,7 @@ class MultiPolygon extends Geometry implements Countable
         if (count($polygons) !== count($validated)) {
             throw new InvalidArgumentException('$polygons must be an array of Polygon');
         }
-        $this->polygons = $polygons;
+        parent::__construct($polygons);
     }
 
     public function toWKT()
@@ -36,7 +30,7 @@ class MultiPolygon extends Geometry implements Countable
     {
         return implode(',', array_map(function (Polygon $polygon) {
             return sprintf('(%s)', (string) $polygon);
-        }, $this->polygons));
+        }, $this->items));
     }
 
     public static function fromString($wktArgument)
@@ -50,29 +44,13 @@ class MultiPolygon extends Geometry implements Countable
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Count elements of an object.
-     *
-     * @link http://php.net/manual/en/countable.count.php
-     *
-     * @return int The custom count as an integer.
-     *             </p>
-     *             <p>
-     *             The return value is cast to an integer.
-     */
-    public function count()
-    {
-        return count($this->polygons);
-    }
-
-    /**
      * Get the polygons that make up this MultiPolygon.
      *
      * @return array|Polygon[]
      */
     public function getPolygons()
     {
-        return $this->polygons;
+        return $this->items;
     }
 
     /**
@@ -110,6 +88,15 @@ class MultiPolygon extends Geometry implements Countable
         return $polygons;
     }
 
+    public function offsetSet($offset, $value)
+    {
+        if (!($value instanceof Polygon)) {
+            throw new InvalidArgumentException('$value must be an instance of Polygon');
+        }
+
+        parent::offsetSet($offset, $value);
+    }
+
     /**
      * Convert to GeoJson MultiPolygon that is jsonable to GeoJSON.
      *
@@ -118,7 +105,7 @@ class MultiPolygon extends Geometry implements Countable
     public function jsonSerialize()
     {
         $polygons = [];
-        foreach ($this->polygons as $polygon) {
+        foreach ($this->items as $polygon) {
             $polygons[] = $polygon->jsonSerialize();
         }
 

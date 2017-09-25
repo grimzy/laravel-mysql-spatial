@@ -3,20 +3,10 @@
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use ArrayAccess;
-use ArrayIterator;
-use Countable;
-use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
-use IteratorAggregate;
-use JsonSerializable;
 
-abstract class PointCollection implements IteratorAggregate, Arrayable, ArrayAccess, Countable, JsonSerializable
+abstract class PointCollection extends GeometryCollection
 {
-    /**
-     * @var Point[]
-     */
-    protected $points;
-
     /**
      * @param Point[] $points
      */
@@ -33,56 +23,15 @@ abstract class PointCollection implements IteratorAggregate, Arrayable, ArrayAcc
         if (count($points) !== count($validated)) {
             throw new InvalidArgumentException('$points must be an array of Points');
         }
-        $this->points = $points;
+
+        parent::__construct($points);
     }
 
-    public function getPoints()
+    public function toPairList()
     {
-        return $this->points;
-    }
-
-    public function toArray()
-    {
-        return $this->points;
-    }
-
-    public function getIterator()
-    {
-        return new ArrayIterator($this->points);
-    }
-
-    public function prependPoint(Point $point)
-    {
-        array_unshift($this->points, $point);
-    }
-
-    public function appendPoint(Point $point)
-    {
-        $this->points[] = $point;
-    }
-
-    public function insertPoint($index, Point $point)
-    {
-        if (count($this->points) - 1 < $index) {
-            throw new InvalidArgumentException('$index is greater than the size of the array');
-        }
-
-        array_splice($this->points, $index, 0, [$point]);
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->points[$offset]);
-    }
-
-    /**
-     * @param mixed $offset
-     *
-     * @return null|Point
-     */
-    public function offsetGet($offset)
-    {
-        return $this->offsetExists($offset) ? $this->points[$offset] : null;
+        return implode(',', array_map(function (Point $point) {
+            return $point->toPair();
+        }, $this->items));
     }
 
     public function offsetSet($offset, $value)
@@ -91,27 +40,54 @@ abstract class PointCollection implements IteratorAggregate, Arrayable, ArrayAcc
             throw new InvalidArgumentException('$value must be an instance of Point');
         }
 
-        if (is_null($offset)) {
-            $this->appendPoint($value);
-        } else {
-            $this->points[$offset] = $value;
+        parent::offsetSet($offset, $value);
+    }
+
+    /**
+     * @return array|\Grimzy\LaravelMysqlSpatial\Types\Point[]
+     */
+    public function getPoints()
+    {
+        return $this->items;
+    }
+
+    /**
+     * @param \Grimzy\LaravelMysqlSpatial\Types\Point $point
+     *
+     * @deprecated 2.1.0 Use array_unshift($multipoint, $point); instead
+     * @see array_unshift
+     * @see ArrayAccess
+     */
+    public function prependPoint(Point $point)
+    {
+        array_unshift($this->items, $point);
+    }
+
+    /**
+     * @param \Grimzy\LaravelMysqlSpatial\Types\Point $point
+     *
+     * @deprecated 2.1.0 Use $multipoint[] = $point; instead
+     * @see ArrayAccess
+     */
+    public function appendPoint(Point $point)
+    {
+        $this->items[] = $point;
+    }
+
+    /**
+     * @param $index
+     * @param \Grimzy\LaravelMysqlSpatial\Types\Point $point
+     *
+     * @deprecated 2.1.0 Use array_splice($multipoint, $index, 0, [$point]); instead
+     * @see array_splice
+     * @see ArrayAccess
+     */
+    public function insertPoint($index, Point $point)
+    {
+        if (count($this->items) - 1 < $index) {
+            throw new InvalidArgumentException('$index is greater than the size of the array');
         }
-    }
 
-    public function offsetUnset($offset)
-    {
-        unset($this->points[$offset]);
-    }
-
-    public function count()
-    {
-        return count($this->points);
-    }
-
-    public function toPairList()
-    {
-        return implode(',', array_map(function (Point $point) {
-            return $point->toPair();
-        }, $this->points));
+        array_splice($this->items, $index, 0, [$point]);
     }
 }

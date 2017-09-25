@@ -2,16 +2,10 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
-use Countable;
 use InvalidArgumentException;
 
-class MultiLineString extends Geometry implements Countable
+class MultiLineString extends GeometryCollection
 {
-    /**
-     * @var LineString[]
-     */
-    protected $linestrings = [];
-
     /**
      * @param LineString[] $linestrings
      */
@@ -29,12 +23,12 @@ class MultiLineString extends Geometry implements Countable
             throw new InvalidArgumentException('$linestrings must be an array of LineString');
         }
 
-        $this->linestrings = $linestrings;
+        parent::__construct($linestrings);
     }
 
     public function getLineStrings()
     {
-        return $this->linestrings;
+        return $this->items;
     }
 
     public function toWKT()
@@ -59,9 +53,13 @@ class MultiLineString extends Geometry implements Countable
         }, $this->getLineStrings()));
     }
 
-    public function count()
+    public function offsetSet($offset, $value)
     {
-        return count($this->linestrings);
+        if (!($value instanceof LineString)) {
+            throw new InvalidArgumentException('$value must be an instance of LineString');
+        }
+
+        parent::offsetSet($offset, $value);
     }
 
     /**
@@ -73,7 +71,7 @@ class MultiLineString extends Geometry implements Countable
     {
         $linestrings = [];
 
-        foreach ($this->linestrings as $linestring) {
+        foreach ($this->items as $linestring) {
             $linestrings[] = $linestring->jsonSerialize();
         }
 
