@@ -49,6 +49,27 @@ class MultiPolygonTest extends BaseTestCase
         ]);
     }
 
+    public function testArrayAccess()
+    {
+        $polygon0 = $this->getPolygon1();
+        $polygon1 = $this->getPolygon2();
+
+        $multipolygon = new MultiPolygon([$polygon0, $polygon1]);
+
+        // assert getting
+        $this->assertEquals($polygon0, $multipolygon[0]);
+        $this->assertEquals($polygon1, $multipolygon[1]);
+
+        // assert setting
+        $polygon2 = $this->getPolygon3();
+        $multipolygon[] = $polygon2;
+        $this->assertEquals($polygon2, $multipolygon[2]);
+
+        // assert invalid
+        $this->assertException(InvalidArgumentException::class);
+        $multipolygon[] = 1;
+    }
+
     private function getMultiPolygon()
     {
         return new MultiPolygon([$this->getPolygon1(), $this->getPolygon2()]);
@@ -57,34 +78,34 @@ class MultiPolygonTest extends BaseTestCase
     private function getLineString1()
     {
         return new LineString([
-                new Point(0, 0),
-                new Point(0, 1),
-                new Point(1, 1),
-                new Point(1, 0),
-                new Point(0, 0),
-            ]);
+            new Point(0, 0),
+            new Point(0, 1),
+            new Point(1, 1),
+            new Point(1, 0),
+            new Point(0, 0),
+        ]);
     }
 
     private function getLineString2()
     {
         return new LineString([
-                new Point(10, 10),
-                new Point(10, 20),
-                new Point(20, 20),
-                new Point(20, 10),
-                new Point(10, 10),
-            ]);
+            new Point(10, 10),
+            new Point(10, 20),
+            new Point(20, 20),
+            new Point(20, 10),
+            new Point(10, 10),
+        ]);
     }
 
     private function getLineString3()
     {
         return new LineString([
-                new Point(100, 100),
-                new Point(100, 200),
-                new Point(200, 200),
-                new Point(200, 100),
-                new Point(100, 100),
-            ]);
+            new Point(100, 100),
+            new Point(100, 200),
+            new Point(200, 200),
+            new Point(200, 100),
+            new Point(100, 100),
+        ]);
     }
 
     private function getPolygon1()
@@ -95,5 +116,18 @@ class MultiPolygonTest extends BaseTestCase
     private function getPolygon2()
     {
         return new Polygon([$this->getLineString3()]);
+    }
+
+    private function getPolygon3()
+    {
+        return new Polygon([
+            new LineString([
+                new Point(10, 10),
+                new Point(10, 20),
+                new Point(20, 20),
+                new Point(20, 10),
+                new Point(10, 10),
+            ]),
+        ]);
     }
 }

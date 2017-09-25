@@ -17,12 +17,12 @@ class MultiLineStringTest extends BaseTestCase
     public function testToWKT()
     {
         $collection = new LineString([
-                new Point(0, 0),
-                new Point(0, 1),
-                new Point(1, 1),
-                new Point(1, 0),
-                new Point(0, 0),
-            ]);
+            new Point(0, 0),
+            new Point(0, 1),
+            new Point(1, 1),
+            new Point(1, 0),
+            new Point(0, 0),
+        ]);
 
         $multilinestring = new MultiLineString([$collection]);
 
@@ -50,5 +50,35 @@ class MultiLineStringTest extends BaseTestCase
             new LineString([new Point(0, 0), new Point(1, 1)]),
             new Point(0, 1),
         ]);
+    }
+
+    public function testArrayAccess()
+    {
+        $linestring0 = new LineString([
+            new Point(0, 0),
+            new Point(1, 1),
+        ]);
+        $linestring1 = new LineString([
+            new Point(1, 1),
+            new Point(2, 2),
+        ]);
+
+        $multilinestring = new MultiLineString([$linestring0, $linestring1]);
+
+        // assert getting
+        $this->assertEquals($linestring0, $multilinestring[0]);
+        $this->assertEquals($linestring1, $multilinestring[1]);
+
+        // assert setting
+        $linestring2 = new LineString([
+            new Point(2, 2),
+            new Point(3, 3),
+        ]);
+        $multilinestring[] = $linestring2;
+        $this->assertEquals($linestring2, $multilinestring[2]);
+
+        // assert invalid
+        $this->assertException(InvalidArgumentException::class);
+        $multilinestring[] = 1;
     }
 }
