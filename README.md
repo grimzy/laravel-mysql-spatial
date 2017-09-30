@@ -16,6 +16,8 @@ Please check the documentation for your MySQL version. MySQL's Extension for Spa
 - `1.x.x`: MySQL 5.6 (also supports MySQL 5.5 but not all spatial analysis functions)
 - `2.x.x`: MySQL 5.7 and 8.0
 
+[TOC]
+
 ## Installation
 
 Add the package using composer:
@@ -40,6 +42,8 @@ For Laravel versions before 5.5 or if not using auto-discovery, register the ser
   Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
 ],
 ```
+
+
 
 ## Quickstart
 
@@ -144,34 +148,43 @@ $lat = $place2->location->getLat();	// 40.7484404
 $lng = $place2->location->getLng();	// -73.9878441
 ```
 
-## Migration
+
+
+## Migrations
+
+### Columns
 
 Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/5.7/en/spatial-datatypes.html) migration blueprints:
 
-- geometry
-- point
-- lineString
-- polygon
-- multiPoint
-- multiLineString
-- multiPolygon
-- geometryCollection
+- 
+   `$table->geometry('column_name');`
 
-### Spatial index
+- `$table->point('column_name');`
+- `$table->lineString('column_name');`
+- `$table->polygon('column_name');`
+- `$table->multiPoint('column_name');`
+- `$table->multiLineString('column_name');`
+- `$table->multiPolygon('column_name');`
+- `$table->geometryCollection('column_name');`
+
+### Spatial indexes
 
 You can add or drop spatial indexes in your migrations with the `spatialIndex` and `dropSpatialIndex` blueprints.
+
+- `$table->spatialIndex('column_name');`
+- `$table->dropSpatialIndex(['column_name']);` or `$table->dropSpatialIndex('index_name')`
 
 Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/doc/refman/5.7/en/creating-spatial-indexes.html):
 
 > For [`MyISAM`](https://dev.mysql.com/doc/refman/5.7/en/myisam-storage-engine.html) and (as of MySQL 5.7.5) `InnoDB` tables, MySQL can create spatial indexes using syntax similar to that for creating regular indexes, but using the `SPATIAL` keyword. Columns in spatial indexes must be declared `NOT NULL`.
 
-From the command line:
+Following the example in the [Quickstart](#user-content-create-a-migration); from the command line:
 
 ```shell
 php artisan make:migration update_places_table
 ```
 
-Then edit the migration you just created:
+Then edit the migration file that you just created:
 
 ```php
 use Illuminate\Database\Migrations\Migration;
@@ -218,17 +231,89 @@ class UpdatePlacesTable extends Migration
     }
 }
 ```
-## Models
 
-Available geometry classes:
 
-- `Point($lat, $lng)`
-- `MultiPoint(Point[])`
-- `LineString(Point[])`
-- `MultiLineString(LineString[])`
-- `Polygon(LineString[])`
-- `MultiPolygon(Polygon[])`
-- `GeometryCollection(Geometry[])` *(a collection of spatial models)*
+
+## Geometry classes
+
+### Available Geometry classes
+
+| Grimzy\LaravelMysqlSpatial\Types         | OpenGIS Class                            |
+| ---------------------------------------- | ---------------------------------------- |
+| `Point($lat, $lng)`                      | [Point](https://dev.mysql.com/doc/refman/5.7/en/gis-class-point.html) |
+| `MultiPoint(Point[])`                    | [MultiPoint](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multipoint.html) |
+| `LineString(Point[])`                    | [LineString](https://dev.mysql.com/doc/refman/5.7/en/gis-class-linestring.html) |
+| `MultiLineString(LineString[])`          | [MultiLineString](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multilinestring.html) |
+| `Polygon(LineString[])` *([exterior and interior boundaries](https://dev.mysql.com/doc/refman/5.7/en/gis-class-polygon.html))* | [Polygon](https://dev.mysql.com/doc/refman/5.7/en/gis-class-polygon.html) |
+| `MultiPolygon(Polygon[])`                | [MultiPolygon](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multipolygon.html) |
+| `GeometryCollection(Geometry[])`         | [GeometryCollection](https://dev.mysql.com/doc/refman/5.7/en/gis-class-geometrycollection.html) |
+
+### Using Geometry classes
+
+In order for your Eloquent Model to handle the Geometry classes, it must use the `Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait` trait and define a `protected` property `$spatialFields`  as an array of MySQL Spatial Data Type column names (example in [Quickstart](#user-content-create-a-model)).
+
+#### IteratorAggregate and ArrayAccess
+
+The "composite" Geometries (`LineString`, `Polygon`, `MultiPoint`, `MultiLineString`, and `GeometryCollection`) implement [`IteratorAggregate`](http://php.net/manual/en/class.iteratoraggregate.php) and [`ArrayAccess`](http://php.net/manual/en/class.arrayaccess.php); making it easy to perform Iterator and Array operations. For example:
+
+```php
+$polygon = $multipolygon[10];	// ArrayAccess
+
+// IteratorAggregate
+for($polygon as $i => $linestring) {
+  echo (string) $linestring;
+}
+
+```
+
+#### Helpers
+
+##### From/To Well Kown Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
+
+```php
+$polygon = Polygon::fromWKT('POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))');
+
+$polygon->toWKT();	// POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
+```
+
+##### From/To String
+
+```php
+// fromString($wkt)
+$polygon = Polygon::fromString('(0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)');
+
+(string)$polygon;	// (0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)
+```
+
+##### From/To JSON ([GeoJSON](http://geojson.org/))
+
+The Geometry classes implement [`JsonSerializable`](http://php.net/manual/en/class.jsonserializable.php) and `Illuminate\Contracts\Support\Jsonable` and with the help of [jmikola/geojson](https://github.com/jmikola/geojson), we can easily serialize/deserialize GeoJSON:
+
+```php
+$point = new Point(10, 20);
+
+json_encode($point);
+// or
+$point->toJson();
+```
+
+Returns:
+
+```javascript
+{
+  "type": "Feature",
+  "properties": {},
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      -73.9878441,
+      40.7484404
+    ]
+  }
+}
+```
+
+##### 
 
 ## Scopes: Spatial analysis functions
 
@@ -251,6 +336,8 @@ Available scopes:
 - `doesTouch($geometryColumn, $geometry)`
 
 *Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)).*
+
+
 
 ## Credits
 
