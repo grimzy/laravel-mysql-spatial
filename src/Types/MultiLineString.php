@@ -2,6 +2,9 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
+use GeoJson\GeoJson;
+use GeoJson\Geometry\MultiLineString as GeoJsonMultiLineString;
+use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 use InvalidArgumentException;
 
 class MultiLineString extends GeometryCollection
@@ -62,6 +65,28 @@ class MultiLineString extends GeometryCollection
         parent::offsetSet($offset, $value);
     }
 
+    public static function fromJson ($geoJson)
+    {
+        if(is_string($geoJson)) {
+            $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
+        }
+
+        if(!is_a($geoJson, GeoJsonMultiLineString::class)) {
+            throw new InvalidGeoJsonException('Expected ' . GeoJsonMultiLineString::class . ', got ' . get_class($geoJson));
+        }
+
+        $set = [];
+        foreach($geoJson->getCoordinates() as $coordinates) {
+            $points = [];
+            foreach($coordinates as $coordinate) {
+                $points[] = new Point($coordinate[1], $coordinate[0]);
+            }
+            $set[] = new LineString($points);
+        }
+
+        return new MultiLineString($set);
+    }
+
     /**
      * Convert to GeoJson Point that is jsonable to GeoJSON.
      *
@@ -75,6 +100,6 @@ class MultiLineString extends GeometryCollection
             $lineStrings[] = $lineString->jsonSerialize();
         }
 
-        return new \GeoJson\Geometry\MultiLineString($lineStrings);
+        return new GeoJsonMultiLineString($lineStrings);
     }
 }

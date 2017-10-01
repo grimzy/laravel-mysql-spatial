@@ -86,6 +86,26 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $this->assertContains('GEOMETRYCOLLECTION', $statements[0]);
     }
 
+    public function testAddRemoveSpatialIndex()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->point('foo');
+        $blueprint->spatialIndex('foo');
+        $addStatements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(2, count($addStatements));
+        $this->assertContains('alter table `test` add spatial `test_foo_spatial`(`foo`)', $addStatements[1]);
+
+        $blueprint->dropSpatialIndex(['foo']);
+        $blueprint->dropSpatialIndex('test_foo_spatial');
+        $dropStatements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $expectedSql = 'alter table `test` drop index `test_foo_spatial`';
+        $this->assertEquals(5, count($dropStatements));
+        $this->assertContains($expectedSql, $dropStatements[3]);
+        $this->assertContains($expectedSql, $dropStatements[4]);
+    }
+
     /**
      * @return Connection
      */

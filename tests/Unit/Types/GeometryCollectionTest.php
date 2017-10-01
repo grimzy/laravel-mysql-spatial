@@ -89,6 +89,20 @@ class GeometryCollectionTest extends BaseTestCase
         $geometryCollection[] = 1;
     }
 
+    public function testFromJson() {
+        $geometryCollection = GeometryCollection::fromJson('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[1,2]}},{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[3,4]}}]}');
+        $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
+        $geometryCollectionPoints = $geometryCollection->getGeometries();
+        $this->assertEquals(2, count($geometryCollectionPoints));
+        $this->assertEquals(new Point(2, 1), $geometryCollectionPoints[0]);
+        $this->assertEquals(new Point(4, 3), $geometryCollectionPoints[1]);
+    }
+
+    public function testInvalidGeoJsonException() {
+        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
+        GeometryCollection::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
+    }
+
     private function getGeometryCollection()
     {
         return new GeometryCollection([$this->getLineString(), $this->getPoint()]);
