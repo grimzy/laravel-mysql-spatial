@@ -67,20 +67,22 @@ class Point extends Geometry
 
     /**
      * @param $geoJson  \GeoJson\Feature\Feature|string
+     *
      * @return \Grimzy\LaravelMysqlSpatial\Types\Point
      */
-    public static function fromJson ($geoJson)
+    public static function fromJson($geoJson)
     {
-        if(is_string($geoJson)) {
+        if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if(!is_a($geoJson, GeoJsonPoint::class)) {
-            throw new InvalidGeoJsonException('Expected ' . GeoJsonPoint::class . ', got ' . get_class($geoJson));
+        if (!is_a($geoJson, GeoJsonPoint::class)) {
+            throw new InvalidGeoJsonException('Expected '.GeoJsonPoint::class.', got '.get_class($geoJson));
         }
 
         $coordinates = $geoJson->getCoordinates();
-        return new Point($coordinates[1], $coordinates[0]);
+
+        return new self($coordinates[1], $coordinates[0]);
     }
 
     /**

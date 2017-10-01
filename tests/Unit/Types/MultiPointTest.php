@@ -29,7 +29,8 @@ class MultiPointTest extends BaseTestCase
         $this->assertInstanceOf(Point::class, $multipoint->getPoints()[0]);
     }
 
-    public function testFromJson() {
+    public function testFromJson()
+    {
         $multiPoint = MultiPoint::fromJson('{"type":"MultiPoint","coordinates":[[1,1],[2,1],[2,2]]}');
         $this->assertInstanceOf(MultiPoint::class, $multiPoint);
         $multiPointPoints = $multiPoint->getGeometries();
@@ -39,7 +40,8 @@ class MultiPointTest extends BaseTestCase
         $this->assertEquals(new Point(2, 2), $multiPointPoints[2]);
     }
 
-    public function testInvalidGeoJsonException() {
+    public function testInvalidGeoJsonException()
+    {
         $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
         MultiPoint::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }

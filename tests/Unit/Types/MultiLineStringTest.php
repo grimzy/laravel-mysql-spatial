@@ -29,7 +29,8 @@ class MultiLineStringTest extends BaseTestCase
         $this->assertSame('MULTILINESTRING((0 0,1 0,1 1,0 1,0 0))', $multilinestring->toWKT());
     }
 
-    public function testFromJson() {
+    public function testFromJson()
+    {
         $multiLineString = MultiLineString::fromJson('{"type":"MultiLineString","coordinates":[[[1,1],[1,2],[1,3]],[[2,1],[2,2],[2,3]]]}');
         $this->assertInstanceOf(MultiLineString::class, $multiLineString);
         $multiLineStringLineStrings = $multiLineString->getGeometries();
@@ -42,7 +43,8 @@ class MultiLineStringTest extends BaseTestCase
         $this->assertEquals(new Point(3, 2), $multiLineStringLineStrings[1][2]);
     }
 
-    public function testInvalidGeoJsonException() {
+    public function testInvalidGeoJsonException()
+    {
         $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
         MultiLineString::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }

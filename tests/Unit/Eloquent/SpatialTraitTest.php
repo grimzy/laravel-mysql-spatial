@@ -192,14 +192,16 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertContains("ST_GeomFromText('GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(3 2,3 3))')", $this->queries[1]);
     }
 
-    public function testSettingRawAttributes() {
+    public function testSettingRawAttributes()
+    {
         $attributes['point'] = '0101000000000000000000f03f0000000000000040';
 
         $this->model->setRawAttributes($attributes);
         $this->assertInstanceOf(Point::class, ($this->model->point));
     }
 
-    public function testSpatialFieldsNotDefinedException() {
+    public function testSpatialFieldsNotDefinedException()
+    {
         $model = new TestNoSpatialModel();
         $this->setExpectedException(SpatialFieldsNotDefinedException::class);
         $model->getSpatialFields();
@@ -452,7 +454,8 @@ class TestRelatedModel extends TestModel
     }
 }
 
-class TestNoSpatialModel extends Model {
+class TestNoSpatialModel extends Model
+{
     use \Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 }
 

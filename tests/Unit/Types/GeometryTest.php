@@ -123,7 +123,8 @@ class GeometryTest extends BaseTestCase
         $this->assertEquals(new Point(3, 2), $multiLineStringLineStrings[1][2]);
     }
 
-    public function testFromJsonMultiPolygon() {
+    public function testFromJsonMultiPolygon()
+    {
         $multiPolygon = Geometry::fromJson('{"type":"MultiPolygon","coordinates":[[[[1,1],[1,2],[2,2],[2,1],[1,1]]],[[[0,0],[0,1],[1,1],[1,0],[0,0]]]]}');
         $this->assertInstanceOf(MultiPolygon::class, $multiPolygon);
         $multiPolygonPolygons = $multiPolygon->getGeometries();
@@ -133,25 +134,27 @@ class GeometryTest extends BaseTestCase
             new Point(2, 1),
             new Point(2, 2),
             new Point(1, 2),
-            new Point(1, 1)
+            new Point(1, 1),
         ])]), $multiPolygonPolygons[0]);
         $this->assertEquals(new Polygon([new LineString([
             new Point(0, 0),
             new Point(1, 0),
             new Point(1, 1),
             new Point(0, 1),
-            new Point(0, 0)
+            new Point(0, 0),
         ])]), $multiPolygonPolygons[1]);
     }
 
-    public function testFromJsonPointFeature() {
+    public function testFromJsonPointFeature()
+    {
         $point = Geometry::fromJson('{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[3.4,1.2]}}');
         $this->assertInstanceOf(Point::class, $point);
         $this->assertEquals(1.2, $point->getLat());
         $this->assertEquals(3.4, $point->getLng());
     }
-    
-    public function testFromJsonMultiPointFeatureCollection() {
+
+    public function testFromJsonMultiPointFeatureCollection()
+    {
         $geometryCollection = Geometry::fromJson('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[1,2]}},{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[3,4]}}]}');
         $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
         $geometryCollectionPoints = $geometryCollection->getGeometries();

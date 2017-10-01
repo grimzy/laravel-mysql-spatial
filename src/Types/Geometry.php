@@ -72,20 +72,22 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         return static::fromString($wktArgument);
     }
 
-    public static function fromJson($geoJson) {
-        if(is_string($geoJson)) {
+    public static function fromJson($geoJson)
+    {
+        if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if($geoJson->getType() === 'FeatureCollection') {
+        if ($geoJson->getType() === 'FeatureCollection') {
             return GeometryCollection::fromJson($geoJson);
         }
 
-        if($geoJson->getType() === 'Feature') {
+        if ($geoJson->getType() === 'Feature') {
             $geoJson = $geoJson->getGeometry();
         }
 
         $type = '\Grimzy\LaravelMysqlSpatial\Types\\'.$geoJson->getType();
+
         return $type::fromJson($geoJson);
     }
 
