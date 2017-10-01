@@ -13,26 +13,26 @@ class Polygon extends MultiLineString
         return sprintf('POLYGON(%s)', (string) $this);
     }
 
-    public static function fromJson ($geoJson)
+    public static function fromJson($geoJson)
     {
-        if(is_string($geoJson)) {
+        if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if(!is_a($geoJson, GeoJsonPolygon::class)) {
-            throw new InvalidGeoJsonException('Expected ' . GeoJsonPolygon::class . ', got ' . get_class($geoJson));
+        if (!is_a($geoJson, GeoJsonPolygon::class)) {
+            throw new InvalidGeoJsonException('Expected '.GeoJsonPolygon::class.', got '.get_class($geoJson));
         }
 
         $set = [];
-        foreach($geoJson->getCoordinates() as $coordinates) {
+        foreach ($geoJson->getCoordinates() as $coordinates) {
             $points = [];
-            foreach($coordinates as $coordinate) {
+            foreach ($coordinates as $coordinate) {
                 $points[] = new Point($coordinate[1], $coordinate[0]);
             }
             $set[] = new LineString($points);
         }
 
-        return new Polygon($set);
+        return new self($set);
     }
 
     /**

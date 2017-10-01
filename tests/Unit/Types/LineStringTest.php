@@ -34,7 +34,8 @@ class LineStringTest extends BaseTestCase
         $this->assertEquals('0 0,1 1,2 2', (string) $linestring);
     }
 
-    public function testFromJson() {
+    public function testFromJson()
+    {
         $lineString = LineString::fromJson('{"type": "LineString","coordinates":[[1,1],[2,2]]}');
         $this->assertInstanceOf(LineString::class, $lineString);
         $lineStringPoints = $lineString->getGeometries();
@@ -42,7 +43,8 @@ class LineStringTest extends BaseTestCase
         $this->assertEquals(new Point(2, 2), $lineStringPoints[1]);
     }
 
-    public function testInvalidGeoJsonException() {
+    public function testInvalidGeoJsonException()
+    {
         $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
         LineString::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }

@@ -65,26 +65,26 @@ class MultiLineString extends GeometryCollection
         parent::offsetSet($offset, $value);
     }
 
-    public static function fromJson ($geoJson)
+    public static function fromJson($geoJson)
     {
-        if(is_string($geoJson)) {
+        if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if(!is_a($geoJson, GeoJsonMultiLineString::class)) {
-            throw new InvalidGeoJsonException('Expected ' . GeoJsonMultiLineString::class . ', got ' . get_class($geoJson));
+        if (!is_a($geoJson, GeoJsonMultiLineString::class)) {
+            throw new InvalidGeoJsonException('Expected '.GeoJsonMultiLineString::class.', got '.get_class($geoJson));
         }
 
         $set = [];
-        foreach($geoJson->getCoordinates() as $coordinates) {
+        foreach ($geoJson->getCoordinates() as $coordinates) {
             $points = [];
-            foreach($coordinates as $coordinate) {
+            foreach ($coordinates as $coordinate) {
                 $points[] = new Point($coordinate[1], $coordinate[0]);
             }
             $set[] = new LineString($points);
         }
 
-        return new MultiLineString($set);
+        return new self($set);
     }
 
     /**

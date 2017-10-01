@@ -35,22 +35,22 @@ class LineString extends PointCollection
         return $this->toPairList();
     }
 
-    public static function fromJson ($geoJson)
+    public static function fromJson($geoJson)
     {
-        if(is_string($geoJson)) {
+        if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if(!is_a($geoJson, GeoJsonLineString::class)) {
-            throw new InvalidGeoJsonException('Expected ' . GeoJsonLineString::class . ', got ' . get_class($geoJson));
+        if (!is_a($geoJson, GeoJsonLineString::class)) {
+            throw new InvalidGeoJsonException('Expected '.GeoJsonLineString::class.', got '.get_class($geoJson));
         }
 
         $set = [];
-        foreach($geoJson->getCoordinates() as $coordinate) {
+        foreach ($geoJson->getCoordinates() as $coordinate) {
             $set[] = new Point($coordinate[1], $coordinate[0]);
         }
 
-        return new LineString($set);
+        return new self($set);
     }
 
     /**

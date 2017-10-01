@@ -100,22 +100,22 @@ class MultiPolygon extends GeometryCollection
         parent::offsetSet($offset, $value);
     }
 
-    public static function fromJson ($geoJson)
+    public static function fromJson($geoJson)
     {
-        if(is_string($geoJson)) {
+        if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if(!is_a($geoJson, GeoJsonMultiPolygon::class)) {
-            throw new InvalidGeoJsonException('Expected ' . GeoJsonMultiPolygon::class . ', got ' . get_class($geoJson));
+        if (!is_a($geoJson, GeoJsonMultiPolygon::class)) {
+            throw new InvalidGeoJsonException('Expected '.GeoJsonMultiPolygon::class.', got '.get_class($geoJson));
         }
 
         $set = [];
-        foreach($geoJson->getCoordinates() as $polygonCoordinates) {
+        foreach ($geoJson->getCoordinates() as $polygonCoordinates) {
             $lineStrings = [];
-            foreach($polygonCoordinates as $lineStringCoordinates) {
+            foreach ($polygonCoordinates as $lineStringCoordinates) {
                 $points = [];
-                foreach($lineStringCoordinates as $lineStringCoordinate) {
+                foreach ($lineStringCoordinates as $lineStringCoordinate) {
                     $points[] = new Point($lineStringCoordinate[1], $lineStringCoordinate[0]);
                 }
                 $lineStrings[] = new LineString($points);
@@ -123,7 +123,7 @@ class MultiPolygon extends GeometryCollection
             $set[] = new Polygon($lineStrings);
         }
 
-        return new MultiPolygon($set);
+        return new self($set);
     }
 
     /**

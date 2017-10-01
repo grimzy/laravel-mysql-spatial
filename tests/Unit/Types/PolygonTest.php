@@ -36,7 +36,8 @@ class PolygonTest extends BaseTestCase
         $this->assertEquals('POLYGON((0 0,1 0,1 1,0 1,0 0))', $this->polygon->toWKT());
     }
 
-    public function testFromJson() {
+    public function testFromJson()
+    {
         $polygon = Polygon::fromJson('{"type":"Polygon","coordinates":[[[1,1],[2,1],[2,2],[1,2],[1,1]],[[1.2,1.2],[1.6,1.2],[1.6,1.8],[1.2,1.8],[1.2,1.2]]]}');
         $this->assertInstanceOf(Polygon::class, $polygon);
         $polygonLineStrings = $polygon->getGeometries();
@@ -53,7 +54,8 @@ class PolygonTest extends BaseTestCase
         $this->assertEquals(new Point(1.2, 1.2), $polygonLineStrings[1][4]);
     }
 
-    public function testInvalidGeoJsonException() {
+    public function testInvalidGeoJsonException()
+    {
         $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
         Polygon::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }

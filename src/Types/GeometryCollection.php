@@ -110,14 +110,14 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         return count($this->items);
     }
 
-    public static function fromJson ($geoJson)
+    public static function fromJson($geoJson)
     {
-        if(is_string($geoJson)) {
+        if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if(!is_a($geoJson, FeatureCollection::class)) {
-            throw new InvalidGeoJsonException('Expected ' . FeatureCollection::class . ', got ' . get_class($geoJson));
+        if (!is_a($geoJson, FeatureCollection::class)) {
+            throw new InvalidGeoJsonException('Expected '.FeatureCollection::class.', got '.get_class($geoJson));
         }
 
         $set = [];
@@ -125,7 +125,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
             $set[] = parent::fromJson($feature);
         }
 
-        return new GeometryCollection($set);
+        return new self($set);
     }
 
     /**
