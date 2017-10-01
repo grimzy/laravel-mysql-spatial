@@ -2,6 +2,10 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
+use GeoJson\GeoJson;
+use GeoJson\Geometry\LineString as GeoJsonLineString;
+use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
+
 class LineString extends PointCollection
 {
     public function toWKT()
@@ -31,6 +35,24 @@ class LineString extends PointCollection
         return $this->toPairList();
     }
 
+    public static function fromJson ($geoJson)
+    {
+        if(is_string($geoJson)) {
+            $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
+        }
+
+        if(!is_a($geoJson, GeoJsonLineString::class)) {
+            throw new InvalidGeoJsonException('Expected ' . GeoJsonLineString::class . ', got ' . get_class($geoJson));
+        }
+
+        $set = [];
+        foreach($geoJson->getCoordinates() as $coordinate) {
+            $set[] = new Point($coordinate[1], $coordinate[0]);
+        }
+
+        return new LineString($set);
+    }
+
     /**
      * Convert to GeoJson LineString that is jsonable to GeoJSON.
      *
@@ -43,6 +65,6 @@ class LineString extends PointCollection
             $points[] = $point->jsonSerialize();
         }
 
-        return new \GeoJson\Geometry\LineString($points);
+        return new GeoJsonLineString($points);
     }
 }
