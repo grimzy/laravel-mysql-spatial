@@ -5,12 +5,12 @@ mDB_DIR=$(shell pwd)/_db-$(mV)
 
 start_db:
 	@echo Starting MySQL $(V)
-	docker run --rm -d --name spatial-mysql \
+	docker run --rm --name spatial-mysql \
             -p 3306:3306 \
             -v $(DB_DIR):/var/lib/mysql \
             -e MYSQL_DATABASE=spatial_test \
             -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
-            mysql:$(V) --character-set-server=utf8 --collation-server=utf8_general_ci --default-auth=mysql_native_password
+            mysql:$(V) --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
 
 start_db_maria:
 	@echo Starting MariaDB $(mV)
@@ -19,7 +19,7 @@ start_db_maria:
 			-v $(DB_DIR):/var/lib/mysql \
 			-e MYSQL_DATABASE=spatial_test \
 			-e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
-			mariadb:$(mV) --character-set-server=utf8 --collation-server=utf8_general_ci --default-auth=mysql_native_password
+			mariadb:$(mV) --character-set-server=utf8 --collation-server=utf8_general_ci --default-authentication-plugin=mysql_native_password
 
 
 rm_db:
