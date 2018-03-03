@@ -15,6 +15,8 @@ Please check the documentation for your MySQL version. MySQL's Extension for Spa
 - `1.x.x`: MySQL 5.6 (also supports MySQL 5.5 but not all spatial analysis functions)
 - `2.x.x`: MySQL 5.7 and 8.0
 
+This package also works with MariaDB. Please refer to the [MySQL/MariaDB Spatial Support Matrix](https://mariadb.com/kb/en/library/mysqlmariadb-spatial-support-matrix/) for compatibility.
+
 ## Installation
 
 Add the package using composer:
@@ -71,6 +73,8 @@ class CreatePlacesTable extends Migration {
             $table->string('name')->unique();
             // Add a Point spatial data field named location
             $table->point('location')->nullable();
+            // Add a Polygon spatial data field named area
+            $table->polygon('area')->nullable();
             $table->timestamps();
         });
     }
@@ -117,11 +121,12 @@ class Place extends Model
     use SpatialTrait;
 
     protected $fillable = [
-        'name',
+        'name'
     ];
 
     protected $spatialFields = [
         'location',
+        'area'
     ];
 }
 ```
@@ -129,10 +134,28 @@ class Place extends Model
 ### Saving a model
 
 ```php
+use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Grimzy\LaravelMysqlSpatial\Types\Polygon;
+
 $place1 = new Place();
 $place1->name = 'Empire State Building';
-$place1->location = new Point(40.7484404, -73.9878441);
+
+// saving a point
+$place1->location = new Point(40.7484404, -73.9878441);	// (lat, lng)
 $place1->save();
+
+// saving a polygon
+$place1->area = new Polygon([new LineString([
+    new Point(40.74894149554006, -73.98615270853043),
+    new Point(40.74848633046773, -73.98648262023926),
+    new Point(40.747925497790725, -73.9851602911949),
+    new Point(40.74837050671544, -73.98482501506805),
+    new Point(40.74894149554006, -73.98615270853043)
+])]);
+$place1->save();
+
+$place1->area = new Polygon();
+
 ```
 
 ### Retrieving a model
@@ -143,34 +166,43 @@ $lat = $place2->location->getLat();	// 40.7484404
 $lng = $place2->location->getLng();	// -73.9878441
 ```
 
-## Migration
+## Migrations
+
+### Columns
 
 Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/5.7/en/spatial-datatypes.html) migration blueprints:
 
-- geometry
-- point
-- lineString
-- polygon
-- multiPoint
-- multiLineString
-- multiPolygon
-- geometryCollection
+- 
+   `$table->geometry('column_name');`
 
-### Spatial index
+- `$table->point('column_name');`
+- `$table->lineString('column_name');`
+- `$table->polygon('column_name');`
+- `$table->multiPoint('column_name');`
+- `$table->multiLineString('column_name');`
+- `$table->multiPolygon('column_name');`
+- `$table->geometryCollection('column_name');`
+
+### Spatial indexes
 
 You can add or drop spatial indexes in your migrations with the `spatialIndex` and `dropSpatialIndex` blueprints.
+
+- `$table->spatialIndex('column_name');`
+- `$table->dropSpatialIndex(['column_name']);` or `$table->dropSpatialIndex('index_name')`
 
 Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/doc/refman/5.7/en/creating-spatial-indexes.html):
 
 > For [`MyISAM`](https://dev.mysql.com/doc/refman/5.7/en/myisam-storage-engine.html) and (as of MySQL 5.7.5) `InnoDB` tables, MySQL can create spatial indexes using syntax similar to that for creating regular indexes, but using the `SPATIAL` keyword. Columns in spatial indexes must be declared `NOT NULL`.
 
-From the command line:
+Also please read this [**important note**](https://laravel.com/docs/5.5/migrations#indexes) regarding Index Lengths in the Laravel 5.6 documentation.
+
+For example, as a follow up to the [Quickstart](#user-content-create-a-migration); from the command line, generate a new migration:
 
 ```shell
 php artisan make:migration update_places_table
 ```
 
-Then edit the migration you just created:
+Then edit the migration file that you just created:
 
 ```php
 use Illuminate\Database\Migrations\Migration;
@@ -217,17 +249,91 @@ class UpdatePlacesTable extends Migration
     }
 }
 ```
-## Models
 
-Available geometry classes:
+## Geometry classes
 
-- `Point($lat, $lng)`
-- `MultiPoint(Point[])`
-- `LineString(Point[])`
-- `MultiLineString(LineString[])`
-- `Polygon(LineString[])`
-- `MultiPolygon(Polygon[])`
-- `GeometryCollection(Geometry[])` *(a collection of spatial models)*
+### Available Geometry classes
+
+| Grimzy\LaravelMysqlSpatial\Types         | OpenGIS Class                            |
+| ---------------------------------------- | ---------------------------------------- |
+| `Point($lat, $lng)`                      | [Point](https://dev.mysql.com/doc/refman/5.7/en/gis-class-point.html) |
+| `MultiPoint(Point[])`                    | [MultiPoint](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multipoint.html) |
+| `LineString(Point[])`                    | [LineString](https://dev.mysql.com/doc/refman/5.7/en/gis-class-linestring.html) |
+| `MultiLineString(LineString[])`          | [MultiLineString](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multilinestring.html) |
+| `Polygon(LineString[])` *([exterior and interior boundaries](https://dev.mysql.com/doc/refman/5.7/en/gis-class-polygon.html))* | [Polygon](https://dev.mysql.com/doc/refman/5.7/en/gis-class-polygon.html) |
+| `MultiPolygon(Polygon[])`                | [MultiPolygon](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multipolygon.html) |
+| `GeometryCollection(Geometry[])`         | [GeometryCollection](https://dev.mysql.com/doc/refman/5.7/en/gis-class-geometrycollection.html) |
+
+Check out the [Class diagram](https://user-images.githubusercontent.com/1837678/30788608-a5afd894-a16c-11e7-9a51-0a08b331d4c4.png).
+
+### Using Geometry classes
+
+In order for your Eloquent Model to handle the Geometry classes, it must use the `Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait` trait and define a `protected` property `$spatialFields`  as an array of MySQL Spatial Data Type column names (example in [Quickstart](#user-content-create-a-model)).
+
+#### IteratorAggregate and ArrayAccess
+
+The "composite" Geometries (`LineString`, `Polygon`, `MultiPoint`, `MultiLineString`, and `GeometryCollection`) implement [`IteratorAggregate`](http://php.net/manual/en/class.iteratoraggregate.php) and [`ArrayAccess`](http://php.net/manual/en/class.arrayaccess.php); making it easy to perform Iterator and Array operations. For example:
+
+```php
+$polygon = $multipolygon[10];	// ArrayAccess
+
+// IteratorAggregate
+for($polygon as $i => $linestring) {
+  echo (string) $linestring;
+}
+
+```
+
+#### Helpers
+
+##### From/To Well Known Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
+
+```php
+// fromWKT($wkt)
+$polygon = Polygon::fromWKT('POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))');
+
+$polygon->toWKT();	// POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
+```
+
+##### From/To String
+
+```php
+// fromString($wkt)
+$polygon = Polygon::fromString('(0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)');
+
+(string)$polygon;	// (0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)
+```
+
+##### From/To JSON ([GeoJSON](http://geojson.org/))
+
+The Geometry classes implement [`JsonSerializable`](http://php.net/manual/en/class.jsonserializable.php) and `Illuminate\Contracts\Support\Jsonable` to help serialize into GeoJSON:
+
+```php
+$point = new Point(10, 20);
+
+json_encode($point); // or $point->toJson();
+
+// {
+//   "type": "Feature",
+//   "properties": {},
+//   "geometry": {
+//     "type": "Point",
+//     "coordinates": [
+//       -73.9878441,
+//       40.7484404
+//     ]
+//   }
+// }
+```
+
+To deserialize a GeoJSON string into a Geometry class, you can use `Geometry::fromJson($json_string)` :
+
+```php
+$locaction = Geometry::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
+$location instanceof Point::class;	// true
+$location->getLat();	// 1.2
+$location->getLng()); 	// 3.4
+```
 
 ## Scopes: Spatial analysis functions
 
