@@ -17,8 +17,6 @@ Please check the documentation for your MySQL version. MySQL's Extension for Spa
 
 This package also works with MariaDB. Please refer to the [MySQL/MariaDB Spatial Support Matrix](https://mariadb.com/kb/en/library/mysqlmariadb-spatial-support-matrix/) for compatibility.
 
-[TOC]
-
 ## Installation
 
 Add the package using composer:
@@ -154,6 +152,7 @@ $place1->area = new Polygon([new LineString([
     new Point(40.74837050671544, -73.98482501506805),
     new Point(40.74894149554006, -73.98615270853043)
 ])]);
+$place1->save();
 
 $place1->area = new Polygon();
 
@@ -290,6 +289,7 @@ for($polygon as $i => $linestring) {
 ##### From/To Well Known Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
 
 ```php
+// fromWKT($wkt)
 $polygon = Polygon::fromWKT('POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))');
 
 $polygon->toWKT();	// POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
@@ -306,7 +306,7 @@ $polygon = Polygon::fromString('(0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)')
 
 ##### From/To JSON ([GeoJSON](http://geojson.org/))
 
-The Geometry classes implement [`JsonSerializable`](http://php.net/manual/en/class.jsonserializable.php) and `Illuminate\Contracts\Support\Jsonable` and with the help of [jmikola/geojson](https://github.com/jmikola/geojson), we can easily serialize/deserialize GeoJSON:
+The Geometry classes implement [`JsonSerializable`](http://php.net/manual/en/class.jsonserializable.php) and `Illuminate\Contracts\Support\Jsonable` to help serialize into GeoJSON:
 
 ```php
 $point = new Point(10, 20);
@@ -324,7 +324,11 @@ json_encode($point); // or $point->toJson();
 //     ]
 //   }
 // }
+```
 
+To deserialize a GeoJSON string into a Geometry class, you can use `Geometry::fromJson($json_string)` :
+
+```php
 $locaction = Geometry::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
 $location instanceof Point::class;	// true
 $location->getLat();	// 1.2
