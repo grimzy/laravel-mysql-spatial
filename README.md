@@ -15,6 +15,8 @@ Please check the documentation for your MySQL version. MySQL's Extension for Spa
 - `1.x.x`: MySQL 5.6 (also supports MySQL 5.5 but not all spatial analysis functions)
 - `2.x.x`: MySQL 5.7 and 8.0
 
+This package also works with MariaDB. Please refer to the [MySQL/MariaDB Spatial Support Matrix](https://mariadb.com/kb/en/library/mysqlmariadb-spatial-support-matrix/) for compatibility.
+
 [TOC]
 
 ## Installation
@@ -41,8 +43,6 @@ For Laravel versions before 5.5 or if not using auto-discovery, register the ser
   Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
 ],
 ```
-
-
 
 ## Quickstart
 
@@ -75,6 +75,8 @@ class CreatePlacesTable extends Migration {
             $table->string('name')->unique();
             // Add a Point spatial data field named location
             $table->point('location')->nullable();
+            // Add a Polygon spatial data field named area
+            $table->polygon('area')->nullable();
             $table->timestamps();
         });
     }
@@ -121,11 +123,12 @@ class Place extends Model
     use SpatialTrait;
 
     protected $fillable = [
-        'name',
+        'name'
     ];
 
     protected $spatialFields = [
         'location',
+        'area'
     ];
 }
 ```
@@ -133,10 +136,27 @@ class Place extends Model
 ### Saving a model
 
 ```php
+use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Grimzy\LaravelMysqlSpatial\Types\Polygon;
+
 $place1 = new Place();
 $place1->name = 'Empire State Building';
-$place1->location = new Point(40.7484404, -73.9878441);
+
+// saving a point
+$place1->location = new Point(40.7484404, -73.9878441);	// (lat, lng)
 $place1->save();
+
+// saving a polygon
+$place1->area = new Polygon([new LineString([
+    new Point(40.74894149554006, -73.98615270853043),
+    new Point(40.74848633046773, -73.98648262023926),
+    new Point(40.747925497790725, -73.9851602911949),
+    new Point(40.74837050671544, -73.98482501506805),
+    new Point(40.74894149554006, -73.98615270853043)
+])]);
+
+$place1->area = new Polygon();
+
 ```
 
 ### Retrieving a model
@@ -146,8 +166,6 @@ $place2 = Place::first();
 $lat = $place2->location->getLat();	// 40.7484404
 $lng = $place2->location->getLng();	// -73.9878441
 ```
-
-
 
 ## Migrations
 
@@ -177,7 +195,7 @@ Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/
 
 > For [`MyISAM`](https://dev.mysql.com/doc/refman/5.7/en/myisam-storage-engine.html) and (as of MySQL 5.7.5) `InnoDB` tables, MySQL can create spatial indexes using syntax similar to that for creating regular indexes, but using the `SPATIAL` keyword. Columns in spatial indexes must be declared `NOT NULL`.
 
-Following the example in the [Quickstart](#user-content-create-a-migration); from the command line:
+For example, as a follow up to the [Quickstart](#user-content-create-a-migration); from the command line, generate a new migration:
 
 ```shell
 php artisan make:migration update_places_table
@@ -231,8 +249,6 @@ class UpdatePlacesTable extends Migration
 }
 ```
 
-
-
 ## Geometry classes
 
 ### Available Geometry classes
@@ -246,6 +262,8 @@ class UpdatePlacesTable extends Migration
 | `Polygon(LineString[])` *([exterior and interior boundaries](https://dev.mysql.com/doc/refman/5.7/en/gis-class-polygon.html))* | [Polygon](https://dev.mysql.com/doc/refman/5.7/en/gis-class-polygon.html) |
 | `MultiPolygon(Polygon[])`                | [MultiPolygon](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multipolygon.html) |
 | `GeometryCollection(Geometry[])`         | [GeometryCollection](https://dev.mysql.com/doc/refman/5.7/en/gis-class-geometrycollection.html) |
+
+Check out the [Class diagram](https://user-images.githubusercontent.com/1837678/30788608-a5afd894-a16c-11e7-9a51-0a08b331d4c4.png).
 
 ### Using Geometry classes
 
@@ -267,7 +285,7 @@ for($polygon as $i => $linestring) {
 
 #### Helpers
 
-##### From/To Well Kown Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
+##### From/To Well Known Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
 
 ```php
 $polygon = Polygon::fromWKT('POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))');
@@ -291,28 +309,25 @@ The Geometry classes implement [`JsonSerializable`](http://php.net/manual/en/cla
 ```php
 $point = new Point(10, 20);
 
-json_encode($point);
-// or
-$point->toJson();
+json_encode($point); // or $point->toJson();
+
+// {
+//   "type": "Feature",
+//   "properties": {},
+//   "geometry": {
+//     "type": "Point",
+//     "coordinates": [
+//       -73.9878441,
+//       40.7484404
+//     ]
+//   }
+// }
+
+$locaction = Geometry::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
+$location instanceof Point::class;	// true
+$location->getLat();	// 1.2
+$location->getLng()); 	// 3.4
 ```
-
-Returns:
-
-```javascript
-{
-  "type": "Feature",
-  "properties": {},
-  "geometry": {
-    "type": "Point",
-    "coordinates": [
-      -73.9878441,
-      40.7484404
-    ]
-  }
-}
-```
-
-##### 
 
 ## Scopes: Spatial analysis functions
 
@@ -335,8 +350,6 @@ Available scopes:
 - `doesTouch($geometryColumn, $geometry)`
 
 *Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)).*
-
-
 
 ## Credits
 
