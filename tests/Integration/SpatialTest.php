@@ -66,10 +66,12 @@ class SpatialTest extends BaseTestCase
     }
 
     // MySQL 8.0.4 fixed bug #26941370 and bug #88031
-    private function isMySQL8AfterFix() {
-        $results = DB::select(DB::raw("select version()"));
-        $mysql_version =  $results[0]->{'version()'};
-        return (strpos($mysql_version, '8.0.4') !== false);
+    private function isMySQL8AfterFix()
+    {
+        $results = DB::select(DB::raw('select version()'));
+        $mysql_version = $results[0]->{'version()'};
+
+        return strpos($mysql_version, '8.0.4') !== false;
     }
 
     protected function assertDatabaseHas($table, array $data, $connection = null)
