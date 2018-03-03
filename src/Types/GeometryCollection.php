@@ -5,6 +5,9 @@ namespace Grimzy\LaravelMysqlSpatial\Types;
 use ArrayAccess;
 use ArrayIterator;
 use Countable;
+use GeoJson\Feature\FeatureCollection;
+use GeoJson\GeoJson;
+use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -105,6 +108,24 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
     public function count()
     {
         return count($this->items);
+    }
+
+    public static function fromJson($geoJson)
+    {
+        if (is_string($geoJson)) {
+            $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
+        }
+
+        if (!is_a($geoJson, FeatureCollection::class)) {
+            throw new InvalidGeoJsonException('Expected '.FeatureCollection::class.', got '.get_class($geoJson));
+        }
+
+        $set = [];
+        foreach ($geoJson->getFeatures() as $feature) {
+            $set[] = parent::fromJson($feature);
+        }
+
+        return new self($set);
     }
 
     /**

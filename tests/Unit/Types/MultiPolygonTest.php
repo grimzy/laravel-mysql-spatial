@@ -34,6 +34,34 @@ class MultiPolygonTest extends BaseTestCase
         $this->assertInstanceOf(MultiPolygon::class, $polygon);
     }
 
+    public function testFromJson()
+    {
+        $multiPolygon = MultiPolygon::fromJson('{"type":"MultiPolygon","coordinates":[[[[1,1],[1,2],[2,2],[2,1],[1,1]]],[[[0,0],[0,1],[1,1],[1,0],[0,0]]]]}');
+        $this->assertInstanceOf(MultiPolygon::class, $multiPolygon);
+        $multiPolygonPolygons = $multiPolygon->getGeometries();
+        $this->assertEquals(2, count($multiPolygonPolygons));
+        $this->assertEquals(new Polygon([new LineString([
+            new Point(1, 1),
+            new Point(2, 1),
+            new Point(2, 2),
+            new Point(1, 2),
+            new Point(1, 1),
+        ])]), $multiPolygonPolygons[0]);
+        $this->assertEquals(new Polygon([new LineString([
+            new Point(0, 0),
+            new Point(1, 0),
+            new Point(1, 1),
+            new Point(0, 1),
+            new Point(0, 0),
+        ])]), $multiPolygonPolygons[1]);
+    }
+
+    public function testInvalidGeoJsonException()
+    {
+        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
+        MultiPolygon::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
+    }
+
     public function testJsonSerialize()
     {
         $this->assertInstanceOf(\GeoJson\Geometry\MultiPolygon::class, $this->getMultiPolygon()->jsonSerialize());
