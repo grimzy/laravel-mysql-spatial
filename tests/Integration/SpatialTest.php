@@ -8,10 +8,13 @@ use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
 use Laravel\BrowserKitTesting\TestCase as BaseTestCase;
 
 class SpatialTest extends BaseTestCase
 {
+    protected $after_fix = false;
+
     /**
      * Boots the application.
      *
@@ -42,9 +45,15 @@ class SpatialTest extends BaseTestCase
     {
         parent::setUp();
 
+        $this->after_fix = $this->isMySQL8AfterFix();
+
         $this->onMigrations(function ($migrationClass) {
             (new $migrationClass())->up();
         });
+
+        //\DB::listen(function($sql) {
+        //    var_dump($sql);
+        //});
     }
 
     public function tearDown()
@@ -54,6 +63,13 @@ class SpatialTest extends BaseTestCase
         }, true);
 
         parent::tearDown();
+    }
+
+    // MySQL 8.0.4 fixed bug #26941370 and bug #88031
+    private function isMySQL8AfterFix() {
+        $results = DB::select(DB::raw("select version()"));
+        $mysql_version =  $results[0]->{'version()'};
+        return (strpos($mysql_version, '8.0.4') !== false);
     }
 
     protected function assertDatabaseHas($table, array $data, $connection = null)
@@ -249,7 +265,11 @@ class SpatialTest extends BaseTestCase
         $this->assertTrue($b->contains('location', $loc2->location));
         $this->assertFalse($b->contains('location', $loc3->location));
 
-        $c = GeometryModel::distanceSphere('location', $loc1->location, 44.741406484587)->get();
+        if ($this->after_fix) {
+            $c = GeometryModel::distanceSphere('location', $loc1->location, 44.741406484236)->get();
+        } else {
+            $c = GeometryModel::distanceSphere('location', $loc1->location, 44.741406484587)->get();
+        }
         $this->assertCount(1, $c);
         $this->assertTrue($c->contains('location', $loc1->location));
         $this->assertFalse($c->contains('location', $loc2->location));
@@ -279,13 +299,18 @@ class SpatialTest extends BaseTestCase
         $loc1->save();
 
         $loc2 = new GeometryModel();
-        $loc2->location = new Point(40.767664, -73.971271); // Distance from loc1: 44.741406484588
+        $loc2->location = new Point(40.767664, -73.971271); // Distance from loc1: 44.741406484236
         $loc2->save();
 
         $a = GeometryModel::distanceSphereValue('location', $loc1->location)->get();
         $this->assertCount(2, $a);
         $this->assertEquals(0, $a[0]->distance);
-        $this->assertEquals(44.7414064845, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+
+        if ($this->after_fix) {
+            $this->assertEquals(44.7414064842, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+        } else {
+            $this->assertEquals(44.7414064845, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+        }
     }
 
     //public function testBounding() {
