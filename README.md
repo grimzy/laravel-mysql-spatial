@@ -1,9 +1,8 @@
 # Laravel MySQL Spatial extension
 
 [![Build Status](https://img.shields.io/travis/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://travis-ci.org/grimzy/laravel-mysql-spatial)
-[![Code Climate](https://img.shields.io/codeclimate/github/grimzy/laravel-mysql-spatial/badges/gpa.svg?style=flat-square)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial)
-[![Code Climate](https://img.shields.io/codeclimate/coverage/github/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial/coverage)
-[![Packagist](https://img.shields.io/packagist/v/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial)
+[![Code Climate](https://img.shields.io/codeclimate/maintainability/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial/maintainability)
+[![Code Climate](https://img.shields.io/codeclimate/c/grimzy/laravel-mysql-spatial.svg?style=flat-square&colorB=4BCA2A)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial/test_coverage)[![Packagist](https://img.shields.io/packagist/v/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial)
 [![Packagist](https://img.shields.io/packagist/dt/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](LICENSE)
 
