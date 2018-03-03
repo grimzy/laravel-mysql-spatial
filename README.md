@@ -195,6 +195,8 @@ Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/
 
 > For [`MyISAM`](https://dev.mysql.com/doc/refman/5.7/en/myisam-storage-engine.html) and (as of MySQL 5.7.5) `InnoDB` tables, MySQL can create spatial indexes using syntax similar to that for creating regular indexes, but using the `SPATIAL` keyword. Columns in spatial indexes must be declared `NOT NULL`.
 
+Also please read this [**important note**](https://laravel.com/docs/5.5/migrations#indexes) regarding Index Lengths in the Laravel 5.6 documentation.
+
 For example, as a follow up to the [Quickstart](#user-content-create-a-migration); from the command line, generate a new migration:
 
 ```shell
