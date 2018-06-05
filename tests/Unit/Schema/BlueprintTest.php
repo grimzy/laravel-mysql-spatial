@@ -32,7 +32,7 @@ class BlueprintTest extends BaseTestCase
     {
         $this->blueprint
             ->shouldReceive('addColumn')
-            ->with('point', 'col')
+            ->with('point', 'col', ['srid' => null])
             ->once();
 
         $this->blueprint->point('col');
