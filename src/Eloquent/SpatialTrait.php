@@ -46,7 +46,7 @@ trait SpatialTrait
         'equals',
         'intersects',
         'overlaps',
-        'touches'
+        'touches',
     ];
 
     /**
@@ -103,7 +103,7 @@ trait SpatialTrait
 
     public function isColumnAllowed($geometryColumn)
     {
-        if (! in_array($geometryColumn, $this->getSpatialFields())) {
+        if (!in_array($geometryColumn, $this->getSpatialFields())) {
             throw new SpatialFieldsNotDefinedException();
         }
 
@@ -169,7 +169,7 @@ trait SpatialTrait
         $query = $this->scopeDistanceSphere($query, $geometryColumn, $geometry, $distance);
 
         $query->whereRaw("st_distance_sphere($geometryColumn, ST_GeomFromText(?)) != 0", [
-            $geometry->toWkt()
+            $geometry->toWkt(),
         ]);
 
         return $query;
@@ -185,7 +185,7 @@ trait SpatialTrait
             $query->select('*');
         }
         $query->selectRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?)) as distance", [
-            $geometry->toWkt()
+            $geometry->toWkt(),
         ]);
     }
 
@@ -193,12 +193,12 @@ trait SpatialTrait
     {
         $this->isColumnAllowed($geometryColumn);
 
-        if (! in_array($relationship, $this->stRelations)) {
+        if (!in_array($relationship, $this->stRelations)) {
             throw new UnknownSpatialRelationFunction($relationship);
         }
 
         $query->whereRaw("st_{$relationship}(`$geometryColumn`, ST_GeomFromText(?))", [
-            $geometry->toWkt()
+            $geometry->toWkt(),
         ]);
 
         return $query;
