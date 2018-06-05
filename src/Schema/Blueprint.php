@@ -21,8 +21,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a point column on the table.
      *
-     * @param  string  $column
-     * @param  null|int  $srid
+     * @param string   $column
+     * @param null|int $srid
      *
      * @return \Illuminate\Support\Fluent
      */
