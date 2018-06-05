@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  db:
+      image: mysql:5.7
+      ports:
+        - "3306:3306"
+      environment:
+        MYSQL_DATABASE: 'spatial_test'
+        MYSQL_ROOT_PASSWORD: ''
+        MYSQL_ALLOW_EMPTY_PASSWORD: 1
