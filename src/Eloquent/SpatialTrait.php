@@ -61,12 +61,21 @@ trait SpatialTrait
         return new Builder($query);
     }
 
+    protected function newBaseQueryBuilder()
+    {
+        $connection = $this->getConnection();
+
+        return new BaseBuilder(
+            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
+        );
+    }
+
     protected function performInsert(EloquentBuilder $query, array $options = [])
     {
         foreach ($this->attributes as $key => $value) {
             if ($value instanceof GeometryInterface) {
                 $this->geometries[$key] = $value; //Preserve the geometry objects prior to the insert
-                $this->attributes[$key] = $this->getConnection()->raw(sprintf("ST_GeomFromText('%s')", $value->toWKT()));
+                $this->attributes[$key] = new SpatialExpression($value);
             }
         }
 
