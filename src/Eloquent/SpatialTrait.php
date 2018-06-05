@@ -3,6 +3,7 @@
 namespace Grimzy\LaravelMysqlSpatial\Eloquent;
 
 use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
+use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialRelationFunction;
 use Grimzy\LaravelMysqlSpatial\Types\Geometry;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -36,6 +37,17 @@ trait SpatialTrait
      */
 
     public $geometries = [];
+
+    protected $stRelations = [
+        'within',
+        'crosses',
+        'contains',
+        'disjoint',
+        'equals',
+        'intersects',
+        'overlaps',
+        'touches'
+    ];
 
     /**
      * Create a new Eloquent query builder for the model.
@@ -89,61 +101,105 @@ trait SpatialTrait
         }
     }
 
+    public function isColumnAllowed($geometryColumn)
+    {
+        if (! in_array($geometryColumn, $this->getSpatialFields())) {
+            throw new SpatialFieldsNotDefinedException();
+        }
+
+        return true;
+    }
+
     public function scopeDistance($query, $geometryColumn, $geometry, $distance)
     {
-        $query->whereRaw("st_distance(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
+        $this->isColumnAllowed($geometryColumn);
+
+        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) <= ?", [
+            $geometry->toWkt(),
+            $distance
+        ]);
 
         return $query;
     }
 
     public function scopeDistanceExcludingSelf($query, $geometryColumn, $geometry, $distance)
     {
+        $this->isColumnAllowed($geometryColumn);
+
         $query = $this->scopeDistance($query, $geometryColumn, $geometry, $distance);
 
-        $query->whereRaw("st_distance(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) != 0");
+        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) != 0", [
+            $geometry->toWkt()
+        ]);
 
         return $query;
     }
 
     public function scopeDistanceValue($query, $geometryColumn, $geometry)
     {
+        $this->isColumnAllowed($geometryColumn);
+
         $columns = $query->getQuery()->columns;
 
         if (!$columns) {
             $query->select('*');
         }
-        $query->selectRaw("st_distance(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) as distance");
+
+        $query->selectRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) as distance", [
+            $geometry->toWkt()
+        ]);
     }
 
     public function scopeDistanceSphere($query, $geometryColumn, $geometry, $distance)
     {
-        $query->whereRaw("st_distance_sphere(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
+        $this->isColumnAllowed($geometryColumn);
+
+        $query->whereRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?)) <= ?", [
+            $geometry->toWkt(),
+            $distance
+        ]);
 
         return $query;
     }
 
     public function scopeDistanceSphereExcludingSelf($query, $geometryColumn, $geometry, $distance)
     {
+        $this->isColumnAllowed($geometryColumn);
+
         $query = $this->scopeDistanceSphere($query, $geometryColumn, $geometry, $distance);
 
-        $query->whereRaw("st_distance_sphere(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) != 0");
+        $query->whereRaw("st_distance_sphere($geometryColumn, ST_GeomFromText(?)) != 0", [
+            $geometry->toWkt()
+        ]);
 
         return $query;
     }
 
     public function scopeDistanceSphereValue($query, $geometryColumn, $geometry)
     {
+        $this->isColumnAllowed($geometryColumn);
+
         $columns = $query->getQuery()->columns;
 
         if (!$columns) {
             $query->select('*');
         }
-        $query->selectRaw("st_distance_sphere(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}')) as distance");
+        $query->selectRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?)) as distance", [
+            $geometry->toWkt()
+        ]);
     }
 
     public function scopeComparison($query, $geometryColumn, $geometry, $relationship)
     {
-        $query->whereRaw("st_{$relationship}(`{$geometryColumn}`, ST_GeomFromText('{$geometry->toWkt()}'))");
+        $this->isColumnAllowed($geometryColumn);
+
+        if (! in_array($relationship, $this->stRelations)) {
+            throw new UnknownSpatialRelationFunction($relationship);
+        }
+
+        $query->whereRaw("st_{$relationship}(`$geometryColumn`, ST_GeomFromText(?))", [
+            $geometry->toWkt()
+        ]);
 
         return $query;
     }
