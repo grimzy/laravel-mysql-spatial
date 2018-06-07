@@ -125,7 +125,7 @@ trait SpatialTrait
 
         $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) <= ?", [
             $geometry->toWkt(),
-            $distance
+            $distance,
         ]);
 
         return $query;
@@ -138,7 +138,7 @@ trait SpatialTrait
         $query = $this->scopeDistance($query, $geometryColumn, $geometry, $distance);
 
         $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) != 0", [
-            $geometry->toWkt()
+            $geometry->toWkt(),
         ]);
 
         return $query;
@@ -155,7 +155,7 @@ trait SpatialTrait
         }
 
         $query->selectRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) as distance", [
-            $geometry->toWkt()
+            $geometry->toWkt(),
         ]);
     }
 
@@ -165,7 +165,7 @@ trait SpatialTrait
 
         $query->whereRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?)) <= ?", [
             $geometry->toWkt(),
-            $distance
+            $distance,
         ]);
 
         return $query;
