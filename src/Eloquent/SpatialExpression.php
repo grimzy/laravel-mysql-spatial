@@ -15,5 +15,4 @@ class SpatialExpression extends Expression
     {
         return $this->value->toWkt();
     }
-
 }
