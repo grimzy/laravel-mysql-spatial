@@ -24,7 +24,7 @@ class MysqlConnection extends IlluminateMySqlConnection
                 'multilinestring',
                 'multipolygon',
                 'geometrycollection',
-                'geomcollection'
+                'geomcollection',
             ];
             $dbPlatform = $this->getDoctrineSchemaManager()->getDatabasePlatform();
             foreach ($geometries as $type) {
