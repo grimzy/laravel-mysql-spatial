@@ -32,6 +32,14 @@ class SpatialTest extends BaseTestCase
         $app['config']->set('database.connections.mysql.database', 'spatial_test');
         $app['config']->set('database.connections.mysql.username', 'root');
         $app['config']->set('database.connections.mysql.password', '');
+        $app['config']->set('database.connections.mysql.modes', [
+            'ONLY_FULL_GROUP_BY',
+            'STRICT_TRANS_TABLES',
+            'NO_ZERO_IN_DATE',
+            'NO_ZERO_DATE',
+            'ERROR_FOR_DIVISION_BY_ZERO',
+            'NO_ENGINE_SUBSTITUTION',
+        ]);
 
         return $app;
     }
@@ -71,7 +79,7 @@ class SpatialTest extends BaseTestCase
         $results = DB::select(DB::raw('select version()'));
         $mysql_version = $results[0]->{'version()'};
 
-        return strpos($mysql_version, '8.0.4') !== false;
+        return version_compare($mysql_version, '8.0.4', '>=');
     }
 
     protected function assertDatabaseHas($table, array $data, $connection = null)
