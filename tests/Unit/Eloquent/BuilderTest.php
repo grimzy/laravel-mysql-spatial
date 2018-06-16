@@ -4,6 +4,7 @@ namespace Eloquent;
 
 use BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Eloquent\Builder;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialExpression;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
@@ -36,49 +37,38 @@ class BuilderTest extends BaseTestCase
 
     public function testUpdatePoint()
     {
-        $this->queryBuilder
-            ->shouldReceive('raw')
-            ->with("ST_GeomFromText('POINT(2 1)')")
-            ->once();
-
+        $point = new Point(1, 2);
         $this->queryBuilder
             ->shouldReceive('update')
+            ->with(['point' => new SpatialExpression($point)])
             ->once();
 
-        $this->builder->update(['point' => new Point(1, 2)]);
+        $this->builder->update(['point' => $point]);
     }
 
     public function testUpdateLinestring()
     {
-        $this->queryBuilder
-            ->shouldReceive('raw')
-            ->with("ST_GeomFromText('LINESTRING(0 0,1 1,2 2)')")
-            ->once();
+        $linestring = new LineString([new Point(0, 0), new Point(1, 1), new Point(2, 2)]);
 
         $this->queryBuilder
             ->shouldReceive('update')
+            ->with(['linestring' => new SpatialExpression($linestring)])
             ->once();
-
-        $linestring = new LineString([new Point(0, 0), new Point(1, 1), new Point(2, 2)]);
 
         $this->builder->update(['linestring' => $linestring]);
     }
 
     public function testUpdatePolygon()
     {
-        $this->queryBuilder
-            ->shouldReceive('raw')
-            ->with("ST_GeomFromText('POLYGON((0 0,1 0),(1 0,1 1),(1 1,0 0))')")
-            ->once();
-
-        $this->queryBuilder
-            ->shouldReceive('update')
-            ->once();
-
         $linestrings[] = new LineString([new Point(0, 0), new Point(0, 1)]);
         $linestrings[] = new LineString([new Point(0, 1), new Point(1, 1)]);
         $linestrings[] = new LineString([new Point(1, 1), new Point(0, 0)]);
         $polygon = new Polygon($linestrings);
+
+        $this->queryBuilder
+            ->shouldReceive('update')
+            ->with(['polygon' => new SpatialExpression($polygon)])
+            ->once();
 
         $this->builder->update(['polygon' => $polygon]);
     }

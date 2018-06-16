@@ -2,9 +2,9 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Eloquent;
 
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
-class BaseBuilder extends Builder
+class BaseBuilder extends QueryBuilder
 {
     protected function cleanBindings(array $bindings)
     {
