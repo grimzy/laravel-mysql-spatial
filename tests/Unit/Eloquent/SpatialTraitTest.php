@@ -229,10 +229,11 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertEquals('st_distance(`point`, ST_GeomFromText(?)) <= ?', $q->wheres[0]['sql']);
-        $this->assertEquals('POINT(2 1)', $q->bindings['where'][0]);
-        $this->assertEquals(10, $q->bindings['where'][1]);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
+        $this->assertEquals(10, $bindings[1]);
     }
 
     public function testScopeDistanceExcludingSelf()
@@ -243,12 +244,13 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertEquals('st_distance(`point`, ST_GeomFromText(?)) <= ?', $q->wheres[0]['sql']);
         $this->assertEquals('st_distance(`point`, ST_GeomFromText(?)) != 0', $q->wheres[1]['sql']);
-        $this->assertEquals('POINT(2 1)', $q->bindings['where'][0]);
-        $this->assertEquals(10, $q->bindings['where'][1]);
-        $this->assertEquals('POINT(2 1)', $q->bindings['where'][2]);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
+        $this->assertEquals(10, $bindings[1]);
+        $this->assertEquals('POINT(2 1)', $bindings[2]);
     }
 
     public function testScopeDistanceSphere()
@@ -259,10 +261,11 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?)) <= ?', $q->wheres[0]['sql']);
-        $this->assertEquals('POINT(2 1)', $q->bindings['where'][0]);
-        $this->assertEquals(10, $q->bindings['where'][1]);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
+        $this->assertEquals(10, $bindings[1]);
     }
 
     public function testScopeDistanceSphereExcludingSelf()
@@ -273,12 +276,13 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?)) <= ?', $q->wheres[0]['sql']);
         $this->assertEquals('st_distance_sphere(point, ST_GeomFromText(?)) != 0', $q->wheres[1]['sql']);
-        $this->assertEquals('POINT(2 1)', $q->bindings['where'][0]);
-        $this->assertEquals(10, $q->bindings['where'][1]);
-        $this->assertEquals('POINT(2 1)', $q->bindings['where'][2]);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
+        $this->assertEquals(10, $bindings[1]);
+        $this->assertEquals('POINT(2 1)', $bindings[2]);
     }
 
     public function testScopeDistanceValue()
@@ -289,11 +293,12 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->columns);
-        $this->assertNotEmpty($q->bindings['select']);
+        $bindings = $q->getRawBindings()['select'];
+        $this->assertNotEmpty($bindings);
         $this->assertEquals('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
         $this->assertEquals('st_distance(`point`, ST_GeomFromText(?)) as distance', $q->columns[1]->getValue());
-        $this->assertEquals('POINT(2 1)', $q->bindings['select'][0]);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
     public function testScopeDistanceValueWithSelect()
@@ -304,11 +309,12 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->columns);
-        $this->assertNotEmpty($q->bindings['select']);
+        $bindings = $q->getRawBindings()['select'];
+        $this->assertNotEmpty($bindings);
         $this->assertEquals('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
         $this->assertEquals('st_distance(`point`, ST_GeomFromText(?)) as distance', $q->columns[1]->getValue());
-        $this->assertEquals('POINT(2 1)', $q->bindings['select'][0]);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
     public function testScopeDistanceSphereValue()
@@ -319,11 +325,12 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->columns);
-        $this->assertNotEmpty($q->bindings['select']);
+        $bindings = $q->getRawBindings()['select'];
+        $this->assertNotEmpty($bindings);
         $this->assertEquals('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
         $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?)) as distance', $q->columns[1]->getValue());
-        $this->assertEquals('POINT(2 1)', $q->bindings['select'][0]);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
     public function testScopeDistanceSphereValueWithSelect()
@@ -334,11 +341,12 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->columns);
-        $this->assertNotEmpty($q->bindings['select']);
+        $bindings = $q->getRawBindings()['select'];
+        $this->assertNotEmpty($bindings);
         $this->assertEquals('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
         $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?)) as distance', $q->columns[1]->getValue());
-        $this->assertEquals('POINT(2 1)', $q->bindings['select'][0]);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
     private function buildTestPolygon()
@@ -363,9 +371,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_within(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
     public function testScopeWithin()
@@ -375,9 +384,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_within(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
     public function testScopeCrosses()
@@ -387,9 +397,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_crosses(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
     public function testScopeContains()
@@ -399,9 +410,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_contains(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
     public function testScopeDisjoint()
@@ -411,9 +423,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_disjoint(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
     public function testScopeEquals()
@@ -423,9 +436,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_equals(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
     public function testScopeIntersects()
@@ -435,9 +449,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_intersects(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
     public function testScopeOverlaps()
@@ -447,9 +462,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_overlaps(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
     public function testScopeDoesTouch()
@@ -459,9 +475,10 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
         $q = $query->getQuery();
         $this->assertNotEmpty($q->wheres);
-        $this->assertNotEmpty($q->bindings['where']);
+        $bindings = $q->getRawBindings()['where'];
+        $this->assertNotEmpty($bindings);
         $this->assertContains('st_touches(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
-        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $q->bindings['where'][0]);
+        $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 }
 
