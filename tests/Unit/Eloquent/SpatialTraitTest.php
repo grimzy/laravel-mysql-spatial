@@ -37,14 +37,16 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("ST_GeomFromText('POINT(2 1)')", $this->queries[0]);
+        $this->assertContains('insert into `test_models` (`point`) values (ST_GeomFromText(?))', $this->queries[0]);
+        // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->point = new Point(1, 2);
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("ST_GeomFromText('POINT(2 1)')", $this->queries[1]);
+        $this->assertContains('update `test_models` set `point` = ST_GeomFromText(?) where `id` = ?', $this->queries[1]);
+        // TODO: assert bindings in query
     }
 
     public function testInsertUpdateLineStringHasCorrectSql()
@@ -58,14 +60,16 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("ST_GeomFromText('LINESTRING(2 1,3 2)')", $this->queries[0]);
+        $this->assertContains('insert into `test_models` (`linestring`) values (ST_GeomFromText(?))', $this->queries[0]);
+        // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->linestring = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2]);
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("ST_GeomFromText('LINESTRING(2 1,3 2)')", $this->queries[1]);
+        $this->assertContains('update `test_models` set `linestring` = ST_GeomFromText(?) where `id` = ?', $this->queries[1]);
+        // TODO: assert bindings in query
     }
 
     public function testInsertUpdatePolygonHasCorrectSql()
@@ -83,13 +87,15 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("ST_GeomFromText('POLYGON((2 1,3 2),(2 3,1 2))')", $this->queries[0]);
+        $this->assertContains('insert into `test_models` (`polygon`) values (ST_GeomFromText(?))', $this->queries[0]);
+        // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("ST_GeomFromText('POLYGON((2 1,3 2),(2 3,1 2))')", $this->queries[1]);
+        $this->assertContains('update `test_models` set `polygon` = ST_GeomFromText(?) where `id` = ?', $this->queries[1]);
+        // TODO: assert bindings in query
     }
 
     public function testInsertUpdateMultiPointHasCorrectSql()
@@ -103,14 +109,16 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("ST_GeomFromText('MULTIPOINT((2 1),(3 2))')", $this->queries[0]);
+        $this->assertContains('insert into `test_models` (`multipoint`) values (ST_GeomFromText(?))', $this->queries[0]);
+        // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->multipoint = new \Grimzy\LaravelMysqlSpatial\Types\MultiPoint([$point1, $point2]);
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("ST_GeomFromText('MULTIPOINT((2 1),(3 2))')", $this->queries[1]);
+        $this->assertContains('update `test_models` set `multipoint` = ST_GeomFromText(?) where `id` = ?', $this->queries[1]);
+        // TODO: assert bindings in query
     }
 
     public function testInsertUpdateMultiLineStringHasCorrectSql()
@@ -128,13 +136,15 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("ST_GeomFromText('MULTILINESTRING((2 1,3 2),(2 3,1 2))')", $this->queries[0]);
+        $this->assertContains('insert into `test_models` (`multilinestring`) values (ST_GeomFromText(?))', $this->queries[0]);
+        // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->multilinestring = new \Grimzy\LaravelMysqlSpatial\Types\MultiLineString([$linestring1, $linestring2]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("ST_GeomFromText('MULTILINESTRING((2 1,3 2),(2 3,1 2))')", $this->queries[1]);
+        $this->assertContains('update `test_models` set `multilinestring` = ST_GeomFromText(?) where `id` = ?', $this->queries[1]);
+        // TODO: assert bindings in query
     }
 
     public function testInsertUpdateMultiPolygonHasCorrectSql()
@@ -161,13 +171,15 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("ST_GeomFromText('MULTIPOLYGON(((2 1,3 2),(2 3,1 2)),((5 4,6 5),(5 6,4 5)))')", $this->queries[0]);
+        $this->assertContains('insert into `test_models` (`multipolygon`) values (ST_GeomFromText(?))', $this->queries[0]);
+        // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->multipolygon = new \Grimzy\LaravelMysqlSpatial\Types\MultiPolygon([$polygon1, $polygon2]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("ST_GeomFromText('MULTIPOLYGON(((2 1,3 2),(2 3,1 2)),((5 4,6 5),(5 6,4 5)))')", $this->queries[1]);
+        $this->assertContains('update `test_models` set `multipolygon` = ST_GeomFromText(?) where `id` = ?', $this->queries[1]);
+        // TODO: assert bindings in query
     }
 
     public function testInsertUpdateGeometryCollectionHasCorrectSql()
@@ -183,13 +195,15 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains("ST_GeomFromText('GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(3 2,3 3))')", $this->queries[0]);
+        $this->assertContains('insert into `test_models` (`geometrycollection`) values (ST_GeomFromText(?))', $this->queries[0]);
+        // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->geometrycollection = new \Grimzy\LaravelMysqlSpatial\Types\GeometryCollection([$point1, $linestring1]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains("ST_GeomFromText('GEOMETRYCOLLECTION(POINT(2 1),LINESTRING(3 2,3 3))')", $this->queries[1]);
+        $this->assertContains('update `test_models` set `geometrycollection` = ST_GeomFromText(?) where `id` = ?', $this->queries[1]);
+        // TODO: assert bindings in query
     }
 
     public function testSettingRawAttributes()
