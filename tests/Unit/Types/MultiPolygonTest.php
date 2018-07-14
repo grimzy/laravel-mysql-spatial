@@ -13,6 +13,13 @@ class MultiPolygonTest extends BaseTestCase
         $this->assertInstanceOf(MultiPolygon::class, $polygon);
 
         $this->assertEquals(2, $polygon->count());
+
+        $polygon = MultiPolygon::fromWKT('MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))');
+        $this->assertInstanceOf(MultiPolygon::class, $polygon);
+
+        $this->assertEquals(2, $polygon->count());
+
+        $this->assertEquals('MULTIPOLYGON(((30 20,45 40,10 40,30 20)),((15 5,40 10,10 20,5 10,15 5)))', $polygon->toWKT());
     }
 
     public function testToWKT()
