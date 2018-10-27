@@ -208,7 +208,7 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testSettingRawAttributes()
     {
-        $attributes['point'] = '0101000000000000000000f03f0000000000000040';
+        $attributes['point'] = "\0\0\0\0".'0101000000000000000000f03f0000000000000040';
 
         $this->model->setRawAttributes($attributes);
         $this->assertInstanceOf(Point::class, ($this->model->point));

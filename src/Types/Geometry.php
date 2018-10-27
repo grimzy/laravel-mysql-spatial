@@ -55,11 +55,7 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
     public static function fromWKB($wkb)
     {
         // mysql adds 4 NUL bytes at the start of the binary
-        $prefix = "\0\0\0\0";
-        if (substr($wkb, 0, strlen($prefix)) == $prefix) {
-            $wkb = substr($wkb, strlen($prefix));
-        }
-
+        $wkb = substr($wkb, 4);
         $parser = new Parser(new Factory());
 
         return $parser->parse($wkb);
