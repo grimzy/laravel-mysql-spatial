@@ -7,6 +7,7 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialRelationFunction;
 use Grimzy\LaravelMysqlSpatial\Types\Geometry;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Trait SpatialTrait.
@@ -49,6 +50,25 @@ trait SpatialTrait
         'touches',
     ];
 
+    public static function bootSpatialTrait()
+    {
+        static::saving(function (Model $model) {
+            foreach ($model->attributes as $key => $value) {
+                if ($value instanceof GeometryInterface) {
+                    $model->geometries[$key] = $value; //Preserve the geometry objects prior to the insert
+                    $model->attributes[$key] = new SpatialExpression($value);
+                }
+            }
+        });
+
+        $saved = function (Model $model) {
+            $model->attributes = array_merge($model->attributes, $model->geometries);
+        };
+
+        static::saved($saved);
+        static::created($saved);
+    }
+
     /**
      * Create a new Eloquent query builder for the model.
      *
@@ -68,24 +88,6 @@ trait SpatialTrait
         return new BaseBuilder(
             $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
         );
-    }
-
-    protected function performInsert(EloquentBuilder $query, array $options = [])
-    {
-        foreach ($this->attributes as $key => $value) {
-            if ($value instanceof GeometryInterface) {
-                $this->geometries[$key] = $value; //Preserve the geometry objects prior to the insert
-                $this->attributes[$key] = new SpatialExpression($value);
-            }
-        }
-
-        $insert = parent::performInsert($query, $options);
-
-        foreach ($this->geometries as $key => $value) {
-            $this->attributes[$key] = $value; //Retrieve the geometry objects so they can be used in the model
-        }
-
-        return $insert; //Return the result of the parent insert
     }
 
     public function setRawAttributes(array $attributes, $sync = false)
