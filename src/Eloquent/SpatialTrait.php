@@ -64,7 +64,7 @@ trait SpatialTrait
             $model->attributes = array_merge($model->attributes, $model->geometries);
         };
 
-        static::saved($saved);
+        static::updated($saved);
         static::created($saved);
     }
 
