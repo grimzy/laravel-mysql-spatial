@@ -2,6 +2,10 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
+use GeoJson\GeoJson;
+use GeoJson\Geometry\Point as GeoJsonPoint;
+use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
+
 class Point extends Geometry
 {
     protected $lat;
@@ -62,12 +66,32 @@ class Point extends Geometry
     }
 
     /**
+     * @param $geoJson  \GeoJson\Feature\Feature|string
+     *
+     * @return \Grimzy\LaravelMysqlSpatial\Types\Point
+     */
+    public static function fromJson($geoJson)
+    {
+        if (is_string($geoJson)) {
+            $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
+        }
+
+        if (!is_a($geoJson, GeoJsonPoint::class)) {
+            throw new InvalidGeoJsonException('Expected '.GeoJsonPoint::class.', got '.get_class($geoJson));
+        }
+
+        $coordinates = $geoJson->getCoordinates();
+
+        return new self($coordinates[1], $coordinates[0]);
+    }
+
+    /**
      * Convert to GeoJson Point that is jsonable to GeoJSON.
      *
      * @return \GeoJson\Geometry\Point
      */
     public function jsonSerialize()
     {
-        return new \GeoJson\Geometry\Point([$this->getLng(), $this->getLat()]);
+        return new GeoJsonPoint([$this->getLng(), $this->getLat()]);
     }
 }

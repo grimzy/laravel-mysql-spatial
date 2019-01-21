@@ -2,6 +2,9 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
+use GeoJson\GeoJson;
+use GeoJson\Geometry\MultiPolygon as GeoJsonMultiPolygon;
+use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 use InvalidArgumentException;
 
 class MultiPolygon extends GeometryCollection
@@ -97,6 +100,32 @@ class MultiPolygon extends GeometryCollection
         parent::offsetSet($offset, $value);
     }
 
+    public static function fromJson($geoJson)
+    {
+        if (is_string($geoJson)) {
+            $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
+        }
+
+        if (!is_a($geoJson, GeoJsonMultiPolygon::class)) {
+            throw new InvalidGeoJsonException('Expected '.GeoJsonMultiPolygon::class.', got '.get_class($geoJson));
+        }
+
+        $set = [];
+        foreach ($geoJson->getCoordinates() as $polygonCoordinates) {
+            $lineStrings = [];
+            foreach ($polygonCoordinates as $lineStringCoordinates) {
+                $points = [];
+                foreach ($lineStringCoordinates as $lineStringCoordinate) {
+                    $points[] = new Point($lineStringCoordinate[1], $lineStringCoordinate[0]);
+                }
+                $lineStrings[] = new LineString($points);
+            }
+            $set[] = new Polygon($lineStrings);
+        }
+
+        return new self($set);
+    }
+
     /**
      * Convert to GeoJson MultiPolygon that is jsonable to GeoJSON.
      *
@@ -109,6 +138,6 @@ class MultiPolygon extends GeometryCollection
             $polygons[] = $polygon->jsonSerialize();
         }
 
-        return new \GeoJson\Geometry\MultiPolygon($polygons);
+        return new GeoJsonMultiPolygon($polygons);
     }
 }

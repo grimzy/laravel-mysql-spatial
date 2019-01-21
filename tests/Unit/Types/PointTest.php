@@ -53,6 +53,20 @@ class PointTest extends BaseTestCase
         $this->assertEquals('1.3 2', (string) $point);
     }
 
+    public function testFromJson()
+    {
+        $point = Point::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
+        $this->assertInstanceOf(Point::class, $point);
+        $this->assertEquals(1.2, $point->getLat());
+        $this->assertEquals(3.4, $point->getLng());
+    }
+
+    public function testInvalidGeoJsonException()
+    {
+        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
+        Point::fromJson('{"type": "LineString","coordinates":[[1,1],[2,2]]}');
+    }
+
     public function testJsonSerialize()
     {
         $point = new Point(1.2, 3.4);
