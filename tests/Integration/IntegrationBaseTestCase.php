@@ -22,7 +22,7 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
         /**
-         * @param \Illuminate\Config\Repository $config
+         * @param \Illuminate\Contracts\Config\Repository $config
          */
         $config = $app->config;
         $config->set('database.default', 'mysql');
@@ -89,12 +89,15 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
         }
     }
 
-    protected function assertException($exceptionName)
+    protected function assertException($exceptionName, $exceptionMessage = null)
     {
         if (method_exists(parent::class, 'expectException')) {
             parent::expectException($exceptionName);
+            if (!is_null($exceptionMessage)) {
+                $this->expectExceptionMessage($exceptionMessage);
+            }
         } else {
-            $this->setExpectedException($exceptionName);
+            $this->setExpectedException($exceptionName, $exceptionMessage);
         }
     }
 

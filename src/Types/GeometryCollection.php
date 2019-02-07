@@ -23,11 +23,14 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
 
     /**
      * @param GeometryInterface[] $geometries
+     * @param int $srid
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(array $geometries)
+    public function __construct(array $geometries, $srid = 0)
     {
+        parent::__construct($srid);
+
         $validated = array_filter($geometries, function ($value) {
             return $value instanceof GeometryInterface;
         });
@@ -56,7 +59,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }, $this->items));
     }
 
-    public static function fromString($wktArgument)
+    public static function fromString($wktArgument, $srid = 0)
     {
         $geometry_strings = preg_split('/,\s*(?=[A-Za-z])/', $wktArgument);
 
@@ -64,7 +67,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
             $klass = Geometry::getWKTClass($geometry_string);
 
             return call_user_func($klass.'::fromWKT', $geometry_string);
-        }, $geometry_strings));
+        }, $geometry_strings), $srid);
     }
 
     public function toArray()
