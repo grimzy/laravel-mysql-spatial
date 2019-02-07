@@ -1,7 +1,7 @@
 <?php
 
+use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateLocationTable extends Migration
@@ -30,6 +30,18 @@ class CreateLocationTable extends Migration
             $table->increments('id');
             $table->geometry('geometry')->default(null)->nullable();
         });
+
+        Schema::create('with_srid', function (Blueprint $table) {
+            $table->increments('id');
+            $table->geometry('geo', 3857)->default(null)->nullable();
+            $table->point('location', 3857)->default(null)->nullable();
+            $table->lineString('line', 3857)->default(null)->nullable();
+            $table->polygon('shape', 3857)->default(null)->nullable();
+            $table->multiPoint('multi_locations', 3857)->default(null)->nullable();
+            $table->multiLineString('multi_lines', 3857)->default(null)->nullable();
+            $table->multiPolygon('multi_shapes', 3857)->default(null)->nullable();
+            $table->geometryCollection('multi_geometries', 3857)->default(null)->nullable();
+        });
     }
 
     /**
@@ -41,5 +53,6 @@ class CreateLocationTable extends Migration
     {
         Schema::drop('geometry');
         Schema::drop('no_spatial_fields');
+        Schema::drop('with_srid');
     }
 }
