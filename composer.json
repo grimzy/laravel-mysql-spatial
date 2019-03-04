@@ -1,6 +1,11 @@
 {
     "name": "grimzy/laravel-mysql-spatial",
     "description": "MySQL spatial data types extension for Laravel.",
+    "scripts": {
+        "test": "phpunit -c phpunit.xml.dist",
+        "test:unit": "phpunit -c phpunit.xml.dist --testsuite unit",
+        "test:integration": "phpunit -c phpunit.xml.dist --testsuite integration"
+    },
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,6 +16,8 @@
     ],
     "require": {
         "php": ">=5.5",
+        "ext-pdo": "*",
+        "ext-json": "*",
         "illuminate/database": "^5.2",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0"
