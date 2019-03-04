@@ -55,7 +55,7 @@ trait SpatialTrait
 
     protected $stOrderFunctions = [
         'distance',
-        'distance_sphere'
+        'distance_sphere',
     ];
 
     /**
@@ -115,7 +115,7 @@ trait SpatialTrait
         if (property_exists($this, 'spatialFields')) {
             return $this->spatialFields;
         } else {
-            throw new SpatialFieldsNotDefinedException(__CLASS__ . ' has to define $spatialFields');
+            throw new SpatialFieldsNotDefinedException(__CLASS__.' has to define $spatialFields');
         }
     }
 
@@ -271,7 +271,7 @@ trait SpatialTrait
         }
 
         $query->orderByRaw("st_{$orderFunction}(`$geometryColumn`, ST_GeomFromText(?)) {$direction}", [
-            $geometry->toWkt()
+            $geometry->toWkt(),
         ]);
 
         return $query;
