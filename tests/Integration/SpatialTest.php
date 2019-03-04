@@ -70,7 +70,7 @@ class SpatialTest extends BaseTestCase
      */
     public function createApplication()
     {
-        $app = require __DIR__ . '/../../vendor/laravel/laravel/bootstrap/app.php';
+        $app = require __DIR__.'/../../vendor/laravel/laravel/bootstrap/app.php';
         $app->register(SpatialServiceProvider::class);
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
@@ -154,7 +154,7 @@ class SpatialTest extends BaseTestCase
         $fileSystem = new Filesystem();
         $classFinder = new Tools\ClassFinder();
 
-        $migrations = $fileSystem->files(__DIR__ . '/Migrations');
+        $migrations = $fileSystem->files(__DIR__.'/Migrations');
         $reverse_sort ? rsort($migrations, SORT_STRING) : sort($migrations, SORT_STRING);
 
         foreach ($migrations as $file) {
