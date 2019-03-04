@@ -3,6 +3,7 @@
 namespace Grimzy\LaravelMysqlSpatial\Eloquent;
 
 use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
+use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialFunctionException;
 use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialRelationFunction;
 use Grimzy\LaravelMysqlSpatial\Types\Geometry;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
@@ -24,6 +25,9 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
  * @method static intersects($geometryColumn, $geometry)
  * @method static overlaps($geometryColumn, $geometry)
  * @method static doesTouch($geometryColumn, $geometry)
+ * @method static orderBySpatial($geometryColumn, $geometry, $orderFunction, $direction = 'asc')
+ * @method static orderByDistance($geometryColumn, $geometry, $direction = 'asc')
+ * @method static orderByDistanceSphere($geometryColumn, $geometry, $direction = 'asc')
  */
 trait SpatialTrait
 {
@@ -47,6 +51,11 @@ trait SpatialTrait
         'intersects',
         'overlaps',
         'touches',
+    ];
+
+    protected $stOrderFunctions = [
+        'distance',
+        'distance_sphere'
     ];
 
     /**
@@ -106,7 +115,7 @@ trait SpatialTrait
         if (property_exists($this, 'spatialFields')) {
             return $this->spatialFields;
         } else {
-            throw new SpatialFieldsNotDefinedException(__CLASS__.' has to define $spatialFields');
+            throw new SpatialFieldsNotDefinedException(__CLASS__ . ' has to define $spatialFields');
         }
     }
 
@@ -251,5 +260,30 @@ trait SpatialTrait
     public function scopeDoesTouch($query, $geometryColumn, $geometry)
     {
         return $this->scopeComparison($query, $geometryColumn, $geometry, 'touches');
+    }
+
+    public function scopeOrderBySpatial($query, $geometryColumn, $geometry, $orderFunction, $direction = 'asc')
+    {
+        $this->isColumnAllowed($geometryColumn);
+
+        if (!in_array($orderFunction, $this->stOrderFunctions)) {
+            throw new UnknownSpatialFunctionException($orderFunction);
+        }
+
+        $query->orderByRaw("st_{$orderFunction}(`$geometryColumn`, ST_GeomFromText(?)) {$direction}", [
+            $geometry->toWkt()
+        ]);
+
+        return $query;
+    }
+
+    public function scopeOrderByDistance($query, $geometryColumn, $geometry, $direction = 'asc')
+    {
+        return $this->scopeOrderBySpatial($query, $geometryColumn, $geometry, 'distance', $direction);
+    }
+
+    public function scopeOrderByDistanceSphere($query, $geometryColumn, $geometry, $direction = 'asc')
+    {
+        return $this->scopeOrderBySpatial($query, $geometryColumn, $geometry, 'distance_sphere', $direction);
     }
 }

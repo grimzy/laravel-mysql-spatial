@@ -15,6 +15,54 @@ class SpatialTest extends BaseTestCase
 {
     protected $after_fix = false;
 
+    public static function setUpBeforeClass()
+    {
+        self::cleanDatabase(true);
+
+        parent::setUpBeforeClass();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::cleanDatabase();
+
+        parent::tearDownAfterClass();
+    }
+
+    /**
+     * Deletes the database.
+     *
+     * @param bool $recreate If true, then creates the database after deletion
+     */
+    private static function cleanDatabase($recreate = false)
+    {
+        $database = env('DB_DATABASE');
+
+        try {
+            $pdo = new PDO(
+                sprintf(
+                    'mysql:host=%s;port=%d;',
+                    env('DB_HOST'),
+                    env('DB_PORT')
+                ),
+                env('DB_USERNAME'),
+                env('DB_PASSWORD')
+            );
+
+            $pdo->exec(sprintf('DROP DATABASE IF EXISTS %s', $database));
+            if ($recreate) {
+                $pdo->exec(sprintf(
+                    'CREATE DATABASE %s CHARACTER SET %s COLLATE %s;',
+                    $database,
+                    env('DB_CHARSET', 'utf8mb4'),
+                    env('DB_COLLATION', 'utf8mb4_unicode_ci')
+                ));
+            }
+        } catch (RuntimeException $exception) {
+            throw $exception;
+        }
+    }
+
     /**
      * Boots the application.
      *
@@ -22,16 +70,17 @@ class SpatialTest extends BaseTestCase
      */
     public function createApplication()
     {
-        $app = require __DIR__.'/../../vendor/laravel/laravel/bootstrap/app.php';
+        $app = require __DIR__ . '/../../vendor/laravel/laravel/bootstrap/app.php';
         $app->register(SpatialServiceProvider::class);
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
         $app['config']->set('database.default', 'mysql');
-        $app['config']->set('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
-        $app['config']->set('database.connections.mysql.database', 'spatial_test');
-        $app['config']->set('database.connections.mysql.username', 'root');
-        $app['config']->set('database.connections.mysql.password', '');
+        $app['config']->set('database.connections.mysql.host', env('DB_HOST'));
+        $app['config']->set('database.connections.mysql.port', env('DB_PORT'));
+        $app['config']->set('database.connections.mysql.database', env('DB_DATABASE'));
+        $app['config']->set('database.connections.mysql.username', env('DB_USERNAME'));
+        $app['config']->set('database.connections.mysql.password', env('DB_PASSWORD'));
         $app['config']->set('database.connections.mysql.modes', [
             'ONLY_FULL_GROUP_BY',
             'STRICT_TRANS_TABLES',
@@ -59,9 +108,9 @@ class SpatialTest extends BaseTestCase
             (new $migrationClass())->up();
         });
 
-        //\DB::listen(function($sql) {
-        //    var_dump($sql);
-        //});
+//        \DB::listen(function($sql) {
+//            var_dump($sql);
+//        });
     }
 
     public function tearDown()
@@ -105,7 +154,7 @@ class SpatialTest extends BaseTestCase
         $fileSystem = new Filesystem();
         $classFinder = new Tools\ClassFinder();
 
-        $migrations = $fileSystem->files(__DIR__.'/Migrations');
+        $migrations = $fileSystem->files(__DIR__ . '/Migrations');
         $reverse_sort ? rsort($migrations, SORT_STRING) : sort($migrations, SORT_STRING);
 
         foreach ($migrations as $file) {
@@ -321,6 +370,82 @@ class SpatialTest extends BaseTestCase
         } else {
             $this->assertEquals(44.7414064845, $a[1]->distance); // PHP floats' 11th+ digits don't matter
         }
+    }
+
+    public function testOrderBySpatialWithUnknownFunction()
+    {
+        $loc = new GeometryModel();
+        $loc->location = new Point(1, 1);
+
+        $this->assertException(\Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialFunctionException::class);
+        GeometryModel::orderBySpatial('location', $loc->location, 'does-not-exist')->get();
+    }
+
+    public function testOrderByDistance()
+    {
+        $loc2 = new GeometryModel();
+        $loc2->location = new Point(2, 2); // Distance from loc1: 1.4142135623731
+        $loc2->save();
+
+        $loc1 = new GeometryModel();
+        $loc1->location = new Point(1, 1);
+        $loc1->save();
+
+        $loc3 = new GeometryModel();
+        $loc3->location = new Point(3, 3); // Distance from loc1: 2.8284271247462
+        $loc3->save();
+
+        $a = GeometryModel::orderByDistance('location', $loc1->location)->get();
+        $this->assertCount(3, $a);
+        $this->assertEquals($loc1->location, $a[0]->location);
+        $this->assertEquals($loc2->location, $a[1]->location);
+        $this->assertEquals($loc3->location, $a[2]->location);
+
+        // Excluding self
+        $b = GeometryModel::orderByDistance('location', $loc1->location, 'asc')->get();
+        $this->assertCount(3, $b);
+        $this->assertEquals($loc1->location, $b[0]->location);
+        $this->assertEquals($loc2->location, $b[1]->location);
+        $this->assertEquals($loc3->location, $b[2]->location);
+
+        $c = GeometryModel::orderByDistance('location', $loc1->location, 'desc')->get();
+        $this->assertCount(3, $c);
+        $this->assertEquals($loc3->location, $c[0]->location);
+        $this->assertEquals($loc2->location, $c[1]->location);
+        $this->assertEquals($loc1->location, $c[2]->location);
+    }
+
+    public function testOrderByDistanceSphere()
+    {
+        $loc2 = new GeometryModel();
+        $loc2->location = new Point(40.767664, -73.971271); // Distance from loc1: 44.741406484588
+        $loc2->save();
+
+        $loc1 = new GeometryModel();
+        $loc1->location = new Point(40.767864, -73.971732);
+        $loc1->save();
+
+        $loc3 = new GeometryModel();
+        $loc3->location = new Point(40.761434, -73.977619); // Distance from loc1: 870.06424066202
+        $loc3->save();
+
+        $a = GeometryModel::orderByDistanceSphere('location', $loc1->location)->get();
+        $this->assertCount(3, $a);
+        $this->assertEquals($loc1->location, $a[0]->location);
+        $this->assertEquals($loc2->location, $a[1]->location);
+        $this->assertEquals($loc3->location, $a[2]->location);
+
+        $b = GeometryModel::orderByDistanceSphere('location', $loc1->location, 'asc')->get();
+        $this->assertCount(3, $b);
+        $this->assertEquals($loc1->location, $b[0]->location);
+        $this->assertEquals($loc2->location, $b[1]->location);
+        $this->assertEquals($loc3->location, $b[2]->location);
+
+        $c = GeometryModel::orderByDistanceSphere('location', $loc1->location, 'desc')->get();
+        $this->assertCount(3, $c);
+        $this->assertEquals($loc3->location, $c[0]->location);
+        $this->assertEquals($loc2->location, $c[1]->location);
+        $this->assertEquals($loc1->location, $c[2]->location);
     }
 
     //public function testBounding() {
