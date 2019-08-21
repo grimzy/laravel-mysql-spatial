@@ -42,7 +42,7 @@ class Point extends Geometry
     {
         return [
             'lat' => $this->getLat(),
-            'lng' => $this->getLng()
+            'lng' => $this->getLng(),
         ];
     }
 
