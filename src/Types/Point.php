@@ -38,6 +38,14 @@ class Point extends Geometry
         $this->lng = (float) $lng;
     }
 
+    public function toArray()
+    {
+        return [
+            'lat' => $this->getLat(),
+            'lng' => $this->getLng()
+        ];
+    }
+
     public function toPair()
     {
         return $this->getLng().' '.$this->getLat();
