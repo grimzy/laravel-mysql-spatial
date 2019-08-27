@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "illuminate/database": "^5.2",
+        "illuminate/database": "^5.2|^6.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0"
     },
