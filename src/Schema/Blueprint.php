@@ -34,7 +34,7 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a linestring column on the table.
      *
-     * @param   $column
+     * @param $column
      *
      * @return \Illuminate\Support\Fluent
      */
@@ -46,7 +46,7 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a polygon column on the table.
      *
-     * @param   $column
+     * @param $column
      *
      * @return \Illuminate\Support\Fluent
      */
@@ -58,7 +58,7 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a multipoint column on the table.
      *
-     * @param   $column
+     * @param $column
      *
      * @return \Illuminate\Support\Fluent
      */
@@ -70,7 +70,7 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a multilinestring column on the table.
      *
-     * @param   $column
+     * @param $column
      *
      * @return \Illuminate\Support\Fluent
      */
@@ -82,7 +82,7 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a multipolygon column on the table.
      *
-     * @param   $column
+     * @param $column
      *
      * @return \Illuminate\Support\Fluent
      */
@@ -94,7 +94,7 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a geometrycollection column on the table.
      *
-     * @param   $column
+     * @param $column
      *
      * @return \Illuminate\Support\Fluent
      */
