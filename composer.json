@@ -1,5 +1,5 @@
 {
-    "name": "grimzy/laravel-mysql-spatial",
+    "name": "vahidalvandi/laravel-mysql-spatial",
     "description": "MySQL spatial data types extension for Laravel.",
     "scripts": {
         "test": "phpunit -c phpunit.xml.dist",
