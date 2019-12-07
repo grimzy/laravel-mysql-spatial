@@ -11,7 +11,7 @@ class SridSpatialTest extends IntegrationBaseTestCase
 {
     protected $migrations = [
         CreateLocationTable::class,
-        UpdateLocationTable::class
+        UpdateLocationTable::class,
     ];
 
     public function testInsertPointWithSrid()
