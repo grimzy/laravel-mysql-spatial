@@ -70,14 +70,23 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
 
     public static function fromWKB($wkb)
     {
-        // mysql adds 4 NUL bytes at the start of the binary
+        $srid = substr($wkb, 0, 4);
+        $srid = unpack('L', $srid)[1];
+
         $wkb = substr($wkb, 4);
         $parser = new Parser(new Factory());
 
-        return $parser->parse($wkb);
+        /** @var Geometry $parsed */
+        $parsed = $parser->parse($wkb);
+
+        if ($srid >= 0 && $srid < 4000) {
+            $parsed->setSrid($srid);
+        }
+
+        return $parsed;
     }
 
-    public static function fromWKT($wkt, $srid = 0)
+    public static function fromWKT($wkt, $srid = null)
     {
         $wktArgument = static::getWKTArgument($wkt);
 
