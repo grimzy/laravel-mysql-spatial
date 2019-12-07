@@ -8,11 +8,16 @@ class SpatialExpression extends Expression
 {
     public function getValue()
     {
-        return 'ST_GeomFromText(?)';
+        return 'ST_GeomFromText(?, ?)';
     }
 
     public function getSpatialValue()
     {
         return $this->value->toWkt();
+    }
+
+    public function getSrid()
+    {
+        return $this->value->getSrid();
     }
 }

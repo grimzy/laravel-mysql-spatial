@@ -11,8 +11,9 @@ class MultiPolygon extends GeometryCollection
 {
     /**
      * @param Polygon[] $polygons
+     * @param int $srid
      */
-    public function __construct(array $polygons)
+    public function __construct(array $polygons, $srid = 0)
     {
         $validated = array_filter($polygons, function ($value) {
             return $value instanceof Polygon;
@@ -21,7 +22,7 @@ class MultiPolygon extends GeometryCollection
         if (count($polygons) !== count($validated)) {
             throw new InvalidArgumentException('$polygons must be an array of Polygon');
         }
-        parent::__construct($polygons);
+        parent::__construct($polygons, $srid);
     }
 
     public function toWKT()
@@ -36,14 +37,14 @@ class MultiPolygon extends GeometryCollection
         }, $this->items));
     }
 
-    public static function fromString($wktArgument)
+    public static function fromString($wktArgument, $srid = 0)
     {
         $parts = preg_split('/(\)\s*\)\s*,\s*\(\s*\()/', $wktArgument, -1, PREG_SPLIT_DELIM_CAPTURE);
         $polygons = static::assembleParts($parts);
 
         return new static(array_map(function ($polygonString) {
             return Polygon::fromString($polygonString);
-        }, $polygons));
+        }, $polygons), $srid);
     }
 
     /**

@@ -11,8 +11,9 @@ class MultiLineString extends GeometryCollection
 {
     /**
      * @param LineString[] $lineStrings
+     * @param int $srid
      */
-    public function __construct(array $lineStrings)
+    public function __construct(array $lineStrings, $srid = 0)
     {
         if (count($lineStrings) < 1) {
             throw new InvalidArgumentException('$lineStrings must contain at least one entry');
@@ -26,7 +27,7 @@ class MultiLineString extends GeometryCollection
             throw new InvalidArgumentException('$lineStrings must be an array of LineString');
         }
 
-        parent::__construct($lineStrings);
+        parent::__construct($lineStrings, $srid);
     }
 
     public function getLineStrings()
@@ -39,14 +40,14 @@ class MultiLineString extends GeometryCollection
         return sprintf('MULTILINESTRING(%s)', (string) $this);
     }
 
-    public static function fromString($wktArgument)
+    public static function fromString($wktArgument, $srid = 0)
     {
         $str = preg_split('/\)\s*,\s*\(/', substr(trim($wktArgument), 1, -1));
         $lineStrings = array_map(function ($data) {
             return LineString::fromString($data);
         }, $str);
 
-        return new static($lineStrings);
+        return new static($lineStrings, $srid);
     }
 
     public function __toString()

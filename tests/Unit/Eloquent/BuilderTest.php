@@ -72,6 +72,44 @@ class BuilderTest extends BaseTestCase
 
         $this->builder->update(['polygon' => $polygon]);
     }
+
+    public function testUpdatePointWithSrid()
+    {
+        $point = new Point(1, 2, 4326);
+        $this->queryBuilder
+            ->shouldReceive('update')
+            ->with(['point' => new SpatialExpression($point)])
+            ->once();
+
+        $this->builder->update(['point' => $point]);
+    }
+
+    public function testUpdateLinestringWithSrid()
+    {
+        $linestring = new LineString([new Point(0, 0), new Point(1, 1), new Point(2, 2)], 4326);
+
+        $this->queryBuilder
+            ->shouldReceive('update')
+            ->with(['linestring' => new SpatialExpression($linestring)])
+            ->once();
+
+        $this->builder->update(['linestring' => $linestring]);
+    }
+
+    public function testUpdatePolygonWithSrid()
+    {
+        $linestrings[] = new LineString([new Point(0, 0), new Point(0, 1)]);
+        $linestrings[] = new LineString([new Point(0, 1), new Point(1, 1)]);
+        $linestrings[] = new LineString([new Point(1, 1), new Point(0, 0)]);
+        $polygon = new Polygon($linestrings, 4326);
+
+        $this->queryBuilder
+            ->shouldReceive('update')
+            ->with(['polygon' => new SpatialExpression($polygon)])
+            ->once();
+
+        $this->builder->update(['polygon' => $polygon]);
+    }
 }
 
 class TestBuilderModel extends Model

@@ -13,21 +13,21 @@ class LineString extends PointCollection
         return sprintf('LINESTRING(%s)', $this->toPairList());
     }
 
-    public static function fromWkt($wkt)
+    public static function fromWkt($wkt, $srid = 0)
     {
         $wktArgument = Geometry::getWKTArgument($wkt);
 
-        return static::fromString($wktArgument);
+        return static::fromString($wktArgument, $srid);
     }
 
-    public static function fromString($wktArgument)
+    public static function fromString($wktArgument, $srid = 0)
     {
         $pairs = explode(',', trim($wktArgument));
         $points = array_map(function ($pair) {
             return Point::fromPair($pair);
         }, $pairs);
 
-        return new static($points);
+        return new static($points, $srid);
     }
 
     public function __toString()
