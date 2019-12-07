@@ -2,11 +2,11 @@
 
 [![Build Status](https://img.shields.io/travis/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://travis-ci.org/grimzy/laravel-mysql-spatial)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial/maintainability)
-[![Code Climate](https://img.shields.io/codeclimate/c/grimzy/laravel-mysql-spatial.svg?style=flat-square&colorB=4BCA2A)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial/test_coverage)[![Packagist](https://img.shields.io/packagist/v/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial)
-[![Packagist](https://img.shields.io/packagist/dt/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial)
+[![Code Climate](https://img.shields.io/codeclimate/c/grimzy/laravel-mysql-spatial.svg?style=flat-square&colorB=4BCA2A)](https://codeclimate.com/github/grimzy/laravel-mysql-spatial/test_coverage) [![Packagist](https://img.shields.io/packagist/v/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial)
+[![Packagist](https://img.shields.io/packagist/dt/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://packagist.org/packages/grimzy/laravel-mysql-spatial) [![StyleCI](https://github.styleci.io/repos/83766141/shield?branch=master)](https://github.styleci.io/repos/83766141) 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](LICENSE)
 
-Laravel package to easily work with [MySQL Spatial Data Types](https://dev.mysql.com/doc/refman/5.7/en/spatial-datatypes.html) and [MySQL Spatial Functions](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html).
+Laravel package to easily work with [MySQL Spatial Data Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) and [MySQL Spatial Functions](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html).
 
 Please check the documentation for your MySQL version. MySQL's Extension for Spatial Data was added in MySQL 5.5 but many Spatial Functions were changed in 5.6 and 5.7.
 
@@ -52,11 +52,14 @@ From the command line:
 php artisan make:migration create_places_table
 ```
 
-Then edit the migration you just created by adding at least one spatial data field:
+Then edit the migration you just created by adding at least one spatial data field. For Laravel versions prior to 5.5, you can use the Blueprint provided by this package (Grimzy\LaravelMysqlSpatial\Schema\Blueprint):
 
 ```php
 use Illuminate\Database\Migrations\Migration;
-use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+use Illuminate\Database\Schema\Blueprint;
+
+// For Laravel < 5.5
+// use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 
 class CreatePlacesTable extends Migration {
 
@@ -114,7 +117,8 @@ use Illuminate\Database\Eloquent\Model;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 
 /**
- * @property \Grimzy\LaravelMysqlSpatial\Types\Point $location
+ * @property \Grimzy\LaravelMysqlSpatial\Types\Point   $location
+ * @property \Grimzy\LaravelMysqlSpatial\Types\Polygon $area
  */
 class Place extends Model
 {
@@ -166,29 +170,152 @@ $lat = $place2->location->getLat();	// 40.7484404
 $lng = $place2->location->getLng();	// -73.9878441
 ```
 
+## Geometry classes
+
+### Available Geometry classes
+
+| Grimzy\LaravelMysqlSpatial\Types                             | OpenGIS Class                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `Point($lat, $lng)`                                          | [Point](https://dev.mysql.com/doc/refman/8.0/en/gis-class-point.html) |
+| `MultiPoint(Point[])`                                        | [MultiPoint](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipoint.html) |
+| `LineString(Point[])`                                        | [LineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-linestring.html) |
+| `MultiLineString(LineString[])`                              | [MultiLineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multilinestring.html) |
+| `Polygon(LineString[])` *([exterior and interior boundaries](https://dev.mysql.com/doc/refman/8.0/en/gis-class-polygon.html))* | [Polygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-polygon.html) |
+| `MultiPolygon(Polygon[])`                                    | [MultiPolygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipolygon.html) |
+| `GeometryCollection(Geometry[])`                             | [GeometryCollection](https://dev.mysql.com/doc/refman/8.0/en/gis-class-geometrycollection.html) |
+
+Check out the [Class diagram](https://user-images.githubusercontent.com/1837678/30788608-a5afd894-a16c-11e7-9a51-0a08b331d4c4.png).
+
+### Using Geometry classes
+
+In order for your Eloquent Model to handle the Geometry classes, it must use the `Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait` trait and define a `protected` property `$spatialFields`  as an array of MySQL Spatial Data Type column names (example in [Quickstart](#user-content-create-a-model)).
+
+#### IteratorAggregate and ArrayAccess
+
+The "composite" Geometries (`LineString`, `Polygon`, `MultiPoint`, `MultiLineString`, and `GeometryCollection`) implement [`IteratorAggregate`](http://php.net/manual/en/class.iteratoraggregate.php) and [`ArrayAccess`](http://php.net/manual/en/class.arrayaccess.php); making it easy to perform Iterator and Array operations. For example:
+
+```php
+$polygon = $multipolygon[10];	// ArrayAccess
+
+// IteratorAggregate
+for($polygon as $i => $linestring) {
+  echo (string) $linestring;
+}
+
+```
+
+#### Helpers
+
+##### From/To Well Known Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
+
+```php
+// fromWKT($wkt)
+$point = Point::fromWKT('POINT(2 1)');
+$point->toWKT();	// POINT(2 1)
+
+$polygon = Polygon::fromWKT('POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))');
+$polygon->toWKT();	// POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
+```
+
+##### From/To String
+
+```php
+// fromString($wkt)
+$point = new Point(1, 2);	// lat, lng
+(string)$point				// lng, lat: 2 1
+
+$polygon = Polygon::fromString('(0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)');
+(string)$polygon;	// (0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)
+```
+
+##### From/To JSON ([GeoJSON](http://geojson.org/))
+
+The Geometry classes implement [`JsonSerializable`](http://php.net/manual/en/class.jsonserializable.php) and `Illuminate\Contracts\Support\Jsonable` to help serialize into GeoJSON:
+
+```php
+$point = new Point(40.7484404, -73.9878441);
+
+json_encode($point); // or $point->toJson();
+
+// {
+//   "type": "Feature",
+//   "properties": {},
+//   "geometry": {
+//     "type": "Point",
+//     "coordinates": [
+//       -73.9878441,
+//       40.7484404
+//     ]
+//   }
+// }
+```
+
+To deserialize a GeoJSON string into a Geometry class, you can use `Geometry::fromJson($json_string)` :
+
+```php
+$location = Geometry::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
+$location instanceof Point::class;	// true
+$location->getLat();	// 1.2
+$location->getLng()); 	// 3.4
+```
+
+## Scopes: Spatial analysis functions
+
+Spatial analysis functions are implemented using [Eloquent Local Scopes](https://laravel.com/docs/5.4/eloquent#local-scopes).
+
+Available scopes:
+
+- `distance($geometryColumn, $geometry, $distance)`
+- `distanceExcludingSelf($geometryColumn, $geometry, $distance)`
+- `distanceSphere($geometryColumn, $geometry, $distance)`
+- `distanceSphereExcludingSelf($geometryColumn, $geometry, $distance)`
+- `comparison($geometryColumn, $geometry, $relationship)`
+- `within($geometryColumn, $polygon)`
+- `crosses($geometryColumn, $geometry)`
+- `contains($geometryColumn, $geometry)`
+- `disjoint($geometryColumn, $geometry)`
+- `equals($geometryColumn, $geometry)`
+- `intersects($geometryColumn, $geometry)`
+- `overlaps($geometryColumn, $geometry)`
+- `doesTouch($geometryColumn, $geometry)`
+- `orderBySpatial($geometryColumn, $geometry, $orderFunction, $direction = 'asc')`
+- `orderByDistance($geometryColumn, ​$geometry, ​$direction = 'asc')`
+- `orderByDistanceSphere($geometryColumn, ​$geometry, ​$direction = 'asc')`
+
+*Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)).*
+
 ## Migrations
+
+For Laravel versions prior to 5.5, you can use the Blueprint provided with this package: `Grimzy\LaravelMysqlSpatial\Schema\Blueprint`.
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+
+class CreatePlacesTable extends Migration {
+    // ...
+}
+```
 
 ### Columns
 
 Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/5.7/en/spatial-datatypes.html) migration blueprints:
 
-- 
-   `$table->geometry('column_name');`
-
-- `$table->point('column_name');`
-- `$table->lineString('column_name');`
-- `$table->polygon('column_name');`
-- `$table->multiPoint('column_name');`
-- `$table->multiLineString('column_name');`
-- `$table->multiPolygon('column_name');`
-- `$table->geometryCollection('column_name');`
+- `$table->geometry('column_name')`
+- `$table->point('column_name')`
+- `$table->lineString('column_name')`
+- `$table->polygon('column_name')`
+- `$table->multiPoint('column_name')`
+- `$table->multiLineString('column_name')`
+- `$table->multiPolygon('column_name')`
+- `$table->geometryCollection('column_name')`
 
 ### Spatial indexes
 
 You can add or drop spatial indexes in your migrations with the `spatialIndex` and `dropSpatialIndex` blueprints.
 
-- `$table->spatialIndex('column_name');`
-- `$table->dropSpatialIndex(['column_name']);` or `$table->dropSpatialIndex('index_name')`
+- `$table->spatialIndex('column_name')`
+- `$table->dropSpatialIndex(['column_name'])` or `$table->dropSpatialIndex('index_name')`
 
 Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/doc/refman/5.7/en/creating-spatial-indexes.html):
 
@@ -250,113 +377,28 @@ class UpdatePlacesTable extends Migration
 }
 ```
 
-## Geometry classes
+## Tests
 
-### Available Geometry classes
-
-| Grimzy\LaravelMysqlSpatial\Types         | OpenGIS Class                            |
-| ---------------------------------------- | ---------------------------------------- |
-| `Point($lat, $lng)`                      | [Point](https://dev.mysql.com/doc/refman/5.7/en/gis-class-point.html) |
-| `MultiPoint(Point[])`                    | [MultiPoint](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multipoint.html) |
-| `LineString(Point[])`                    | [LineString](https://dev.mysql.com/doc/refman/5.7/en/gis-class-linestring.html) |
-| `MultiLineString(LineString[])`          | [MultiLineString](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multilinestring.html) |
-| `Polygon(LineString[])` *([exterior and interior boundaries](https://dev.mysql.com/doc/refman/5.7/en/gis-class-polygon.html))* | [Polygon](https://dev.mysql.com/doc/refman/5.7/en/gis-class-polygon.html) |
-| `MultiPolygon(Polygon[])`                | [MultiPolygon](https://dev.mysql.com/doc/refman/5.7/en/gis-class-multipolygon.html) |
-| `GeometryCollection(Geometry[])`         | [GeometryCollection](https://dev.mysql.com/doc/refman/5.7/en/gis-class-geometrycollection.html) |
-
-Check out the [Class diagram](https://user-images.githubusercontent.com/1837678/30788608-a5afd894-a16c-11e7-9a51-0a08b331d4c4.png).
-
-### Using Geometry classes
-
-In order for your Eloquent Model to handle the Geometry classes, it must use the `Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait` trait and define a `protected` property `$spatialFields`  as an array of MySQL Spatial Data Type column names (example in [Quickstart](#user-content-create-a-model)).
-
-#### IteratorAggregate and ArrayAccess
-
-The "composite" Geometries (`LineString`, `Polygon`, `MultiPoint`, `MultiLineString`, and `GeometryCollection`) implement [`IteratorAggregate`](http://php.net/manual/en/class.iteratoraggregate.php) and [`ArrayAccess`](http://php.net/manual/en/class.arrayaccess.php); making it easy to perform Iterator and Array operations. For example:
-
-```php
-$polygon = $multipolygon[10];	// ArrayAccess
-
-// IteratorAggregate
-for($polygon as $i => $linestring) {
-  echo (string) $linestring;
-}
-
+```shell
+composer test
+# or 
+composer test:unit
+composer test:integration
 ```
 
-#### Helpers
+Integration tests require a running MySQL database. If you have Docker installed, you can start easily start one:
 
-##### From/To Well Known Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
-
-```php
-// fromWKT($wkt)
-$polygon = Polygon::fromWKT('POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))');
-
-$polygon->toWKT();	// POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
+```shell
+make start_db 		# starts MySQL 8.0
+# or
+make start_db V=5.7 # starts a MySQL 5.7
 ```
 
-##### From/To String
+## Contributing
 
-```php
-// fromString($wkt)
-$polygon = Polygon::fromString('(0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)');
-
-(string)$polygon;	// (0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)
-```
-
-##### From/To JSON ([GeoJSON](http://geojson.org/))
-
-The Geometry classes implement [`JsonSerializable`](http://php.net/manual/en/class.jsonserializable.php) and `Illuminate\Contracts\Support\Jsonable` to help serialize into GeoJSON:
-
-```php
-$point = new Point(10, 20);
-
-json_encode($point); // or $point->toJson();
-
-// {
-//   "type": "Feature",
-//   "properties": {},
-//   "geometry": {
-//     "type": "Point",
-//     "coordinates": [
-//       -73.9878441,
-//       40.7484404
-//     ]
-//   }
-// }
-```
-
-To deserialize a GeoJSON string into a Geometry class, you can use `Geometry::fromJson($json_string)` :
-
-```php
-$locaction = Geometry::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
-$location instanceof Point::class;	// true
-$location->getLat();	// 1.2
-$location->getLng()); 	// 3.4
-```
-
-## Scopes: Spatial analysis functions
-
-Spatial analysis functions are implemented using [Eloquent Local Scopes](https://laravel.com/docs/5.4/eloquent#local-scopes).
-
-Available scopes:
-
-- `distance($geometryColumn, $geometry, $distance)`
-- `distanceExcludingSelf($geometryColumn, $geometry, $distance)`
-- `distanceSphere($geometryColumn, $geometry, $distance)`
-- `distanceSphereExcludingSelf($geometryColumn, $geometry, $distance)`
-- `comparison($geometryColumn, $geometry, $relationship)`
-- `within($geometryColumn, $polygon)`
-- `crosses($geometryColumn, $geometry)`
-- `contains($geometryColumn, $geometry)`
-- `disjoint($geometryColumn, $geometry)`
-- `equals($geometryColumn, $geometry)`
-- `intersects($geometryColumn, $geometry)`
-- `overlaps($geometryColumn, $geometry)`
-- `doesTouch($geometryColumn, $geometry)`
-
-*Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)).*
+Recommendations and pull request are most welcome! Pull requests with tests are the best! There are still a lot of MySQL spatial functions to implement or creative ways to use spatial functions. 
 
 ## Credits
 
 Originally inspired from [njbarrett's Laravel postgis package](https://github.com/njbarrett/laravel-postgis).
+

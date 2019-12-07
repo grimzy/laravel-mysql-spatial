@@ -480,6 +480,41 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertContains('st_touches(`point`, ST_GeomFromText(?))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
+
+    public function testScopeOrderBySpatialThrowsExceptionWhenFunctionNotRegistered()
+    {
+        $point = new Point(1, 2);
+        $this->assertException(\Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialFunctionException::class);
+        TestModel::orderBySpatial('point', $point, 'does-not-exist');
+    }
+
+    public function testScopeOrderByDistance()
+    {
+        $point = new Point(1, 2);
+        $query = TestModel::orderByDistance('point', $point);
+
+        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
+        $q = $query->getQuery();
+        $this->assertNotEmpty($q->orders);
+        $bindings = $q->getRawBindings()['order'];
+        $this->assertNotEmpty($bindings);
+        $this->assertContains('st_distance(`point`, ST_GeomFromText(?)) asc', $q->orders[0]['sql']);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
+    }
+
+    public function testScopeOrderByDistanceSphere()
+    {
+        $point = new Point(1, 2);
+        $query = TestModel::orderByDistanceSphere('point', $point);
+
+        $this->assertInstanceOf(\Grimzy\LaravelMysqlSpatial\Eloquent\Builder::class, $query);
+        $q = $query->getQuery();
+        $this->assertNotEmpty($q->orders);
+        $bindings = $q->getRawBindings()['order'];
+        $this->assertNotEmpty($bindings);
+        $this->assertContains('st_distance_sphere(`point`, ST_GeomFromText(?)) asc', $q->orders[0]['sql']);
+        $this->assertEquals('POINT(2 1)', $bindings[0]);
+    }
 }
 
 class TestModel extends Model
