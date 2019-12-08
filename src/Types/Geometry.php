@@ -79,7 +79,7 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         /** @var Geometry $parsed */
         $parsed = $parser->parse($wkb);
 
-        if ($srid >= 0) {
+        if ($srid > 0) {
             $parsed->setSrid($srid);
         }
 
