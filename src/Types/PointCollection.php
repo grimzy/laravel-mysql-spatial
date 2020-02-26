@@ -10,7 +10,7 @@ abstract class PointCollection extends GeometryCollection
     /**
      * @param Point[] $points
      */
-    public function __construct(array $points)
+    public function __construct(array $points, $srid = null)
     {
         if (count($points) < 2) {
             throw new InvalidArgumentException('$points must contain at least two entries');
@@ -24,7 +24,7 @@ abstract class PointCollection extends GeometryCollection
             throw new InvalidArgumentException('$points must be an array of Points');
         }
 
-        parent::__construct($points);
+        parent::__construct($points, $srid);
     }
 
     public function toPairList()

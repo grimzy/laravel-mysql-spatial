@@ -12,7 +12,7 @@ class MultiLineString extends GeometryCollection
     /**
      * @param LineString[] $lineStrings
      */
-    public function __construct(array $lineStrings)
+    public function __construct(array $lineStrings, $srid = null)
     {
         if (count($lineStrings) < 1) {
             throw new InvalidArgumentException('$lineStrings must contain at least one entry');
@@ -26,7 +26,7 @@ class MultiLineString extends GeometryCollection
             throw new InvalidArgumentException('$lineStrings must be an array of LineString');
         }
 
-        parent::__construct($lineStrings);
+        parent::__construct($lineStrings, $srid);
     }
 
     public function getLineStrings()
