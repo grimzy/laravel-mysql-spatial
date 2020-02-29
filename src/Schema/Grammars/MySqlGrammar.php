@@ -8,18 +8,9 @@ use Illuminate\Support\Fluent;
 
 class MySqlGrammar extends IlluminateMySqlGrammar
 {
-    /**
-     * The possible column modifiers.
-     *
-     * @var array
-     */
-//    protected $modifiers = [
-//        'Unsigned', 'Charset', 'Collate', 'VirtualAs', 'StoredAs', 'Nullable',
-//        'Default', 'Increment', 'Comment', 'After', 'First', 'Srid',
-//    ];
-
     public function __construct()
     {
+        // Enable SRID as a column modifier
         $this->modifiers[] = 'Srid';
     }
 
@@ -135,12 +126,12 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Get the SQL for a SRID column modifier.
      *
-     * @param Blueprint $blueprint
-     * @param Fluent    $column
+     * @param \Illuminate\Database\Schema\Blueprint $blueprint
+     * @param Fluent                                $column
      *
      * @return string|null
      */
-    protected function modifySrid(Blueprint $blueprint, Fluent $column)
+    protected function modifySrid(\Illuminate\Database\Schema\Blueprint $blueprint, Fluent $column)
     {
         if (!is_null($column->srid) && is_int($column->srid) && $column->srid > 0) {
             return ' srid '.$column->srid;
