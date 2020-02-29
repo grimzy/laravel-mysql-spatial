@@ -8,10 +8,14 @@ use Illuminate\Support\Fluent;
 
 class MySqlGrammar extends IlluminateMySqlGrammar
 {
+    const COLUMN_MODIFIER_SRID = 'Srid';
+
     public function __construct()
     {
         // Enable SRID as a column modifier
-        $this->modifiers[] = 'Srid';
+        if (!in_array(self::COLUMN_MODIFIER_SRID, $this->modifiers)) {
+            $this->modifiers[] = self::COLUMN_MODIFIER_SRID;
+        }
     }
 
     /**
