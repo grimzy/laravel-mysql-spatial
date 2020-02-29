@@ -14,7 +14,7 @@ class MigrationTest extends IntegrationBaseTestCase
         $result = DB::selectOne('SHOW CREATE TABLE geometry');
 
         $expected = 'CREATE TABLE `geometry` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `geo` geometry DEFAULT NULL,
   `location` point NOT NULL,
   `line` linestring DEFAULT NULL,
@@ -38,7 +38,7 @@ class MigrationTest extends IntegrationBaseTestCase
         $result = DB::selectOne('SHOW CREATE TABLE with_srid');
 
         $expected = 'CREATE TABLE `with_srid` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `geo` geometry /*!80003 SRID 3857 */ DEFAULT NULL,
   `location` point /*!80003 SRID 3857 */ DEFAULT NULL,
   `line` linestring /*!80003 SRID 3857 */ DEFAULT NULL,

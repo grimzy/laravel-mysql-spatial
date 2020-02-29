@@ -9,9 +9,24 @@ use Illuminate\Support\Fluent;
 class MySqlGrammar extends IlluminateMySqlGrammar
 {
     /**
+     * The possible column modifiers.
+     *
+     * @var array
+     */
+//    protected $modifiers = [
+//        'Unsigned', 'Charset', 'Collate', 'VirtualAs', 'StoredAs', 'Nullable',
+//        'Default', 'Increment', 'Comment', 'After', 'First', 'Srid',
+//    ];
+
+    public function __construct()
+    {
+        $this->modifiers[] = 'Srid';
+    }
+
+    /**
      * Adds a statement to add a geometry column.
      *
-     * @param \Illuminate\Support\Fluent $column
+     * @param Fluent $column
      *
      * @return string
      */
@@ -23,7 +38,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Adds a statement to add a point column.
      *
-     * @param \Illuminate\Support\Fluent $column
+     * @param Fluent $column
      *
      * @return string
      */
@@ -35,7 +50,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Adds a statement to add a linestring column.
      *
-     * @param \Illuminate\Support\Fluent $column
+     * @param Fluent $column
      *
      * @return string
      */
@@ -47,7 +62,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Adds a statement to add a polygon column.
      *
-     * @param \Illuminate\Support\Fluent $column
+     * @param Fluent $column
      *
      * @return string
      */
@@ -59,7 +74,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Adds a statement to add a multipoint column.
      *
-     * @param \Illuminate\Support\Fluent $column
+     * @param Fluent $column
      *
      * @return string
      */
@@ -71,7 +86,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Adds a statement to add a multilinestring column.
      *
-     * @param \Illuminate\Support\Fluent $column
+     * @param Fluent $column
      *
      * @return string
      */
@@ -83,7 +98,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Adds a statement to add a multipolygon column.
      *
-     * @param \Illuminate\Support\Fluent $column
+     * @param Fluent $column
      *
      * @return string
      */
@@ -95,7 +110,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Adds a statement to add a geometrycollection column.
      *
-     * @param \Illuminate\Support\Fluent $column
+     * @param Fluent $column
      *
      * @return string
      */
@@ -107,13 +122,28 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Compile a spatial index key command.
      *
-     * @param \Grimzy\LaravelMysqlSpatial\Schema\Blueprint $blueprint
-     * @param \Illuminate\Support\Fluent                   $command
+     * @param Blueprint $blueprint
+     * @param Fluent    $command
      *
      * @return string
      */
     public function compileSpatial(Blueprint $blueprint, Fluent $command)
     {
         return $this->compileKey($blueprint, $command, 'spatial');
+    }
+
+    /**
+     * Get the SQL for a SRID column modifier.
+     *
+     * @param  Blueprint  $blueprint
+     * @param  Fluent     $column
+     *
+     * @return string|null
+     */
+    protected function modifySrid(Blueprint $blueprint, Fluent $column)
+    {
+        if (!is_null($column->srid) && is_int($column->srid) && $column->srid > 0) {
+            return ' srid '.$column->srid;
+        }
     }
 }
