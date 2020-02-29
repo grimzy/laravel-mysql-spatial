@@ -9,7 +9,7 @@ abstract class PointCollection extends GeometryCollection
 {
     /**
      * @param Point[] $points
-     * @param int $srid
+     * @param int     $srid
      */
     public function __construct(array $points, $srid = 0)
     {

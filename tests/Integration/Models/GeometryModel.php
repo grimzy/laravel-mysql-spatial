@@ -4,7 +4,7 @@ use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class GeometryModel
+ * Class GeometryModel.
  *
  * @property int                                          id
  * @property \Grimzy\LaravelMysqlSpatial\Types\Point      location

@@ -23,7 +23,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
 
     /**
      * @param GeometryInterface[] $geometries
-     * @param int $srid
+     * @param int                 $srid
      *
      * @throws InvalidArgumentException
      */

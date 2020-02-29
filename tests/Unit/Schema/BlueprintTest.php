@@ -9,7 +9,7 @@ use Mockery;
 class BlueprintTest extends BaseTestCase
 {
     /**
-     * @var \Grimzy\LaravelMysqlSpatial\Schema\Blueprint $blueprint
+     * @var \Grimzy\LaravelMysqlSpatial\Schema\Blueprint
      */
     protected $blueprint;
 

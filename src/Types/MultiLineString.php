@@ -11,7 +11,7 @@ class MultiLineString extends GeometryCollection
 {
     /**
      * @param LineString[] $lineStrings
-     * @param int $srid
+     * @param int          $srid
      */
     public function __construct(array $lineStrings, $srid = 0)
     {

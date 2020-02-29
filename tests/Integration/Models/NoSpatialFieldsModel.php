@@ -4,7 +4,7 @@ use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class NoSpatialFieldsModel
+ * Class NoSpatialFieldsModel.
  *
  * @property \Grimzy\LaravelMysqlSpatial\Types\Geometry geometry
  */

@@ -11,7 +11,7 @@ class MultiPolygon extends GeometryCollection
 {
     /**
      * @param Polygon[] $polygons
-     * @param int $srid
+     * @param int       $srid
      */
     public function __construct(array $polygons, $srid = 0)
     {
