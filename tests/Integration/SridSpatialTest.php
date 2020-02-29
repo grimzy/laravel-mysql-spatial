@@ -11,7 +11,7 @@ class SridSpatialTest extends IntegrationBaseTestCase
 {
     protected $migrations = [
         CreateLocationTable::class,
-        UpdateLocationTable::class
+        UpdateLocationTable::class,
     ];
 
     public function testInsertPointWithSrid()
@@ -113,22 +113,22 @@ class SridSpatialTest extends IntegrationBaseTestCase
             'of the geometry is 0, but the SRID of the column is 3857. ' .
             'Consider changing the SRID of the geometry or the SRID property ' .
             'of the column. (SQL: insert into `with_srid` (`location`) values ' .
-            '(ST_GeomFromText(POINT(2 1), 0)))'
+            '(ST_GeomFromText(POINT(2 1), 0, \'axis-order=long-lat\')))'
         );
         $geo->save();
     }
 
-//    public function testGeometryInsertedHasRightSrid () {
-//        $geo = new WithSridModel();
-//        $geo->location = new Point(1, 2, 3857);
-//        $geo->save();
-//
-//        $srid = \DB::selectOne('select ST_SRID(location) as srid from with_srid');
-//        $this->assertEquals(3857, $srid->srid);
-//
-//        $result = WithSridModel::first();
-//
-//        $this->assertEquals($geo->location->getSrid(), $result->location->getSrid());
-//        $a = 1;
-//    }
+    public function testGeometryInsertedHasRightSrid () {
+        $geo = new WithSridModel();
+        $geo->location = new Point(1, 2, 3857);
+        $geo->save();
+
+        $srid = \DB::selectOne('select ST_SRID(location) as srid from with_srid');
+        $this->assertEquals(3857, $srid->srid);
+
+        $result = WithSridModel::first();
+
+        $this->assertEquals($geo->location->getSrid(), $result->location->getSrid());
+        $a = 1;
+    }
 }

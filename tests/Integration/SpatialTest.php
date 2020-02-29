@@ -11,7 +11,7 @@ class SpatialTest extends IntegrationBaseTestCase
 {
     protected $migrations = [
         CreateLocationTable::class,
-        UpdateLocationTable::class
+        UpdateLocationTable::class,
     ];
 
     public function testSpatialFieldsNotDefinedException()
@@ -219,6 +219,82 @@ class SpatialTest extends IntegrationBaseTestCase
         } else {
             $this->assertEquals(44.7414064845, $a[1]->distance); // PHP floats' 11th+ digits don't matter
         }
+    }
+
+    public function testOrderBySpatialWithUnknownFunction()
+    {
+        $loc = new GeometryModel();
+        $loc->location = new Point(1, 1);
+
+        $this->assertException(\Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialFunctionException::class);
+        GeometryModel::orderBySpatial('location', $loc->location, 'does-not-exist')->get();
+    }
+
+    public function testOrderByDistance()
+    {
+        $loc2 = new GeometryModel();
+        $loc2->location = new Point(2, 2); // Distance from loc1: 1.4142135623731
+        $loc2->save();
+
+        $loc1 = new GeometryModel();
+        $loc1->location = new Point(1, 1);
+        $loc1->save();
+
+        $loc3 = new GeometryModel();
+        $loc3->location = new Point(3, 3); // Distance from loc1: 2.8284271247462
+        $loc3->save();
+
+        $a = GeometryModel::orderByDistance('location', $loc1->location)->get();
+        $this->assertCount(3, $a);
+        $this->assertEquals($loc1->location, $a[0]->location);
+        $this->assertEquals($loc2->location, $a[1]->location);
+        $this->assertEquals($loc3->location, $a[2]->location);
+
+        // Excluding self
+        $b = GeometryModel::orderByDistance('location', $loc1->location, 'asc')->get();
+        $this->assertCount(3, $b);
+        $this->assertEquals($loc1->location, $b[0]->location);
+        $this->assertEquals($loc2->location, $b[1]->location);
+        $this->assertEquals($loc3->location, $b[2]->location);
+
+        $c = GeometryModel::orderByDistance('location', $loc1->location, 'desc')->get();
+        $this->assertCount(3, $c);
+        $this->assertEquals($loc3->location, $c[0]->location);
+        $this->assertEquals($loc2->location, $c[1]->location);
+        $this->assertEquals($loc1->location, $c[2]->location);
+    }
+
+    public function testOrderByDistanceSphere()
+    {
+        $loc2 = new GeometryModel();
+        $loc2->location = new Point(40.767664, -73.971271); // Distance from loc1: 44.741406484588
+        $loc2->save();
+
+        $loc1 = new GeometryModel();
+        $loc1->location = new Point(40.767864, -73.971732);
+        $loc1->save();
+
+        $loc3 = new GeometryModel();
+        $loc3->location = new Point(40.761434, -73.977619); // Distance from loc1: 870.06424066202
+        $loc3->save();
+
+        $a = GeometryModel::orderByDistanceSphere('location', $loc1->location)->get();
+        $this->assertCount(3, $a);
+        $this->assertEquals($loc1->location, $a[0]->location);
+        $this->assertEquals($loc2->location, $a[1]->location);
+        $this->assertEquals($loc3->location, $a[2]->location);
+
+        $b = GeometryModel::orderByDistanceSphere('location', $loc1->location, 'asc')->get();
+        $this->assertCount(3, $b);
+        $this->assertEquals($loc1->location, $b[0]->location);
+        $this->assertEquals($loc2->location, $b[1]->location);
+        $this->assertEquals($loc3->location, $b[2]->location);
+
+        $c = GeometryModel::orderByDistanceSphere('location', $loc1->location, 'desc')->get();
+        $this->assertCount(3, $c);
+        $this->assertEquals($loc3->location, $c[0]->location);
+        $this->assertEquals($loc2->location, $c[1]->location);
+        $this->assertEquals($loc1->location, $c[2]->location);
     }
 
     //public function testBounding() {

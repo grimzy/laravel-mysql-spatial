@@ -21,16 +21,13 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
-        /**
-         * @param \Illuminate\Contracts\Config\Repository $config
-         */
-        $config = $app->config;
-        $config->set('database.default', 'mysql');
-        $config->set('database.connections.mysql.host', env('DB_HOST', '127.0.0.1'));
-        $config->set('database.connections.mysql.database', 'spatial_test');
-        $config->set('database.connections.mysql.username', 'root');
-        $config->set('database.connections.mysql.password', '');
-        $config->set('database.connections.mysql.modes', [
+        $app['config']->set('database.default', 'mysql');
+        $app['config']->set('database.connections.mysql.host', env('DB_HOST'));
+        $app['config']->set('database.connections.mysql.port', env('DB_PORT'));
+        $app['config']->set('database.connections.mysql.database', env('DB_DATABASE'));
+        $app['config']->set('database.connections.mysql.username', env('DB_USERNAME'));
+        $app['config']->set('database.connections.mysql.password', env('DB_PASSWORD'));
+        $app['config']->set('database.connections.mysql.modes', [
             'ONLY_FULL_GROUP_BY',
             'STRICT_TRANS_TABLES',
             'NO_ZERO_IN_DATE',
