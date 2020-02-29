@@ -135,8 +135,8 @@ class MySqlGrammar extends IlluminateMySqlGrammar
     /**
      * Get the SQL for a SRID column modifier.
      *
-     * @param  Blueprint  $blueprint
-     * @param  Fluent     $column
+     * @param Blueprint $blueprint
+     * @param Fluent    $column
      *
      * @return string|null
      */
