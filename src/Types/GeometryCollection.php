@@ -150,10 +150,12 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
     }
 
     /**
-     * Checks
+     * Checks.
+     *
      * @param array $items
      */
-    protected function validateItems(array $items) {
+    protected function validateItems(array $items)
+    {
         $this->validateItemCount($items);
 
         foreach ($items as $item) {
@@ -161,16 +163,19 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }
     }
 
-    protected function validateItemCount(array $items) {
+    protected function validateItemCount(array $items)
+    {
         if (count($items) < $this->minimumCollectionItems) {
             $entries = $this->minimumCollectionItems === 1 ? 'entry' : 'entries';
+
             throw new InvalidArgumentException(sprintf(
                 '%s must contain at least %d %s', get_class($this), $this->minimumCollectionItems, $entries
             ));
         }
     }
 
-    protected function validateItemType($item) {
+    protected function validateItemType($item)
+    {
         if (!$item instanceof $this->collectionItemType) {
             throw new InvalidArgumentException(sprintf(
                 '%s must be a collection of %s', get_class($this), $this->collectionItemType
