@@ -15,6 +15,20 @@ use IteratorAggregate;
 class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAccess, Arrayable, Countable
 {
     /**
+     * The minimum number of items required to create this collection.
+     *
+     * @var int
+     */
+    protected $minimumCollectionItems = 1;
+
+    /**
+     * The class of the items in the collection.
+     *
+     * @var string
+     */
+    protected $collectionItemType = GeometryInterface::class;
+
+    /**
      * The items contained in the spatial collection.
      *
      * @var GeometryInterface[]
@@ -28,13 +42,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
      */
     public function __construct(array $geometries)
     {
-        $validated = array_filter($geometries, function ($value) {
-            return $value instanceof GeometryInterface;
-        });
-
-        if (count($geometries) !== count($validated)) {
-            throw new InvalidArgumentException('$geometries must be an array of Geometry objects');
-        }
+        $this->validateItems($geometries);
 
         $this->items = $geometries;
     }
@@ -89,9 +97,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
 
     public function offsetSet($offset, $value)
     {
-        if (!($value instanceof GeometryInterface)) {
-            throw new InvalidArgumentException('$value must be an instance of GeometryInterface');
-        }
+        $this->validateItemType($value);
 
         if (is_null($offset)) {
             $this->items[] = $value;
@@ -141,5 +147,34 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }
 
         return new \GeoJson\Geometry\GeometryCollection($geometries);
+    }
+
+    /**
+     * Checks
+     * @param array $items
+     */
+    protected function validateItems(array $items) {
+        $this->validateItemCount($items);
+
+        foreach ($items as $item) {
+            $this->validateItemType($item);
+        }
+    }
+
+    protected function validateItemCount(array $items) {
+        if (count($items) < $this->minimumCollectionItems) {
+            $entries = $this->minimumCollectionItems === 1 ? 'entry' : 'entries';
+            throw new InvalidArgumentException(sprintf(
+                '%s must contain at least %d %s', get_class($this), $this->minimumCollectionItems, $entries
+            ));
+        }
+    }
+
+    protected function validateItemType($item) {
+        if (!$item instanceof $this->collectionItemType) {
+            throw new InvalidArgumentException(sprintf(
+                '%s must be a collection of %s', get_class($this), $this->collectionItemType
+            ));
+        }
     }
 }

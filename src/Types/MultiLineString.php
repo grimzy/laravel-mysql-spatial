@@ -10,24 +10,18 @@ use InvalidArgumentException;
 class MultiLineString extends GeometryCollection
 {
     /**
-     * @param LineString[] $lineStrings
+     * The minimum number of items required to create this collection.
+     *
+     * @var int
      */
-    public function __construct(array $lineStrings)
-    {
-        if (count($lineStrings) < 1) {
-            throw new InvalidArgumentException('$lineStrings must contain at least one entry');
-        }
+    protected $minimumCollectionItems = 1;
 
-        $validated = array_filter($lineStrings, function ($value) {
-            return $value instanceof LineString;
-        });
-
-        if (count($lineStrings) !== count($validated)) {
-            throw new InvalidArgumentException('$lineStrings must be an array of LineString');
-        }
-
-        parent::__construct($lineStrings);
-    }
+    /**
+     * The class of the items in the collection.
+     *
+     * @var string
+     */
+    protected $collectionItemType = LineString::class;
 
     public function getLineStrings()
     {
@@ -58,9 +52,7 @@ class MultiLineString extends GeometryCollection
 
     public function offsetSet($offset, $value)
     {
-        if (!($value instanceof LineString)) {
-            throw new InvalidArgumentException('$value must be an instance of LineString');
-        }
+        $this::validateItemType($value);
 
         parent::offsetSet($offset, $value);
     }

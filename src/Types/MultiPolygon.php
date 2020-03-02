@@ -10,19 +10,18 @@ use InvalidArgumentException;
 class MultiPolygon extends GeometryCollection
 {
     /**
-     * @param Polygon[] $polygons
+     * The minimum number of items required to create this collection.
+     *
+     * @var int
      */
-    public function __construct(array $polygons)
-    {
-        $validated = array_filter($polygons, function ($value) {
-            return $value instanceof Polygon;
-        });
+    protected $minimumCollectionItems = 0;
 
-        if (count($polygons) !== count($validated)) {
-            throw new InvalidArgumentException('$polygons must be an array of Polygon');
-        }
-        parent::__construct($polygons);
-    }
+    /**
+     * The class of the items in the collection.
+     *
+     * @var string
+     */
+    protected $collectionItemType = Polygon::class;
 
     public function toWKT()
     {
@@ -93,9 +92,7 @@ class MultiPolygon extends GeometryCollection
 
     public function offsetSet($offset, $value)
     {
-        if (!($value instanceof Polygon)) {
-            throw new InvalidArgumentException('$value must be an instance of Polygon');
-        }
+        self::validateItemType($value);
 
         parent::offsetSet($offset, $value);
     }

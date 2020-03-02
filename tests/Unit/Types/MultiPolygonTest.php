@@ -77,7 +77,10 @@ class MultiPolygonTest extends BaseTestCase
 
     public function testInvalidArgumentExceptionNotArrayOfLineString()
     {
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiPolygon must be a collection of Grimzy\LaravelMysqlSpatial\Types\Polygon'
+        );
         $multipolygon = new MultiPolygon([
             $this->getPolygon1(),
             $this->getLineString1(),
@@ -101,7 +104,10 @@ class MultiPolygonTest extends BaseTestCase
         $this->assertEquals($polygon2, $multipolygon[2]);
 
         // assert invalid
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiPolygon must be a collection of Grimzy\LaravelMysqlSpatial\Types\Polygon'
+        );
         $multipolygon[] = 1;
     }
 
