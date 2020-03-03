@@ -41,8 +41,7 @@
         "laravel": {
             "providers": [
                 "Grimzy\\LaravelMysqlSpatial\\SpatialServiceProvider"
-            ],
-            "require": "5.5.*"
+            ]
         }
     }
 }
