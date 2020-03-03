@@ -19,7 +19,7 @@ services:
   - docker
 
 before_install:
-  - echo "memory_limit=2G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo "memory_limit=3G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - sudo /etc/init.d/mysql stop
   - make start_db V=$MYSQL_VERSION
 
