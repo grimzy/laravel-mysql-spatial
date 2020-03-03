@@ -5,6 +5,8 @@ php:
   - '5.6'
   - '7.0'
   - '7.1'
+  - '7.2'
+  - '7.3'
 
 env:
   - MYSQL_VERSION=5.6
@@ -17,7 +19,7 @@ services:
   - docker
 
 before_install:
-  - echo "memory_limit=2G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo "memory_limit=23G" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - sudo /etc/init.d/mysql stop
   - make start_db V=$MYSQL_VERSION
 
