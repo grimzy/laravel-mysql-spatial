@@ -42,7 +42,7 @@ class Point extends Geometry
     public function toPair()
     {
         $formatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
-        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, -1);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 12);
 
         $lng = $formatter->format($this->getLng());
         $lat = $formatter->format($this->getLat());
