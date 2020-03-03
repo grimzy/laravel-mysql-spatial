@@ -7,7 +7,7 @@ abstract class BaseTestCase extends PHPUnit_Framework_TestCase
         Mockery::close();
     }
 
-    protected function assertException($exceptionName, $exceptionMessage = 'uoioi', $exceptionCode = 0)
+    protected function assertException($exceptionName, $exceptionMessage = '', $exceptionCode = 0)
     {
         if (method_exists(parent::class, 'expectException')) {
             parent::expectException($exceptionName);
