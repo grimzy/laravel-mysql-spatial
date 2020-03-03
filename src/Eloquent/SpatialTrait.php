@@ -115,6 +115,7 @@ trait SpatialTrait
         if (!in_array($geometryColumn, $this->getSpatialFields())) {
             throw new SpatialFieldsNotDefinedException();
         }
+
         return true;
     }
 
