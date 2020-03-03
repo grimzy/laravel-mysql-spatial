@@ -3,6 +3,7 @@
 namespace Grimzy\LaravelMysqlSpatial\Eloquent;
 
 use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
+use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialRelationFunction;
 use Grimzy\LaravelMysqlSpatial\Types\Geometry;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -37,6 +38,17 @@ trait SpatialTrait
 
     public $geometries = [];
 
+    protected $stRelations = [
+        'within',
+        'crosses',
+        'contains',
+        'disjoint',
+        'equals',
+        'intersects',
+        'overlaps',
+        'touches',
+    ];
+
     /**
      * Create a new Eloquent query builder for the model.
      *
@@ -49,12 +61,21 @@ trait SpatialTrait
         return new Builder($query);
     }
 
+    protected function newBaseQueryBuilder()
+    {
+        $connection = $this->getConnection();
+
+        return new BaseBuilder(
+            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
+        );
+    }
+
     protected function performInsert(EloquentBuilder $query, array $options = [])
     {
         foreach ($this->attributes as $key => $value) {
             if ($value instanceof GeometryInterface) {
                 $this->geometries[$key] = $value; //Preserve the geometry objects prior to the insert
-                $this->attributes[$key] = $this->getConnection()->raw(sprintf("GeomFromText('%s')", $value->toWKT()));
+                $this->attributes[$key] = new SpatialExpression($value);
             }
         }
 
@@ -89,12 +110,28 @@ trait SpatialTrait
         }
     }
 
+    public function isColumnAllowed($geometryColumn)
+    {
+        if (!in_array($geometryColumn, $this->getSpatialFields())) {
+            throw new SpatialFieldsNotDefinedException();
+        }
+
+        return true;
+    }
+
     public function scopeDistance($query, $geometryColumn, $geometry, $distance, $exclude_self = false)
     {
-        $query->whereRaw("st_distance(`{$geometryColumn}`, GeomFromText('{$geometry->toWkt()}')) <= {$distance}");
+        $this->isColumnAllowed($geometryColumn);
+
+        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) <= ?", [
+            $geometry->toWkt(),
+            $distance,
+        ]);
 
         if ($exclude_self) {
-            $query->whereRaw("st_distance(`{$geometryColumn}`, GeomFromText('{$geometry->toWkt()}')) != 0");
+            $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) != 0", [
+                $geometry->toWkt(),
+            ]);
         }
 
         return $query;
@@ -102,17 +139,30 @@ trait SpatialTrait
 
     public function scopeDistanceValue($query, $geometryColumn, $geometry)
     {
+        $this->isColumnAllowed($geometryColumn);
+
         $columns = $query->getQuery()->columns;
 
         if (!$columns) {
             $query->select('*');
         }
-        $query->selectRaw("st_distance(`{$geometryColumn}`, GeomFromText('{$geometry->toWkt()}')) as distance");
+
+        $query->selectRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) as distance", [
+            $geometry->toWkt(),
+        ]);
     }
 
     public function scopeComparison($query, $geometryColumn, $geometry, $relationship)
     {
-        $query->whereRaw("st_{$relationship}(`{$geometryColumn}`, GeomFromText('{$geometry->toWkt()}'))");
+        $this->isColumnAllowed($geometryColumn);
+
+        if (!in_array($relationship, $this->stRelations)) {
+            throw new UnknownSpatialRelationFunction($relationship);
+        }
+
+        $query->whereRaw("st_{$relationship}(`$geometryColumn`, ST_GeomFromText(?))", [
+            $geometry->toWkt(),
+        ]);
 
         return $query;
     }
