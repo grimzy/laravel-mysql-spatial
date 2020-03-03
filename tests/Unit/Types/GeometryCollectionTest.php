@@ -35,7 +35,10 @@ class GeometryCollectionTest extends BaseTestCase
 
     public function testInvalidArgumentExceptionNotArrayGeometries()
     {
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\GeometryCollection must be a collection of Grimzy\LaravelMysqlSpatial\Types\GeometryInterface'
+        );
         $geometrycollection = new GeometryCollection([
             $this->getPoint(),
             1,
@@ -85,7 +88,10 @@ class GeometryCollectionTest extends BaseTestCase
         $this->assertEquals($point100, $geometryCollection[100]);
 
         // assert invalid
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\GeometryCollection must be a collection of Grimzy\LaravelMysqlSpatial\Types\GeometryInterface'
+        );
         $geometryCollection[] = 1;
     }
 

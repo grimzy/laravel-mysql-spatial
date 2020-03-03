@@ -8,24 +8,11 @@ use InvalidArgumentException;
 abstract class PointCollection extends GeometryCollection
 {
     /**
-     * @param Point[] $points
+     * The class of the items in the collection.
+     *
+     * @var string
      */
-    public function __construct(array $points)
-    {
-        if (count($points) < 2) {
-            throw new InvalidArgumentException('$points must contain at least two entries');
-        }
-
-        $validated = array_filter($points, function ($value) {
-            return $value instanceof Point;
-        });
-
-        if (count($points) !== count($validated)) {
-            throw new InvalidArgumentException('$points must be an array of Points');
-        }
-
-        parent::__construct($points);
-    }
+    protected $collectionItemType = Point::class;
 
     public function toPairList()
     {
@@ -36,9 +23,7 @@ abstract class PointCollection extends GeometryCollection
 
     public function offsetSet($offset, $value)
     {
-        if (!($value instanceof Point)) {
-            throw new InvalidArgumentException('$value must be an instance of Point');
-        }
+        $this->validateItemType($value);
 
         parent::offsetSet($offset, $value);
     }

@@ -5,29 +5,15 @@ namespace Grimzy\LaravelMysqlSpatial\Types;
 use GeoJson\GeoJson;
 use GeoJson\Geometry\MultiLineString as GeoJsonMultiLineString;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
-use InvalidArgumentException;
 
 class MultiLineString extends GeometryCollection
 {
     /**
-     * @param LineString[] $lineStrings
+     * The class of the items in the collection.
+     *
+     * @var string
      */
-    public function __construct(array $lineStrings)
-    {
-        if (count($lineStrings) < 1) {
-            throw new InvalidArgumentException('$lineStrings must contain at least one entry');
-        }
-
-        $validated = array_filter($lineStrings, function ($value) {
-            return $value instanceof LineString;
-        });
-
-        if (count($lineStrings) !== count($validated)) {
-            throw new InvalidArgumentException('$lineStrings must be an array of LineString');
-        }
-
-        parent::__construct($lineStrings);
-    }
+    protected $collectionItemType = LineString::class;
 
     public function getLineStrings()
     {
@@ -58,9 +44,7 @@ class MultiLineString extends GeometryCollection
 
     public function offsetSet($offset, $value)
     {
-        if (!($value instanceof LineString)) {
-            throw new InvalidArgumentException('$value must be an instance of LineString');
-        }
+        $this->validateItemType($value);
 
         parent::offsetSet($offset, $value);
     }
