@@ -150,7 +150,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
     }
 
     /**
-     * Checks.
+     * Checks whether the items are valid to create this collection.
      *
      * @param array $items
      */
@@ -163,6 +163,13 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }
     }
 
+    /**
+     * Checks whether the array has enough items to generate a valid WKT.
+     *
+     * @param array $items
+     *
+     * @see $minimumCollectionItems
+     */
     protected function validateItemCount(array $items)
     {
         if (count($items) < $this->minimumCollectionItems) {
@@ -174,6 +181,13 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }
     }
 
+    /**
+     * Checks the type of the items in the array.
+     *
+     * @param $item
+     *
+     * @see $collectionItemType
+     */
     protected function validateItemType($item)
     {
         if (!$item instanceof $this->collectionItemType) {
