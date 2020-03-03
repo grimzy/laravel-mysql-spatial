@@ -2,6 +2,7 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
+use NumberFormatter;
 use GeoJson\GeoJson;
 use GeoJson\Geometry\Point as GeoJsonPoint;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
@@ -40,7 +41,13 @@ class Point extends Geometry
 
     public function toPair()
     {
-        return $this->getLng().' '.$this->getLat();
+        $formatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, -1);
+
+        $lng = $formatter->format($this->getLng());
+        $lat = $formatter->format($this->getLat());
+
+        return $lng . ' ' . $lat;
     }
 
     public static function fromPair($pair)
@@ -62,7 +69,7 @@ class Point extends Geometry
 
     public function __toString()
     {
-        return $this->getLng().' '.$this->getLat();
+        return $this->toPair();
     }
 
     /**
