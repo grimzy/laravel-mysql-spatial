@@ -23,7 +23,7 @@ abstract class PointCollection extends GeometryCollection
 
     public function offsetSet($offset, $value)
     {
-        self::validateItemType($value);
+        $this->validateItemType($value);
 
         parent::offsetSet($offset, $value);
     }
