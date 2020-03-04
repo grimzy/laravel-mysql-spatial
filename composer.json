@@ -18,7 +18,7 @@
         "php": ">=5.5",
         "ext-pdo": "*",
         "ext-json": "*",
-        "illuminate/database": "^5.2|^6.0",
+        "illuminate/database": "^5.2|^6.0|^7.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0"
     },
