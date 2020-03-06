@@ -4,7 +4,6 @@ use Grimzy\LaravelMysqlSpatial\Types\Point;
 
 class PointLocaleTest extends BaseTestCase
 {
-
     public function setUp()
     {
         parent::setUp();
@@ -19,7 +18,6 @@ class PointLocaleTest extends BaseTestCase
         setlocale(LC_ALL, 'en_US.UTF-8');
     }
 
-    
     public function testFromWKT()
     {
         $point = Point::fromWKT('POINT(1 2)');
@@ -58,7 +56,7 @@ class PointLocaleTest extends BaseTestCase
         $this->assertSame(2.0, $point->getLat());
 
         $this->assertSame('1.5 2', $point->toPair());
-        setlocale(LC_ALL, "en-US.UTF-8");
+        setlocale(LC_ALL, 'en-US.UTF-8');
     }
 
     public function testPair()
