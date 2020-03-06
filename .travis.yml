@@ -26,6 +26,7 @@ before_install:
 install: composer install
 
 before_script:
+  - phpenv config-rm intl.ini
   - mkdir -p build/logs
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter

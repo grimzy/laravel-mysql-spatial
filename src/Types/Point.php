@@ -13,10 +13,15 @@ class Point extends Geometry
 
     protected $lng;
 
+    private $formatter;
+
     public function __construct($lat, $lng)
     {
         $this->lat = (float) $lat;
         $this->lng = (float) $lng;
+
+        $this->formatter = new NumberFormatter('en', NumberFormatter::DECIMAL);
+        $this->formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 12);
     }
 
     public function getLat()
@@ -41,11 +46,8 @@ class Point extends Geometry
 
     public function toPair()
     {
-        $formatter = new NumberFormatter('en_US', NumberFormatter::DECIMAL);
-        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 12);
-
-        $lng = $formatter->format($this->getLng());
-        $lat = $formatter->format($this->getLat());
+        $lng = $this->rtrimCoordinate($this->formatter->format($this->getLng()));
+        $lat = $this->rtrimCoordinate($this->formatter->format($this->getLat()));
 
         return $lng . ' ' . $lat;
     }
@@ -100,5 +102,9 @@ class Point extends Geometry
     public function jsonSerialize()
     {
         return new GeoJsonPoint([$this->getLng(), $this->getLat()]);
+    }
+
+    private function rtrimCoordinate($coordinate) {
+        return rtrim(rtrim($coordinate, '0'), '.');
     }
 }
