@@ -33,6 +33,28 @@ class GeometryCollectionTest extends BaseTestCase
         $this->assertSame('{"type":"GeometryCollection","geometries":[{"type":"LineString","coordinates":[[0,0],[1,0],[1,1],[0,1],[0,0]]},{"type":"Point","coordinates":[200,100]}]}', json_encode($this->getGeometryCollection()->jsonSerialize()));
     }
 
+    public function testCanCreateEmptyGeometryCollection()
+    {
+        $geometryCollection = new GeometryCollection([]);
+        $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
+    }
+
+    public function testFromWKTWithEmptyGeometryCollection()
+    {
+        /**
+         * @var GeometryCollection
+         */
+        $geometryCollection = GeometryCollection::fromWKT('GEOMETRYCOLLECTION()');
+        $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
+
+        $this->assertEquals(0, $geometryCollection->count());
+    }
+
+    public function testToWKTWithEmptyGeometryCollection()
+    {
+        $this->assertEquals('GEOMETRYCOLLECTION()', (new GeometryCollection([]))->toWKT());
+    }
+
     public function testInvalidArgumentExceptionNotArrayGeometries()
     {
         $this->assertException(

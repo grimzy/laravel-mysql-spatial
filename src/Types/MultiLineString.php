@@ -9,6 +9,13 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 class MultiLineString extends GeometryCollection
 {
     /**
+     * The minimum number of items required to create this collection.
+     *
+     * @var int
+     */
+    protected $minimumCollectionItems = 1;
+
+    /**
      * The class of the items in the collection.
      *
      * @var string

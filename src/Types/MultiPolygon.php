@@ -13,7 +13,7 @@ class MultiPolygon extends GeometryCollection
      *
      * @var int
      */
-    protected $minimumCollectionItems = 0;
+    protected $minimumCollectionItems = 1;
 
     /**
      * The class of the items in the collection.
