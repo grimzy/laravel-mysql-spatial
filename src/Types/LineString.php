@@ -8,6 +8,13 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
 class LineString extends PointCollection
 {
+    /**
+     * The minimum number of items required to create this collection.
+     *
+     * @var int
+     */
+    protected $minimumCollectionItems = 2;
+
     public function toWKT()
     {
         return sprintf('LINESTRING(%s)', $this->toPairList());

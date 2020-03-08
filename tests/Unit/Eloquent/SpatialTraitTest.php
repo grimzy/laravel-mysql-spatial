@@ -46,6 +46,7 @@ class SpatialTraitTest extends BaseTestCase
 
         $this->assertStringStartsWith('update', $this->queries[1]);
         $this->assertContains('update `test_models` set `point` = ST_GeomFromText(?) where `id` = ?', $this->queries[1]);
+        // TODO: assert bindings in query
     }
 
     public function testInsertUpdateLineStringHasCorrectSql()
@@ -421,7 +422,7 @@ class TestModel extends Model
 {
     use \Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 
-    protected $spatialFields = ['point'];   // only required when fetching, not saving
+    protected $spatialFields = ['point'];   // TODO: only required when fetching, not saving
 
     public $timestamps = false;
 

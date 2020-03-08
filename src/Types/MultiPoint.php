@@ -8,6 +8,13 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
 class MultiPoint extends PointCollection
 {
+    /**
+     * The minimum number of items required to create this collection.
+     *
+     * @var int
+     */
+    protected $minimumCollectionItems = 1;
+
     public function toWKT()
     {
         return sprintf('MULTIPOINT(%s)', (string) $this);
