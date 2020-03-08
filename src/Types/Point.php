@@ -12,10 +12,11 @@ class Point extends Geometry
 
     protected $lng;
 
-    public function __construct($lat, $lng)
+    public function __construct($lat, $lng, $srid = null)
     {
         $this->lat = (float) $lat;
         $this->lng = (float) $lng;
+        $this->srid = (int) $srid;
     }
 
     public function getLat()

@@ -12,7 +12,7 @@ class MultiPolygon extends GeometryCollection
     /**
      * @param Polygon[] $polygons
      */
-    public function __construct(array $polygons)
+    public function __construct(array $polygons, $srid = null)
     {
         $validated = array_filter($polygons, function ($value) {
             return $value instanceof Polygon;
@@ -21,7 +21,7 @@ class MultiPolygon extends GeometryCollection
         if (count($polygons) !== count($validated)) {
             throw new InvalidArgumentException('$polygons must be an array of Polygon');
         }
-        parent::__construct($polygons);
+        parent::__construct($polygons, $srid);
     }
 
     public function toWKT()

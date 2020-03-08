@@ -26,7 +26,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(array $geometries)
+    public function __construct(array $geometries, $srid = null)
     {
         $validated = array_filter($geometries, function ($value) {
             return $value instanceof GeometryInterface;
@@ -37,6 +37,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }
 
         $this->items = $geometries;
+        $this->srid = $srid;
     }
 
     public function getGeometries()
