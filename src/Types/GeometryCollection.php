@@ -19,7 +19,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
      *
      * @var int
      */
-    protected $minimumCollectionItems = 1;
+    protected $minimumCollectionItems = 0;
 
     /**
      * The class of the items in the collection.
@@ -66,6 +66,10 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
 
     public static function fromString($wktArgument)
     {
+        if (empty($wktArgument)) {
+            return new static([]);
+        }
+
         $geometry_strings = preg_split('/,\s*(?=[A-Za-z])/', $wktArgument);
 
         return new static(array_map(function ($geometry_string) {
