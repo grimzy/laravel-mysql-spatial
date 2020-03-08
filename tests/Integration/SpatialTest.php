@@ -242,6 +242,17 @@ class SpatialTest extends BaseTestCase
         $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
     }
 
+    public function testInsertEmptyGeometryCollection()
+    {
+        $geo = new GeometryModel();
+
+        $geo->location = new Point(1, 2);
+
+        $geo->multi_geometries = new GeometryCollection([]);
+        $geo->save();
+        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+    }
+
     public function testUpdate()
     {
         $geo = new GeometryModel();

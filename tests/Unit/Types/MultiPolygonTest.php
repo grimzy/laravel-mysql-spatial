@@ -75,9 +75,21 @@ class MultiPolygonTest extends BaseTestCase
         $this->assertSame('{"type":"MultiPolygon","coordinates":[[[[0,0],[1,0],[1,1],[0,1],[0,0]],[[10,10],[20,10],[20,20],[10,20],[10,10]]],[[[100,100],[200,100],[200,200],[100,200],[100,100]]]]}', json_encode($this->getMultiPolygon()));
     }
 
-    public function testInvalidArgumentExceptionNotArrayOfLineString()
+    public function testInvalidArgumentExceptionAtLeastOneEntry()
     {
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiPolygon must contain at least 1 entry'
+        );
+        $multipolygon = new MultiPolygon([]);
+    }
+
+    public function testInvalidArgumentExceptionNotArrayOfPolygon()
+    {
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiPolygon must be a collection of Grimzy\LaravelMysqlSpatial\Types\Polygon'
+        );
         $multipolygon = new MultiPolygon([
             $this->getPolygon1(),
             $this->getLineString1(),
@@ -101,7 +113,10 @@ class MultiPolygonTest extends BaseTestCase
         $this->assertEquals($polygon2, $multipolygon[2]);
 
         // assert invalid
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiPolygon must be a collection of Grimzy\LaravelMysqlSpatial\Types\Polygon'
+        );
         $multipolygon[] = 1;
     }
 
