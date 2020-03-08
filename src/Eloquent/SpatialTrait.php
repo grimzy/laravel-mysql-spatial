@@ -66,7 +66,9 @@ trait SpatialTrait
         $connection = $this->getConnection();
 
         return new BaseBuilder(
-            $connection, $connection->getQueryGrammar(), $connection->getPostProcessor()
+            $connection,
+            $connection->getQueryGrammar(),
+            $connection->getPostProcessor()
         );
     }
 
