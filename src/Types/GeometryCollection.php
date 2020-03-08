@@ -176,7 +176,10 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
             $entries = $this->minimumCollectionItems === 1 ? 'entry' : 'entries';
 
             throw new InvalidArgumentException(sprintf(
-                '%s must contain at least %d %s', get_class($this), $this->minimumCollectionItems, $entries
+                '%s must contain at least %d %s',
+                get_class($this),
+                $this->minimumCollectionItems,
+                $entries
             ));
         }
     }
@@ -192,7 +195,9 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
     {
         if (!$item instanceof $this->collectionItemType) {
             throw new InvalidArgumentException(sprintf(
-                '%s must be a collection of %s', get_class($this), $this->collectionItemType
+                '%s must be a collection of %s',
+                get_class($this),
+                $this->collectionItemType
             ));
         }
     }
