@@ -140,6 +140,7 @@ class Place extends Model
 ```php
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
+use Grimzy\LaravelMysqlSpatial\Types\LineString;
 
 $place1 = new Place();
 $place1->name = 'Empire State Building';
