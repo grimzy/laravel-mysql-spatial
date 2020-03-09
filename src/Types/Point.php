@@ -40,12 +40,12 @@ class Point extends Geometry
 
     public function toPair()
     {
-        return $this->getLng().' '.$this->getLat();
+        return $this->getLat().' '.$this->getLng();
     }
 
     public static function fromPair($pair)
     {
-        list($lng, $lat) = explode(' ', trim($pair, "\t\n\r \x0B()"));
+        list($lat,$lng) = explode(' ', trim($pair, "\t\n\r \x0B()"));
 
         return new static((float) $lat, (float) $lng);
     }
@@ -62,7 +62,7 @@ class Point extends Geometry
 
     public function __toString()
     {
-        return $this->getLng().' '.$this->getLat();
+        return $this->getLat().' '.$this->getLng();
     }
 
     /**
@@ -82,7 +82,7 @@ class Point extends Geometry
 
         $coordinates = $geoJson->getCoordinates();
 
-        return new self($coordinates[1], $coordinates[0]);
+        return new self($coordinates[0], $coordinates[1]);
     }
 
     /**
@@ -92,6 +92,6 @@ class Point extends Geometry
      */
     public function jsonSerialize()
     {
-        return new GeoJsonPoint([$this->getLng(), $this->getLat()]);
+        return new GeoJsonPoint([$this->getLat(), $this->getLng()]);
     }
 }

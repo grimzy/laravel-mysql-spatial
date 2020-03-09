@@ -112,7 +112,7 @@ class MultiPolygon extends GeometryCollection
             foreach ($polygonCoordinates as $lineStringCoordinates) {
                 $points = [];
                 foreach ($lineStringCoordinates as $lineStringCoordinate) {
-                    $points[] = new Point($lineStringCoordinate[1], $lineStringCoordinate[0]);
+                    $points[] = new Point($lineStringCoordinate[0], $lineStringCoordinate[1]);
                 }
                 $lineStrings[] = new LineString($points);
             }

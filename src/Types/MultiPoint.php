@@ -58,7 +58,7 @@ class MultiPoint extends PointCollection
 
         $set = [];
         foreach ($geoJson->getCoordinates() as $coordinate) {
-            $set[] = new Point($coordinate[1], $coordinate[0]);
+            $set[] = new Point($coordinate[0], $coordinate[1]);
         }
 
         return new self($set);

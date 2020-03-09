@@ -27,7 +27,7 @@ class Polygon extends MultiLineString
         foreach ($geoJson->getCoordinates() as $coordinates) {
             $points = [];
             foreach ($coordinates as $coordinate) {
-                $points[] = new Point($coordinate[1], $coordinate[0]);
+                $points[] = new Point($coordinate[0], $coordinate[1]);
             }
             $set[] = new LineString($points);
         }
