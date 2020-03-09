@@ -184,6 +184,9 @@ class SpatialTest extends BaseTestCase
         $geo->multi_geometries = new GeometryCollection([]);
         $geo->save();
         $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+
+        $geo2 = GeometryModel::find($geo->id);
+        $this->assertNull($geo2->multi_geometries); // MySQL 5.6 saves null instead of empty GeometryCollection
     }
 
     public function testUpdate()
