@@ -107,7 +107,8 @@ class SridSpatialTest extends IntegrationBaseTestCase
         $geo = new WithSridModel();
         $geo->location = new Point(1, 2);
 
-        $this->assertException(Illuminate\Database\QueryException::class,
+        $this->assertException(
+            Illuminate\Database\QueryException::class,
             'SQLSTATE[HY000]: General error: 3643 The SRID of the geometry '.
             'does not match the SRID of the column \'location\'. The SRID '.
             'of the geometry is 0, but the SRID of the column is 3857. '.
