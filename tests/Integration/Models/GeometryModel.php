@@ -17,5 +17,5 @@ class GeometryModel extends Model
 
     protected $table = 'geometry';
 
-    protected $spatialFields = ['location', 'line'];
+    protected $spatialFields = ['location', 'line', 'multi_geometries'];
 }

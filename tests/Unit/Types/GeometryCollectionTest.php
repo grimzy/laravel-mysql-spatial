@@ -33,9 +33,34 @@ class GeometryCollectionTest extends BaseTestCase
         $this->assertSame('{"type":"GeometryCollection","geometries":[{"type":"LineString","coordinates":[[0,0],[1,0],[1,1],[0,1],[0,0]]},{"type":"Point","coordinates":[200,100]}]}', json_encode($this->getGeometryCollection()->jsonSerialize()));
     }
 
+    public function testCanCreateEmptyGeometryCollection()
+    {
+        $geometryCollection = new GeometryCollection([]);
+        $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
+    }
+
+    public function testFromWKTWithEmptyGeometryCollection()
+    {
+        /**
+         * @var GeometryCollection
+         */
+        $geometryCollection = GeometryCollection::fromWKT('GEOMETRYCOLLECTION()');
+        $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
+
+        $this->assertEquals(0, $geometryCollection->count());
+    }
+
+    public function testToWKTWithEmptyGeometryCollection()
+    {
+        $this->assertEquals('GEOMETRYCOLLECTION()', (new GeometryCollection([]))->toWKT());
+    }
+
     public function testInvalidArgumentExceptionNotArrayGeometries()
     {
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\GeometryCollection must be a collection of Grimzy\LaravelMysqlSpatial\Types\GeometryInterface'
+        );
         $geometrycollection = new GeometryCollection([
             $this->getPoint(),
             1,
@@ -85,7 +110,10 @@ class GeometryCollectionTest extends BaseTestCase
         $this->assertEquals($point100, $geometryCollection[100]);
 
         // assert invalid
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\GeometryCollection must be a collection of Grimzy\LaravelMysqlSpatial\Types\GeometryInterface'
+        );
         $geometryCollection[] = 1;
     }
 

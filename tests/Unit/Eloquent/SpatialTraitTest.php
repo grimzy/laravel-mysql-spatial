@@ -484,7 +484,10 @@ class SpatialTraitTest extends BaseTestCase
     public function testScopeOrderBySpatialThrowsExceptionWhenFunctionNotRegistered()
     {
         $point = new Point(1, 2);
-        $this->assertException(\Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialFunctionException::class);
+        $this->assertException(
+            \Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialFunctionException::class,
+            'does-not-exist'
+        );
         TestModel::orderBySpatial('point', $point, 'does-not-exist');
     }
 

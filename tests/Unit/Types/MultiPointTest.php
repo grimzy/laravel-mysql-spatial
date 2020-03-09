@@ -58,13 +58,19 @@ class MultiPointTest extends BaseTestCase
 
     public function testInvalidArgumentExceptionAtLeastOneEntry()
     {
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiPoint must contain at least 1 entry'
+        );
         $multipoint = new MultiPoint([]);
     }
 
     public function testInvalidArgumentExceptionNotArrayOfLineString()
     {
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiPoint must be a collection of Grimzy\LaravelMysqlSpatial\Types\Point'
+        );
         $multipoint = new MultiPoint([
             new Point(0, 0),
             1,
@@ -87,7 +93,10 @@ class MultiPointTest extends BaseTestCase
         $this->assertEquals($point2, $multipoint[2]);
 
         // assert invalid
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiPoint must be a collection of Grimzy\LaravelMysqlSpatial\Types\Point'
+        );
         $multipoint[] = 1;
     }
 
@@ -132,7 +141,10 @@ class MultiPointTest extends BaseTestCase
         $this->assertEquals($point2, $multipoint[1]);
         $this->assertEquals($point3, $multipoint[2]);
 
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            '$index is greater than the size of the array'
+        );
         $multipoint->insertPoint(100, new Point(100, 100));
     }
 }

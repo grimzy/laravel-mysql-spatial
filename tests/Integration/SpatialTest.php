@@ -91,6 +91,21 @@ class SpatialTest extends IntegrationBaseTestCase
         $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
     }
 
+    public function testInsertEmptyGeometryCollection()
+    {
+        $geo = new GeometryModel();
+
+        $geo->location = new Point(1, 2);
+
+        $geo->multi_geometries = new GeometryCollection([]);
+        $geo->save();
+        $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+
+        $geo2 = GeometryModel::find($geo->id);
+        $this->assertInstanceOf(GeometryCollection::class, $geo2->multi_geometries);
+        $this->assertEquals(0, count($geo2->multi_geometries));
+    }
+
     public function testUpdate()
     {
         $geo = new GeometryModel();
