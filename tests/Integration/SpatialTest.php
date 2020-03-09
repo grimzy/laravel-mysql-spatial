@@ -184,6 +184,9 @@ class SpatialTest extends BaseTestCase
         $geo->multi_geometries = new GeometryCollection([]);
         $geo->save();
         $this->assertDatabaseHas('geometry', ['id' => $geo->id]);
+
+        $geo2 = GeometryModel::find($geo->id);
+        $this->assertInstanceOf(GeometryCollection::class, $geo2->multi_geometries);
     }
 
     public function testUpdate()

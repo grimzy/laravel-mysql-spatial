@@ -95,7 +95,7 @@ trait SpatialTrait
         $spatial_fields = $this->getSpatialFields();
 
         foreach ($attributes as $attribute => &$value) {
-            if (in_array($attribute, $spatial_fields) && is_string($value) && strlen($value) >= 15) {
+            if (in_array($attribute, $spatial_fields) && is_string($value) && strlen($value) >= 13) {
                 $value = Geometry::fromWKB($value);
             }
         }
