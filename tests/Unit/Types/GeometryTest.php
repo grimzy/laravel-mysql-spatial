@@ -32,7 +32,10 @@ class GeometryTest extends BaseTestCase
         $this->assertEquals(MultiLineString::class, Geometry::getWKTClass('MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))'));
         $this->assertEquals(MultiPolygon::class, Geometry::getWKTClass('MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))'));
         $this->assertEquals(GeometryCollection::class, Geometry::getWKTClass('GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))'));
-        $this->assertException(UnknownWKTTypeException::class);
+        $this->assertException(
+            UnknownWKTTypeException::class,
+            'Type was TRIANGLE'
+        );
         Geometry::getWKTClass('TRIANGLE((0 0, 0 9, 9 0, 0 0))');
     }
 

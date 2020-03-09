@@ -15,6 +15,20 @@ use IteratorAggregate;
 class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAccess, Arrayable, Countable
 {
     /**
+     * The minimum number of items required to create this collection.
+     *
+     * @var int
+     */
+    protected $minimumCollectionItems = 0;
+
+    /**
+     * The class of the items in the collection.
+     *
+     * @var string
+     */
+    protected $collectionItemType = GeometryInterface::class;
+
+    /**
      * The items contained in the spatial collection.
      *
      * @var GeometryInterface[]
@@ -28,13 +42,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
      */
     public function __construct(array $geometries)
     {
-        $validated = array_filter($geometries, function ($value) {
-            return $value instanceof GeometryInterface;
-        });
-
-        if (count($geometries) !== count($validated)) {
-            throw new InvalidArgumentException('$geometries must be an array of Geometry objects');
-        }
+        $this->validateItems($geometries);
 
         $this->items = $geometries;
     }
@@ -58,6 +66,10 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
 
     public static function fromString($wktArgument)
     {
+        if (empty($wktArgument)) {
+            return new static([]);
+        }
+
         $geometry_strings = preg_split('/,\s*(?=[A-Za-z])/', $wktArgument);
 
         return new static(array_map(function ($geometry_string) {
@@ -89,9 +101,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
 
     public function offsetSet($offset, $value)
     {
-        if (!($value instanceof GeometryInterface)) {
-            throw new InvalidArgumentException('$value must be an instance of GeometryInterface');
-        }
+        $this->validateItemType($value);
 
         if (is_null($offset)) {
             $this->items[] = $value;
@@ -141,5 +151,58 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }
 
         return new \GeoJson\Geometry\GeometryCollection($geometries);
+    }
+
+    /**
+     * Checks whether the items are valid to create this collection.
+     *
+     * @param array $items
+     */
+    protected function validateItems(array $items)
+    {
+        $this->validateItemCount($items);
+
+        foreach ($items as $item) {
+            $this->validateItemType($item);
+        }
+    }
+
+    /**
+     * Checks whether the array has enough items to generate a valid WKT.
+     *
+     * @param array $items
+     *
+     * @see $minimumCollectionItems
+     */
+    protected function validateItemCount(array $items)
+    {
+        if (count($items) < $this->minimumCollectionItems) {
+            $entries = $this->minimumCollectionItems === 1 ? 'entry' : 'entries';
+
+            throw new InvalidArgumentException(sprintf(
+                '%s must contain at least %d %s',
+                get_class($this),
+                $this->minimumCollectionItems,
+                $entries
+            ));
+        }
+    }
+
+    /**
+     * Checks the type of the items in the array.
+     *
+     * @param $item
+     *
+     * @see $collectionItemType
+     */
+    protected function validateItemType($item)
+    {
+        if (!$item instanceof $this->collectionItemType) {
+            throw new InvalidArgumentException(sprintf(
+                '%s must be a collection of %s',
+                get_class($this),
+                $this->collectionItemType
+            ));
+        }
     }
 }

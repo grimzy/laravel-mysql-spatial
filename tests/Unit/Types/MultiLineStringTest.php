@@ -59,13 +59,19 @@ class MultiLineStringTest extends BaseTestCase
 
     public function testInvalidArgumentExceptionAtLeastOneEntry()
     {
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiLineString must contain at least 1 entry'
+        );
         $multilinestring = new MultiLineString([]);
     }
 
     public function testInvalidArgumentExceptionNotArrayOfLineString()
     {
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiLineString must be a collection of Grimzy\LaravelMysqlSpatial\Types\LineString'
+        );
         $multilinestring = new MultiLineString([
             new LineString([new Point(0, 0), new Point(1, 1)]),
             new Point(0, 1),
@@ -98,7 +104,10 @@ class MultiLineStringTest extends BaseTestCase
         $this->assertEquals($linestring2, $multilinestring[2]);
 
         // assert invalid
-        $this->assertException(InvalidArgumentException::class);
+        $this->assertException(
+            InvalidArgumentException::class,
+            'Grimzy\LaravelMysqlSpatial\Types\MultiLineString must be a collection of Grimzy\LaravelMysqlSpatial\Types\LineString'
+        );
         $multilinestring[] = 1;
     }
 }
