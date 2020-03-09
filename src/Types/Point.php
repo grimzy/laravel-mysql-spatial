@@ -106,6 +106,6 @@ class Point extends Geometry
 
     private function rtrimCoordinate($coordinate)
     {
-        return rtrim(rtrim($coordinate, '0'), '.');
+        return rtrim(rtrim($coordinate, '0'), '.,');
     }
 }
