@@ -121,7 +121,16 @@ trait SpatialTrait
         }
     }
 
-    public function isColumnAllowed($geometryColumn)
+    /**
+     * Checks whether a column name exists in a SpatialTrait::$geometries
+     * 
+     * @param string $geometryColumn
+     * 
+     * @throws SpatialFieldsNotDefinedException
+     * 
+     * @return bool
+     */
+    public function isColumnAllowed(string $geometryColumn)
     {
         if (!in_array($geometryColumn, $this->getSpatialFields())) {
             throw new SpatialFieldsNotDefinedException();
@@ -130,7 +139,19 @@ trait SpatialTrait
         return true;
     }
 
-    public function scopeDistance($query, $geometryColumn, $geometry, $distance)
+    /**
+     * Queries a geometry column to have less than or equal distance to a geometry object on a flat surface
+     * 
+     * @param EloquentBuilder   $query
+     * @param string            $geometryColumn
+     * @param Geometry          $geometry
+     * @param float             $distance
+     * 
+     * @throws SpatialFieldsNotDefinedException
+     * 
+     * @return EloquentBuilder
+     */
+    public function scopeDistance(EloquentBuilder $query, string $geometryColumn, Geometry $geometry, float $distance)
     {
         $this->isColumnAllowed($geometryColumn);
 
@@ -142,7 +163,19 @@ trait SpatialTrait
         return $query;
     }
 
-    public function scopeDistanceExcludingSelf($query, $geometryColumn, $geometry, $distance)
+    /**
+     * Queries a geometry column to have less than or equal distance to a geometry object on a flat surface, excluding the geometry object from result set
+     * 
+     * @param EloquentBuilder   $query
+     * @param string            $geometryColumn
+     * @param Geometry          $geometry
+     * @param float             $distance
+     * 
+     * @throws SpatialFieldsNotDefinedException
+     * 
+     * @return EloquentBuilder
+     */
+    public function scopeDistanceExcludingSelf(EloquentBuilder $query, string $geometryColumn, Geometry $geometry, float $distance)
     {
         $this->isColumnAllowed($geometryColumn);
 
@@ -155,7 +188,18 @@ trait SpatialTrait
         return $query;
     }
 
-    public function scopeDistanceValue($query, $geometryColumn, $geometry)
+    /**
+     * Queries a table for distance between a geometry column and a geometry object on a flat surface
+     * 
+     * @param EloquentBuilder   $query
+     * @param string            $geometryColumn
+     * @param Geometry          $geometry
+     * 
+     * @throws SpatialFieldsNotDefinedException
+     * 
+     * @return EloquentBuilder
+     */
+    public function scopeDistanceValue(EloquentBuilder $query, string $geometryColumn, Geometry $geometry)
     {
         $this->isColumnAllowed($geometryColumn);
 
@@ -170,32 +214,72 @@ trait SpatialTrait
         ]);
     }
 
-    public function scopeDistanceSphere($query, $geometryColumn, $geometry, $distance)
+    /**
+     * Queries a geometry column to have less than or equal distance to a geometry object on a sphere
+     * 
+     * @param EloquentBuilder   $query
+     * @param string            $geometryColumn
+     * @param Geometry          $geometry
+     * @param float             $distance
+     * @param float             $radius
+     * 
+     * @throws SpatialFieldsNotDefinedException
+     * 
+     * @return EloquentBuilder
+     */
+    public function scopeDistanceSphere(EloquentBuilder $query, string $geometryColumn, Geometry $geometry, float $distance, float $radius = 6371008.7714150598325213221998779)
     {
         $this->isColumnAllowed($geometryColumn);
 
-        $query->whereRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?)) <= ?", [
+        $query->whereRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?), ?) <= ?", [
             $geometry->toWkt(),
+            $radius,
             $distance,
         ]);
 
         return $query;
     }
 
-    public function scopeDistanceSphereExcludingSelf($query, $geometryColumn, $geometry, $distance)
+    /**
+     * Queries a geometry column to have less than or equal distance to a geometry object on a sphere, excluding the geometry object from result set
+     * 
+     * @param EloquentBuilder   $query
+     * @param string            $geometryColumn
+     * @param Geometry          $geometry
+     * @param float             $distance
+     * @param float             $radius
+     * 
+     * @throws SpatialFieldsNotDefinedException
+     * 
+     * @return EloquentBuilder
+     */
+    public function scopeDistanceSphereExcludingSelf(EloquentBuilder $query, string $geometryColumn, Geometry $geometry, float $distance, float $radius = 6371008.7714150598325213221998779)
     {
         $this->isColumnAllowed($geometryColumn);
 
         $query = $this->scopeDistanceSphere($query, $geometryColumn, $geometry, $distance);
 
-        $query->whereRaw("st_distance_sphere($geometryColumn, ST_GeomFromText(?)) != 0", [
+        $query->whereRaw("st_distance_sphere($geometryColumn, ST_GeomFromText(?), ?) != 0", [
             $geometry->toWkt(),
+            $radius,
         ]);
 
         return $query;
     }
 
-    public function scopeDistanceSphereValue($query, $geometryColumn, $geometry)
+    /**
+     * Queries a table for distance between a geometry column and a geometry object on a flat surface
+     * 
+     * @param EloquentBuilder   $query
+     * @param string            $geometryColumn
+     * @param Geometry          $geometry
+     * @param float             $radius
+     * 
+     * @throws SpatialFieldsNotDefinedException
+     * 
+     * @return EloquentBuilder
+     */
+    public function scopeDistanceSphereValue(EloquentBuilder $query, string $geometryColumn, Geometry $geometry, float $radius = 6371008.7714150598325213221998779)
     {
         $this->isColumnAllowed($geometryColumn);
 
@@ -204,12 +288,26 @@ trait SpatialTrait
         if (!$columns) {
             $query->select('*');
         }
-        $query->selectRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?)) as distance", [
+        $query->selectRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?), ?) as distance", [
             $geometry->toWkt(),
+            $radius,
         ]);
     }
 
-    public function scopeComparison($query, $geometryColumn, $geometry, $relationship)
+    /**
+     * Description of `scopeComparison`
+     * 
+     * @param EloquentBuilder   $query
+     * @param string            $geometryColumn
+     * @param Geometry          $geometry
+     * @param string            $relationship
+     * 
+     * @throws SpatialFieldsNotDefinedException
+     * @throws UnknownSpatialRelationFunction
+     * 
+     * @return EloquentBuilder
+     */
+    public function scopeComparison(EloquentBuilder $query, string $geometryColumn, Geometry $geometry, string $relationship)
     {
         $this->isColumnAllowed($geometryColumn);
 
@@ -281,11 +379,26 @@ trait SpatialTrait
 
     public function scopeOrderByDistance($query, $geometryColumn, $geometry, $direction = 'asc')
     {
-        return $this->scopeOrderBySpatial($query, $geometryColumn, $geometry, 'distance', $direction);
+        $this->isColumnAllowed($geometryColumn);
+
+        $query->orderByRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?)) {$direction}", [
+            $geometry->toWkt(),
+        ]);
+
+        return $query;
+        // return $this->scopeOrderBySpatial($query, $geometryColumn, $geometry, 'distance', $direction);
     }
 
-    public function scopeOrderByDistanceSphere($query, $geometryColumn, $geometry, $direction = 'asc')
+    public function scopeOrderByDistanceSphere($query, $geometryColumn, $geometry, $direction = 'asc', float $radius = 6371008.7714150598325213221998779)
     {
-        return $this->scopeOrderBySpatial($query, $geometryColumn, $geometry, 'distance_sphere', $direction);
+        $this->isColumnAllowed($geometryColumn);
+
+        $query->orderByRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?), ?) {$direction}", [
+            $geometry->toWkt(),
+            $radius,
+        ]);
+
+        return $query;
+        // return $this->scopeOrderBySpatial($query, $geometryColumn, $geometry, 'distance_sphere', $direction);
     }
 }
