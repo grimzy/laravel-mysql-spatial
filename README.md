@@ -253,7 +253,7 @@ for($polygon as $i => $linestring) {
 
 #### Helpers
 
-##### From/To Well Known Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
+##### From/To Well Known Text ([WKT](https://dev.mysql.com/doc/refman/8.0/en/gis-data-formats.html#gis-wkt-format))
 
 ```php
 // fromWKT($wkt, $srid = 0)
@@ -269,7 +269,7 @@ $polygon->toWKT();	// POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
 ```php
 // fromString($wkt, $srid = 0)
 $point = new Point(1, 2);	// lat, lng
-(string)$point						// lng, lat: 2 1
+(string)$point			// lng, lat: 2 1
 
 $polygon = Polygon::fromString('(0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)');
 (string)$polygon;	// (0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)
@@ -301,9 +301,9 @@ To deserialize a GeoJSON string into a Geometry class, you can use `Geometry::fr
 
 ```php
 $location = Geometry::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
-$location instanceof Point::class;	// true
-$location->getLat();	// 1.2
-$location->getLng()); 	// 3.4
+$location instanceof Point::class;  // true
+$location->getLat();  // 1.2
+$location->getLng()); // 3.4
 ```
 
 ## Scopes: Spatial analysis functions
@@ -329,7 +329,7 @@ Available scopes:
 - `orderByDistance($geometryColumn, $geometry, $direction = 'asc')`
 - `orderByDistanceSphere($geometryColumn, $geometry, $direction = 'asc')`
 
-*Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)).*
+*Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/8.0/en/spatial-function-reference.html)).*
 
 ## Migrations
 
@@ -346,7 +346,7 @@ class CreatePlacesTable extends Migration {
 
 ### Columns
 
-Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/5.7/en/spatial-datatypes.html) migration blueprints:
+Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-type-overview.html) migration blueprints:
 
 - `$table->geometry(string $column_name, int $srid = 0)`
 - `$table->point(string $column_name, int $srid = 0)`
@@ -364,9 +364,9 @@ You can add or drop spatial indexes in your migrations with the `spatialIndex` a
 - `$table->spatialIndex('column_name')`
 - `$table->dropSpatialIndex(['column_name'])` or `$table->dropSpatialIndex('index_name')`
 
-Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/doc/refman/5.7/en/creating-spatial-indexes.html):
+Note about spatial indexes from the [MySQL documentation](https://dev.mysql.com/doc/refman/8.0/en/creating-spatial-indexes.html):
 
-> For [`MyISAM`](https://dev.mysql.com/doc/refman/5.7/en/myisam-storage-engine.html) and (as of MySQL 5.7.5) `InnoDB` tables, MySQL can create spatial indexes using syntax similar to that for creating regular indexes, but using the `SPATIAL` keyword. Columns in spatial indexes must be declared `NOT NULL`.
+> For [`MyISAM`](https://dev.mysql.com/doc/refman/8.0/en/myisam-storage-engine.html) and (as of MySQL 5.7.5) `InnoDB` tables, MySQL can create spatial indexes using syntax similar to that for creating regular indexes, but using the `SPATIAL` keyword. Columns in spatial indexes must be declared `NOT NULL`.
 
 Also please read this [**important note**](https://laravel.com/docs/5.5/migrations#indexes) regarding Index Lengths in the Laravel 5.6 documentation.
 
@@ -436,7 +436,7 @@ $ composer test:integration
 Integration tests require a running MySQL database. If you have Docker installed, you can start easily start one:
 
 ```shell
-$ make start_db				# starts MySQL 8.0
+$ make start_db		# starts MySQL 8.0
 # or
 $ make start_db V=5.7	# starts MySQL 5.7
 ```
