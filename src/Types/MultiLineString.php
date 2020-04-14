@@ -32,14 +32,14 @@ class MultiLineString extends GeometryCollection
         return sprintf('MULTILINESTRING(%s)', (string) $this);
     }
 
-    public static function fromString($wktArgument)
+    public static function fromString($wktArgument, $srid = 0)
     {
         $str = preg_split('/\)\s*,\s*\(/', substr(trim($wktArgument), 1, -1));
         $lineStrings = array_map(function ($data) {
             return LineString::fromString($data);
         }, $str);
 
-        return new static($lineStrings);
+        return new static($lineStrings, $srid);
     }
 
     public function __toString()

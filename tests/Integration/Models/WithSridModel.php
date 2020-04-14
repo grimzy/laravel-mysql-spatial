@@ -4,18 +4,20 @@ use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class GeometryModel.
+ * Class WithSridModel.
  *
  * @property int                                          id
  * @property \Grimzy\LaravelMysqlSpatial\Types\Point      location
  * @property \Grimzy\LaravelMysqlSpatial\Types\LineString line
  * @property \Grimzy\LaravelMysqlSpatial\Types\LineString shape
  */
-class GeometryModel extends Model
+class WithSridModel extends Model
 {
     use SpatialTrait;
 
-    protected $table = 'geometry';
+    protected $table = 'with_srid';
 
-    protected $spatialFields = ['location', 'line', 'multi_geometries'];
+    protected $spatialFields = ['location', 'line'];
+
+    public $timestamps = false;
 }

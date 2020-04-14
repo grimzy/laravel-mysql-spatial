@@ -20,12 +20,12 @@ class PolygonTest extends BaseTestCase
             ]
         );
 
-        $this->polygon = new Polygon([$collection]);
+        $this->polygon = new Polygon([$collection], 4326);
     }
 
     public function testFromWKT()
     {
-        $polygon = Polygon::fromWKT('POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))');
+        $polygon = Polygon::fromWKT('POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))', 4326);
         $this->assertInstanceOf(Polygon::class, $polygon);
 
         $this->assertEquals(2, $polygon->count());
@@ -56,7 +56,10 @@ class PolygonTest extends BaseTestCase
 
     public function testInvalidGeoJsonException()
     {
-        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
+        $this->assertException(
+            \Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class,
+            'Expected GeoJson\Geometry\Polygon, got GeoJson\Geometry\Point'
+        );
         Polygon::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }
 

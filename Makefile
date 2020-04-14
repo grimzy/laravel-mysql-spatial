@@ -1,4 +1,4 @@
-V=5.7
+V=8.0
 DB_DIR=$(shell pwd)/_db-$(V)
 mV=10.3
 mDB_DIR=$(shell pwd)/_db-$(mV)

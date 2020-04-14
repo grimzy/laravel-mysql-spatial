@@ -6,9 +6,9 @@ php:
   - '7.0'
   - '7.1'
   - '7.2'
+  - '7.3'
 
 env:
-  - MYSQL_VERSION=5.7
   - MYSQL_VERSION=8.0
 
 dist: trusty

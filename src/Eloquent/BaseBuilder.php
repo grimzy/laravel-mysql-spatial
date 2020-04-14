@@ -8,10 +8,16 @@ class BaseBuilder extends QueryBuilder
 {
     protected function cleanBindings(array $bindings)
     {
-        $bindings = array_map(function ($binding) {
-            return $binding instanceof SpatialExpression ? $binding->getSpatialValue() : $binding;
-        }, $bindings);
+        $spatialBindings = [];
+        foreach ($bindings as &$binding) {
+            if ($binding instanceof SpatialExpression) {
+                $spatialBindings[] = $binding->getSpatialValue();
+                $spatialBindings[] = $binding->getSrid();
+            } else {
+                $spatialBindings[] = $binding;
+            }
+        }
 
-        return parent::cleanBindings($bindings);
+        return parent::cleanBindings($spatialBindings);
     }
 }

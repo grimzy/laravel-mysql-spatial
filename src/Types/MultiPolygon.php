@@ -34,14 +34,14 @@ class MultiPolygon extends GeometryCollection
         }, $this->items));
     }
 
-    public static function fromString($wktArgument)
+    public static function fromString($wktArgument, $srid = 0)
     {
         $parts = preg_split('/(\)\s*\)\s*,\s*\(\s*\()/', $wktArgument, -1, PREG_SPLIT_DELIM_CAPTURE);
         $polygons = static::assembleParts($parts);
 
         return new static(array_map(function ($polygonString) {
             return Polygon::fromString($polygonString);
-        }, $polygons));
+        }, $polygons), $srid);
     }
 
     /**

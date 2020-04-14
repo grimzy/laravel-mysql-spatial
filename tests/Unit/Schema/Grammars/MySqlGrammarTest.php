@@ -13,7 +13,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
-        $this->assertContains('GEOMETRY', $statements[0]);
+        $this->assertEquals('alter table `test` add `foo` GEOMETRY not null', $statements[0]);
     }
 
     public function testAddingPoint()
@@ -23,7 +23,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
-        $this->assertContains('POINT', $statements[0]);
+        $this->assertEquals('alter table `test` add `foo` POINT not null', $statements[0]);
     }
 
     public function testAddingLinestring()
@@ -33,7 +33,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
-        $this->assertContains('LINESTRING', $statements[0]);
+        $this->assertEquals('alter table `test` add `foo` LINESTRING not null', $statements[0]);
     }
 
     public function testAddingPolygon()
@@ -43,7 +43,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
-        $this->assertContains('POLYGON', $statements[0]);
+        $this->assertEquals('alter table `test` add `foo` POLYGON not null', $statements[0]);
     }
 
     public function testAddingMultipoint()
@@ -53,7 +53,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
-        $this->assertContains('MULTIPOINT', $statements[0]);
+        $this->assertEquals('alter table `test` add `foo` MULTIPOINT not null', $statements[0]);
     }
 
     public function testAddingMultiLinestring()
@@ -63,7 +63,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
-        $this->assertContains('MULTILINESTRING', $statements[0]);
+        $this->assertEquals('alter table `test` add `foo` MULTILINESTRING not null', $statements[0]);
     }
 
     public function testAddingMultiPolygon()
@@ -73,7 +73,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
-        $this->assertContains('MULTIPOLYGON', $statements[0]);
+        $this->assertEquals('alter table `test` add `foo` MULTIPOLYGON not null', $statements[0]);
     }
 
     public function testAddingGeometryCollection()
@@ -83,7 +83,87 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(1, count($statements));
-        $this->assertContains('GEOMETRYCOLLECTION', $statements[0]);
+        $this->assertEquals('alter table `test` add `foo` GEOMETRYCOLLECTION not null', $statements[0]);
+    }
+
+    public function testAddingGeometryWithSrid()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->geometry('foo', 4326);
+        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(1, count($statements));
+        $this->assertEquals('alter table `test` add `foo` GEOMETRY not null srid 4326', $statements[0]);
+    }
+
+    public function testAddingPointWithSrid()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->point('foo', 4326);
+        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(1, count($statements));
+        $this->assertEquals('alter table `test` add `foo` POINT not null srid 4326', $statements[0]);
+    }
+
+    public function testAddingLinestringWithSrid()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->linestring('foo', 4326);
+        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(1, count($statements));
+        $this->assertEquals('alter table `test` add `foo` LINESTRING not null srid 4326', $statements[0]);
+    }
+
+    public function testAddingPolygonWithSrid()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->polygon('foo', 4326);
+        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(1, count($statements));
+        $this->assertEquals('alter table `test` add `foo` POLYGON not null srid 4326', $statements[0]);
+    }
+
+    public function testAddingMultipointWithSrid()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->multipoint('foo', 4326);
+        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(1, count($statements));
+        $this->assertEquals('alter table `test` add `foo` MULTIPOINT not null srid 4326', $statements[0]);
+    }
+
+    public function testAddingMultiLinestringWithSrid()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->multilinestring('foo', 4326);
+        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(1, count($statements));
+        $this->assertEquals('alter table `test` add `foo` MULTILINESTRING not null srid 4326', $statements[0]);
+    }
+
+    public function testAddingMultiPolygonWithSrid()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->multipolygon('foo', 4326);
+        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(1, count($statements));
+        $this->assertEquals('alter table `test` add `foo` MULTIPOLYGON not null srid 4326', $statements[0]);
+    }
+
+    public function testAddingGeometryCollectionWithSrid()
+    {
+        $blueprint = new Blueprint('test');
+        $blueprint->geometrycollection('foo', 4326);
+        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+
+        $this->assertEquals(1, count($statements));
+        $this->assertEquals('alter table `test` add `foo` GEOMETRYCOLLECTION not null srid 4326', $statements[0]);
     }
 
     public function testAddRemoveSpatialIndex()
@@ -94,7 +174,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $addStatements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertEquals(2, count($addStatements));
-        $this->assertContains('alter table `test` add spatial `test_foo_spatial`(`foo`)', $addStatements[1]);
+        $this->assertEquals('alter table `test` add spatial `test_foo_spatial`(`foo`)', $addStatements[1]);
 
         $blueprint->dropSpatialIndex(['foo']);
         $blueprint->dropSpatialIndex('test_foo_spatial');
@@ -102,8 +182,8 @@ class MySqlGrammarBaseTest extends BaseTestCase
 
         $expectedSql = 'alter table `test` drop index `test_foo_spatial`';
         $this->assertEquals(5, count($dropStatements));
-        $this->assertContains($expectedSql, $dropStatements[3]);
-        $this->assertContains($expectedSql, $dropStatements[4]);
+        $this->assertEquals($expectedSql, $dropStatements[3]);
+        $this->assertEquals($expectedSql, $dropStatements[4]);
     }
 
     /**
