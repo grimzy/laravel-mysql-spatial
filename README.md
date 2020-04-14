@@ -13,7 +13,8 @@ Please check the documentation for your MySQL version. MySQL's Extension for Spa
 **Versions**
 
 - `1.x.x`: MySQL 5.6 (also supports MySQL 5.5 but not all spatial analysis functions)
-- `2.x.x`: MySQL 5.7 and 8.0
+- `2.x.x`: MySQL 5.7
+- **`3.x.x`: MySQL 8.0 with SRID support (Current branch)**
 
 This package also works with MariaDB. Please refer to the [MySQL/MariaDB Spatial Support Matrix](https://mariadb.com/kb/en/library/mysqlmariadb-spatial-support-matrix/) for compatibility.
 
@@ -21,14 +22,20 @@ This package also works with MariaDB. Please refer to the [MySQL/MariaDB Spatial
 
 Add the package using composer:
 
+```sh
+$ composer require grimzy/laravel-mysql-spatial
+```
+
+For MySQL 5.7:
+
 ```shell
-composer require grimzy/laravel-mysql-spatial
+$ composer require grimzy/laravel-mysql-spatial:^2.0
 ```
 
 For MySQL 5.6 and 5.5:
 
 ```shell
-composer require grimzy/laravel-mysql-spatial:^1.0
+$ composer require grimzy/laravel-mysql-spatial:^1.0
 ```
 
 For Laravel versions before 5.5 or if not using auto-discovery, register the service provider in `config/app.php`:
@@ -80,6 +87,19 @@ class CreatePlacesTable extends Migration {
             $table->polygon('area')->nullable();
             $table->timestamps();
         });
+  
+        // Or create the spatial fields with an SRID (e.g. 4326 WGS84 spheroid)
+  
+        // Schema::create('places', function(Blueprint $table)
+        // {
+        //     $table->increments('id');
+        //     $table->string('name')->unique();
+        //     // Add a Point spatial data field named location with SRID 4326
+        //     $table->point('location', 4326)->nullable();
+        //     // Add a Polygon spatial data field named area with SRID 4326
+        //     $table->polygon('area', 4326)->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -158,10 +178,36 @@ $place1->area = new Polygon([new LineString([
     new Point(40.74894149554006, -73.98615270853043)
 ])]);
 $place1->save();
-
-$place1->area = new Polygon();
-
 ```
+
+Or if your database fields were created with a specific SRID:
+
+```php
+use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Grimzy\LaravelMysqlSpatial\Types\Polygon;
+use Grimzy\LaravelMysqlSpatial\Types\LineString;
+
+$place1 = new Place();
+$place1->name = 'Empire State Building';
+
+// saving a point with SRID 4326 (WGS84 spheroid)
+$place1->location = new Point(40.7484404, -73.9878441, 4326);	// (lat, lng, srid)
+$place1->save();
+
+// saving a polygon with SRID 4326 (WGS84 spheroid)
+$place1->area = new Polygon([new LineString([
+    new Point(40.74894149554006, -73.98615270853043),
+    new Point(40.74848633046773, -73.98648262023926),
+    new Point(40.747925497790725, -73.9851602911949),
+    new Point(40.74837050671544, -73.98482501506805),
+    new Point(40.74894149554006, -73.98615270853043)
+])], 4326);
+$place1->save();
+```
+
+> **Note**: When saving collection Geometries (`LineString`, `Polygon`, `MultiPoint`, `MultiLineString`, and `GeometryCollection`), only the top-most geometry should have an SRID set in the constructor.
+>
+> In the example above, when creating a `new Polygon()`, we only set the SRID on the `Polygon` and use the default for the `LineString` and the `Point` objects.
 
 ### Retrieving a model
 
@@ -177,13 +223,13 @@ $lng = $place2->location->getLng();	// -73.9878441
 
 | Grimzy\LaravelMysqlSpatial\Types                             | OpenGIS Class                                                |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `Point($lat, $lng)`                                          | [Point](https://dev.mysql.com/doc/refman/8.0/en/gis-class-point.html) |
-| `MultiPoint(Point[])`                                        | [MultiPoint](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipoint.html) |
-| `LineString(Point[])`                                        | [LineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-linestring.html) |
-| `MultiLineString(LineString[])`                              | [MultiLineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multilinestring.html) |
-| `Polygon(LineString[])` *([exterior and interior boundaries](https://dev.mysql.com/doc/refman/8.0/en/gis-class-polygon.html))* | [Polygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-polygon.html) |
-| `MultiPolygon(Polygon[])`                                    | [MultiPolygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipolygon.html) |
-| `GeometryCollection(Geometry[])`                             | [GeometryCollection](https://dev.mysql.com/doc/refman/8.0/en/gis-class-geometrycollection.html) |
+| `Point($lat, $lng, $srid = 0)`                               | [Point](https://dev.mysql.com/doc/refman/8.0/en/gis-class-point.html) |
+| `MultiPoint(Point[], $srid = 0)`                             | [MultiPoint](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipoint.html) |
+| `LineString(Point[], $srid = 0)`                             | [LineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-linestring.html) |
+| `MultiLineString(LineString[], $srid = 0)`                   | [MultiLineString](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multilinestring.html) |
+| `Polygon(LineString[], $srid = 0)` *([exterior and interior boundaries](https://dev.mysql.com/doc/refman/8.0/en/gis-class-polygon.html))* | [Polygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-polygon.html) |
+| `MultiPolygon(Polygon[], $srid = 0)`                         | [MultiPolygon](https://dev.mysql.com/doc/refman/8.0/en/gis-class-multipolygon.html) |
+| `GeometryCollection(Geometry[], $srid = 0)`                  | [GeometryCollection](https://dev.mysql.com/doc/refman/8.0/en/gis-class-geometrycollection.html) |
 
 Check out the [Class diagram](https://user-images.githubusercontent.com/1837678/30788608-a5afd894-a16c-11e7-9a51-0a08b331d4c4.png).
 
@@ -193,7 +239,7 @@ In order for your Eloquent Model to handle the Geometry classes, it must use the
 
 #### IteratorAggregate and ArrayAccess
 
-The "composite" Geometries (`LineString`, `Polygon`, `MultiPoint`, `MultiLineString`, and `GeometryCollection`) implement [`IteratorAggregate`](http://php.net/manual/en/class.iteratoraggregate.php) and [`ArrayAccess`](http://php.net/manual/en/class.arrayaccess.php); making it easy to perform Iterator and Array operations. For example:
+The collection Geometries (`LineString`, `Polygon`, `MultiPoint`, `MultiLineString`, and `GeometryCollection`) implement [`IteratorAggregate`](http://php.net/manual/en/class.iteratoraggregate.php) and [`ArrayAccess`](http://php.net/manual/en/class.arrayaccess.php); making it easy to perform Iterator and Array operations. For example:
 
 ```php
 $polygon = $multipolygon[10];	// ArrayAccess
@@ -210,7 +256,7 @@ for($polygon as $i => $linestring) {
 ##### From/To Well Known Text ([WKT](https://dev.mysql.com/doc/refman/5.7/en/gis-data-formats.html#gis-wkt-format))
 
 ```php
-// fromWKT($wkt)
+// fromWKT($wkt, $srid = 0)
 $point = Point::fromWKT('POINT(2 1)');
 $point->toWKT();	// POINT(2 1)
 
@@ -221,9 +267,9 @@ $polygon->toWKT();	// POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))
 ##### From/To String
 
 ```php
-// fromString($wkt)
+// fromString($wkt, $srid = 0)
 $point = new Point(1, 2);	// lat, lng
-(string)$point				// lng, lat: 2 1
+(string)$point						// lng, lat: 2 1
 
 $polygon = Polygon::fromString('(0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)');
 (string)$polygon;	// (0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1)
@@ -280,8 +326,8 @@ Available scopes:
 - `overlaps($geometryColumn, $geometry)`
 - `doesTouch($geometryColumn, $geometry)`
 - `orderBySpatial($geometryColumn, $geometry, $orderFunction, $direction = 'asc')`
-- `orderByDistance($geometryColumn, ​$geometry, ​$direction = 'asc')`
-- `orderByDistanceSphere($geometryColumn, ​$geometry, ​$direction = 'asc')`
+- `orderByDistance($geometryColumn, $geometry, $direction = 'asc')`
+- `orderByDistanceSphere($geometryColumn, $geometry, $direction = 'asc')`
 
 *Note that behavior and availability of MySQL spatial analysis functions differs in each MySQL version (cf. [documentation](https://dev.mysql.com/doc/refman/5.7/en/spatial-function-reference.html)).*
 
@@ -302,14 +348,14 @@ class CreatePlacesTable extends Migration {
 
 Available [MySQL Spatial Types](https://dev.mysql.com/doc/refman/5.7/en/spatial-datatypes.html) migration blueprints:
 
-- `$table->geometry('column_name')`
-- `$table->point('column_name')`
-- `$table->lineString('column_name')`
-- `$table->polygon('column_name')`
-- `$table->multiPoint('column_name')`
-- `$table->multiLineString('column_name')`
-- `$table->multiPolygon('column_name')`
-- `$table->geometryCollection('column_name')`
+- `$table->geometry(string $column_name, int $srid = 0)`
+- `$table->point(string $column_name, int $srid = 0)`
+- `$table->lineString(string $column_name, int $srid = 0)`
+- `$table->polygon(string $column_name, int $srid = 0)`
+- `$table->multiPoint(string $column_name, int $srid = 0)`
+- `$table->multiLineString(string $column_name, int $srid = 0)`
+- `$table->multiPolygon(string $column_name, int $srid = 0)`
+- `$table->geometryCollection(string $column_name, int $srid = 0)`
 
 ### Spatial indexes
 
@@ -381,18 +427,18 @@ class UpdatePlacesTable extends Migration
 ## Tests
 
 ```shell
-composer test
+$ composer test
 # or 
-composer test:unit
-composer test:integration
+$ composer test:unit
+$ composer test:integration
 ```
 
 Integration tests require a running MySQL database. If you have Docker installed, you can start easily start one:
 
 ```shell
-make start_db 		# starts MySQL 8.0
+$ make start_db				# starts MySQL 8.0
 # or
-make start_db V=5.7 # starts a MySQL 5.7
+$ make start_db V=5.7	# starts MySQL 5.7
 ```
 
 ## Contributing
