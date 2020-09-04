@@ -6,7 +6,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class BaseBuilder extends QueryBuilder
 {
-    protected function cleanBindings(array $bindings)
+    public function cleanBindings(array $bindings)
     {
         $spatialBindings = [];
         foreach ($bindings as &$binding) {
