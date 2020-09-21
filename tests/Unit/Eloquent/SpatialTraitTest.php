@@ -5,9 +5,12 @@ use Grimzy\LaravelMysqlSpatial\MysqlConnection;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Model;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 class SpatialTraitTest extends BaseTestCase
 {
+    use MockeryPHPUnitIntegration;
+
     /**
      * @var TestModel
      */
@@ -217,7 +220,10 @@ class SpatialTraitTest extends BaseTestCase
     public function testSpatialFieldsNotDefinedException()
     {
         $model = new TestNoSpatialModel();
-        $this->setExpectedException(SpatialFieldsNotDefinedException::class);
+        $this->assertException(
+            SpatialFieldsNotDefinedException::class,
+            'TestNoSpatialModel has to define $spatialFields'
+        );
         $model->getSpatialFields();
     }
 
