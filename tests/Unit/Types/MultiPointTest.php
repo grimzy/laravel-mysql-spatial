@@ -42,7 +42,10 @@ class MultiPointTest extends BaseTestCase
 
     public function testInvalidGeoJsonException()
     {
-        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
+        $this->assertException(
+            \Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class,
+            sprintf('Expected %s, got %s', GeoJson\Geometry\MultiPoint::class, GeoJson\Geometry\Point::class)
+        );
         MultiPoint::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }
 

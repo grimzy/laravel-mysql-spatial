@@ -41,9 +41,12 @@ class BuilderTest extends BaseTestCase
         $this->queryBuilder
             ->shouldReceive('update')
             ->with(['point' => new SpatialExpression($point)])
-            ->once();
+            ->once()
+            ->andReturn(1);
 
-        $this->builder->update(['point' => $point]);
+        $result = $this->builder->update(['point' => $point]);
+
+        $this->assertSame(1, $result);
     }
 
     public function testUpdateLinestring()
@@ -53,9 +56,12 @@ class BuilderTest extends BaseTestCase
         $this->queryBuilder
             ->shouldReceive('update')
             ->with(['linestring' => new SpatialExpression($linestring)])
-            ->once();
+            ->once()
+            ->andReturn(1);
 
-        $this->builder->update(['linestring' => $linestring]);
+        $result = $this->builder->update(['linestring' => $linestring]);
+
+        $this->assertSame(1, $result);
     }
 
     public function testUpdatePolygon()
@@ -68,9 +74,12 @@ class BuilderTest extends BaseTestCase
         $this->queryBuilder
             ->shouldReceive('update')
             ->with(['polygon' => new SpatialExpression($polygon)])
-            ->once();
+            ->once()
+            ->andReturn(1);
 
-        $this->builder->update(['polygon' => $polygon]);
+        $result = $this->builder->update(['polygon' => $polygon]);
+
+        $this->assertSame(1, $result);
     }
 
     public function testUpdatePointWithSrid()
@@ -79,9 +88,12 @@ class BuilderTest extends BaseTestCase
         $this->queryBuilder
             ->shouldReceive('update')
             ->with(['point' => new SpatialExpression($point)])
-            ->once();
+            ->once()
+            ->andReturn(1);
 
-        $this->builder->update(['point' => $point]);
+        $result = $this->builder->update(['point' => $point]);
+
+        $this->assertSame(1, $result);
     }
 
     public function testUpdateLinestringWithSrid()
@@ -91,9 +103,12 @@ class BuilderTest extends BaseTestCase
         $this->queryBuilder
             ->shouldReceive('update')
             ->with(['linestring' => new SpatialExpression($linestring)])
-            ->once();
+            ->once()
+            ->andReturn(1);
 
-        $this->builder->update(['linestring' => $linestring]);
+        $result = $this->builder->update(['linestring' => $linestring]);
+
+        $this->assertSame(1, $result);
     }
 
     public function testUpdatePolygonWithSrid()
@@ -106,9 +121,12 @@ class BuilderTest extends BaseTestCase
         $this->queryBuilder
             ->shouldReceive('update')
             ->with(['polygon' => new SpatialExpression($polygon)])
-            ->once();
+            ->once()
+            ->andReturn(1);
 
-        $this->builder->update(['polygon' => $polygon]);
+        $result = $this->builder->update(['polygon' => $polygon]);
+
+        $this->assertSame(1, $result);
     }
 }
 

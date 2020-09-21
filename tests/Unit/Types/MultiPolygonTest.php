@@ -65,7 +65,10 @@ class MultiPolygonTest extends BaseTestCase
 
     public function testInvalidGeoJsonException()
     {
-        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
+        $this->assertException(
+            \Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class,
+            sprintf('Expected %s, got %s', GeoJson\Geometry\MultiPolygon::class, GeoJson\Geometry\Point::class)
+        );
         MultiPolygon::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }
 

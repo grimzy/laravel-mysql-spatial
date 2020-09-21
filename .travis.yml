@@ -1,12 +1,8 @@
 language: php
 
 php:
-  - '5.5'
-  - '5.6'
-  - '7.0'
-  - '7.1'
-  - '7.2'
   - '7.3'
+  - '7.4'
 
 env:
   - MYSQL_VERSION=8.0
@@ -33,7 +29,5 @@ before_script:
 
 script: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
-after_script:
-  - php vendor/bin/coveralls -v
-  - ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT
+after_script: ./cc-test-reporter after-build --coverage-input-type clover --exit-code $TRAVIS_TEST_RESULT
 
