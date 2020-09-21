@@ -24,7 +24,10 @@ This package also works with MariaDB. Please refer to the [MySQL/MariaDB Spatial
 Add the package using composer:
 
 ```sh
-$ composer require grimzy/laravel-mysql-spatial
+$ composer require grimzy/laravel-mysql-spatial:^4.0
+
+# or for Laravel version < 8.0
+$ composer require grimzy/laravel-mysql-spatial:^3.0
 ```
 
 For MySQL 5.7:
