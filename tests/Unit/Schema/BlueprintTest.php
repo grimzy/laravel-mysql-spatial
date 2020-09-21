@@ -27,7 +27,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'geometry',
             'name' => 'col',
-            'srid' => null
+            'srid' => null,
         ]);
 
         $this->blueprint
@@ -46,7 +46,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'point',
             'name' => 'col',
-            'srid' => null
+            'srid' => null,
         ]);
 
         $this->blueprint
@@ -65,7 +65,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'linestring',
             'name' => 'col',
-            'srid' => null
+            'srid' => null,
         ]);
 
         $this->blueprint
@@ -84,7 +84,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'polygon',
             'name' => 'col',
-            'srid' => null
+            'srid' => null,
         ]);
 
         $this->blueprint
@@ -103,7 +103,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'multipoint',
             'name' => 'col',
-            'srid' => null
+            'srid' => null,
         ]);
 
         $this->blueprint
@@ -122,7 +122,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'multilinestring',
             'name' => 'col',
-            'srid' => null
+            'srid' => null,
         ]);
 
         $this->blueprint
@@ -141,7 +141,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'multipolygon',
             'name' => 'col',
-            'srid' => null
+            'srid' => null,
         ]);
 
         $this->blueprint
@@ -160,7 +160,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'geometrycollection',
             'name' => 'col',
-            'srid' => null
+            'srid' => null,
         ]);
 
         $this->blueprint
@@ -179,7 +179,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'geometry',
             'name' => 'col',
-            'srid' => 4326
+            'srid' => 4326,
         ]);
 
         $this->blueprint
@@ -198,7 +198,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'point',
             'name' => 'col',
-            'srid' => 4326
+            'srid' => 4326,
         ]);
 
         $this->blueprint
@@ -217,7 +217,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'linestring',
             'name' => 'col',
-            'srid' => 4326
+            'srid' => 4326,
         ]);
 
         $this->blueprint
@@ -236,7 +236,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'polygon',
             'name' => 'col',
-            'srid' => 4326
+            'srid' => 4326,
         ]);
 
         $this->blueprint
@@ -255,7 +255,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'multipoint',
             'name' => 'col',
-            'srid' => 4326
+            'srid' => 4326,
         ]);
 
         $this->blueprint
@@ -274,7 +274,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'multilinestring',
             'name' => 'col',
-            'srid' => 4326
+            'srid' => 4326,
         ]);
 
         $this->blueprint
@@ -293,7 +293,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'multipolygon',
             'name' => 'col',
-            'srid' => 4326
+            'srid' => 4326,
         ]);
 
         $this->blueprint
@@ -312,7 +312,7 @@ class BlueprintTest extends BaseTestCase
         $expectedCol = new ColumnDefinition([
             'type' => 'geometrycollection',
             'name' => 'col',
-            'srid' => 4326
+            'srid' => 4326,
         ]);
 
         $this->blueprint
