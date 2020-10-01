@@ -183,4 +183,11 @@ class MultiPolygonTest extends BaseTestCase
             ]),
         ]);
     }
+
+    public function testToGeoJson()
+    {
+        $multiPolygon = MultiPolygon::fromJson('{"type":"MultiPolygon","coordinates":[[[[1,1],[1,2],[2,2],[2,1],[1,1]]],[[[0,0],[0,1],[1,1],[1,0],[0,0]]]]}');
+        $this->assertJson($multiPolygon->toGeoJson());
+        $this->assertJsonStringEqualsJsonString('{"type":"Feature","geometry":{"type":"MultiPolygon","coordinates":[[[[1,1],[1,2],[2,2],[2,1],[1,1]]],[[[0,0],[0,1],[1,1],[1,0],[0,0]]]]},"properties":{}}', $multiPolygon->toGeoJson());
+    }
 }

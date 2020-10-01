@@ -156,6 +156,15 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         return new \GeoJson\Geometry\GeometryCollection($geometries);
     }
 
+    public function toGeoJson($properties = [], $options = 0)
+    {
+        if (static::class !== GeometryCollection::class) {
+            return parent::toGeoJson();
+        }
+
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
     /**
      * Checks whether the items are valid to create this collection.
      *

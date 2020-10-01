@@ -71,4 +71,10 @@ class PolygonTest extends BaseTestCase
             json_encode($this->polygon)
         );
     }
+
+    public function testToGeoJson()
+    {
+        $this->assertJson($this->polygon->toGeoJson());
+        $this->assertJsonStringEqualsJsonString('{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[0,0],[1,0],[1,1],[0,1],[0,0]]]},"properties":{}}', $this->polygon->toGeoJson());
+    }
 }

@@ -59,4 +59,12 @@ class LineStringTest extends BaseTestCase
         $this->assertInstanceOf(\GeoJson\Geometry\LineString::class, $lineString->jsonSerialize());
         $this->assertSame('{"type":"LineString","coordinates":[[0,0],[1,1],[2,2]]}', json_encode($lineString));
     }
+
+    public function testToGeoJson()
+    {
+        $lineString = new LineString($this->points);
+
+        $this->assertJson($lineString->toGeoJson());
+        $this->assertJsonStringEqualsJsonString('{"type":"Feature","geometry":{"type":"LineString","coordinates":[[0,0],[1,1],[2,2]]},"properties":{}}', $lineString->toGeoJson());
+    }
 }
