@@ -109,7 +109,7 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
             $geoJson = $geoJson->getGeometry();
         }
 
-        $type = '\Grimzy\LaravelMysqlSpatial\Types\\' . $geoJson->getType();
+        $type = '\Grimzy\LaravelMysqlSpatial\Types\\'.$geoJson->getType();
 
         return $type::fromJson($geoJson);
     }
