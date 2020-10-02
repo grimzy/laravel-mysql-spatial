@@ -34,7 +34,8 @@ class Builder extends EloquentBuilder
     /**
      * Set the WKT options.
      *
-     * @param  string $wktOptions
+     * @param string $wktOptions
+     *
      * @return self
      */
     public function withWktOptions($wktOptions)
