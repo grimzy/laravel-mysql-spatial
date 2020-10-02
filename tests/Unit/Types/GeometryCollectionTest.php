@@ -117,7 +117,7 @@ class GeometryCollectionTest extends BaseTestCase
         $geometryCollection[] = 1;
     }
 
-    public function testFromJson()
+    public function testFeatureCollectionFromJson()
     {
         $geometryCollection = GeometryCollection::fromJson('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[1,2]}},{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[3,4]}}]}');
         $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
@@ -131,9 +131,20 @@ class GeometryCollectionTest extends BaseTestCase
     {
         $this->assertException(
             \Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class,
-            sprintf('Expected %s, got %s', GeoJson\Feature\FeatureCollection::class, GeoJson\Geometry\Point::class)
+            sprintf('Expected %s or %s, got %s', GeoJson\Feature\FeatureCollection::class,  GeoJson\Geometry\GeometryCollection::class, GeoJson\Geometry\Point::class)
         );
         GeometryCollection::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
+    }
+
+    public function testGeometryCollectionFromJson()
+    {
+        $geometryCollection = GeometryCollection::fromJson('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[30,30]},{"type":"LineString","coordinates":[[0,0],[10,10],[20,20]]}]}');
+        $this->assertInstanceOf(GeometryCollection::class, $geometryCollection);
+        $geometryCollectionPoints = $geometryCollection->getGeometries();
+        $this->assertEquals(2, count($geometryCollectionPoints));
+        $this->assertEquals(new Point(30, 30), $geometryCollectionPoints[0]);
+        $this->assertEquals(new LineString([new Point(0, 0), new Point(10, 10), new Point(20, 20)]), $geometryCollectionPoints[1]);
+        $this->assertJsonStringEqualsJsonString('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[30,30]},{"type":"LineString","coordinates":[[0,0],[10,10],[20,20]]}]}', $geometryCollection->toJson());
     }
 
     private function getGeometryCollection()
