@@ -131,7 +131,7 @@ class GeometryCollectionTest extends BaseTestCase
     {
         $this->assertException(
             \Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class,
-            sprintf('Expected %s or %s, got %s', GeoJson\Feature\FeatureCollection::class,  GeoJson\Geometry\GeometryCollection::class, GeoJson\Geometry\Point::class)
+            sprintf('Expected %s or %s, got %s', GeoJson\Feature\FeatureCollection::class, GeoJson\Geometry\GeometryCollection::class, GeoJson\Geometry\Point::class)
         );
         GeometryCollection::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }

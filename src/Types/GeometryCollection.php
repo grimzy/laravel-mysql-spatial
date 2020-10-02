@@ -138,7 +138,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
             return self::geometryCollectionFromJson($geoJson);
         }
 
-        throw new InvalidGeoJsonException('Expected ' . FeatureCollection::class . ' or ' . GeometryGeometryCollection::class . ', got ' . get_class($geoJson));
+        throw new InvalidGeoJsonException('Expected '.FeatureCollection::class.' or '.GeometryGeometryCollection::class.', got ' . get_class($geoJson));
     }
 
     protected static function featureCollectionFromJson(FeatureCollection $geoJson)
