@@ -56,7 +56,10 @@ class PolygonTest extends BaseTestCase
 
     public function testInvalidGeoJsonException()
     {
-        $this->setExpectedException(\Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class);
+        $this->assertException(
+            \Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class,
+            'Expected GeoJson\Geometry\Polygon, got GeoJson\Geometry\Point'
+        );
         Polygon::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }
 
