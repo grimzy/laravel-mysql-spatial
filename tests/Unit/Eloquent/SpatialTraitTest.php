@@ -4,8 +4,8 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Model;
-use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery as m;
 
 class SpatialTraitTest extends BaseTestCase
 {
