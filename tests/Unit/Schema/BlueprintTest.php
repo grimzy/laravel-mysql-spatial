@@ -4,6 +4,7 @@ namespace Schema;
 
 use BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+use Illuminate\Database\Schema\ColumnDefinition;
 use Mockery;
 
 class BlueprintTest extends BaseTestCase
@@ -20,81 +21,153 @@ class BlueprintTest extends BaseTestCase
 
     public function testGeometry()
     {
+        $expectedCol = new ColumnDefinition([
+            'type' => 'geometry',
+            'name' => 'col',
+            'srid' => null,
+        ]);
+
         $this->blueprint
             ->shouldReceive('addColumn')
             ->with('geometry', 'col')
-            ->once();
+            ->once()
+            ->andReturn($expectedCol);
 
-        $this->blueprint->geometry('col');
+        $result = $this->blueprint->geometry('col');
+
+        $this->assertSame($expectedCol, $result);
     }
 
     public function testPoint()
     {
+        $expectedCol = new ColumnDefinition([
+            'type' => 'point',
+            'name' => 'col',
+            'srid' => null,
+        ]);
+
         $this->blueprint
             ->shouldReceive('addColumn')
             ->with('point', 'col', ['srid' => null])
-            ->once();
+            ->once()
+            ->andReturn($expectedCol);
 
-        $this->blueprint->point('col');
+        $result = $this->blueprint->point('col');
+
+        $this->assertSame($expectedCol, $result);
     }
 
     public function testLinestring()
     {
+        $expectedCol = new ColumnDefinition([
+            'type' => 'linestring',
+            'name' => 'col',
+            'srid' => null,
+        ]);
+
         $this->blueprint
             ->shouldReceive('addColumn')
             ->with('linestring', 'col')
-            ->once();
+            ->once()
+            ->andReturn($expectedCol);
 
-        $this->blueprint->linestring('col');
+        $result = $this->blueprint->linestring('col');
+
+        $this->assertSame($expectedCol, $result);
     }
 
     public function testPolygon()
     {
+        $expectedCol = new ColumnDefinition([
+            'type' => 'polygon',
+            'name' => 'col',
+            'srid' => null,
+        ]);
+
         $this->blueprint
             ->shouldReceive('addColumn')
             ->with('polygon', 'col')
-            ->once();
+            ->once()
+            ->andReturn($expectedCol);
 
-        $this->blueprint->polygon('col');
+        $result = $this->blueprint->polygon('col');
+
+        $this->assertSame($expectedCol, $result);
     }
 
     public function testMultiPoint()
     {
+        $expectedCol = new ColumnDefinition([
+            'type' => 'multipoint',
+            'name' => 'col',
+            'srid' => null,
+        ]);
+
         $this->blueprint
             ->shouldReceive('addColumn')
             ->with('multipoint', 'col')
-            ->once();
+            ->once()
+            ->andReturn($expectedCol);
 
-        $this->blueprint->multipoint('col');
+        $result = $this->blueprint->multipoint('col');
+
+        $this->assertSame($expectedCol, $result);
     }
 
     public function testMultiLineString()
     {
+        $expectedCol = new ColumnDefinition([
+            'type' => 'multilinestring',
+            'name' => 'col',
+            'srid' => null,
+        ]);
+
         $this->blueprint
             ->shouldReceive('addColumn')
             ->with('multilinestring', 'col')
-            ->once();
+            ->once()
+            ->andReturn($expectedCol);
 
-        $this->blueprint->multilinestring('col');
+        $result = $this->blueprint->multilinestring('col');
+
+        $this->assertSame($expectedCol, $result);
     }
 
-    public function testMulltiPolygon()
+    public function testMultiPolygon()
     {
+        $expectedCol = new ColumnDefinition([
+            'type' => 'multipolygon',
+            'name' => 'col',
+            'srid' => null,
+        ]);
+
         $this->blueprint
             ->shouldReceive('addColumn')
             ->with('multipolygon', 'col')
-            ->once();
+            ->once()
+            ->andReturn($expectedCol);
 
-        $this->blueprint->multipolygon('col');
+        $result = $this->blueprint->multipolygon('col');
+
+        $this->assertSame($expectedCol, $result);
     }
 
     public function testGeometryCollection()
     {
+        $expectedCol = new ColumnDefinition([
+            'type' => 'geometrycollection',
+            'name' => 'col',
+            'srid' => null,
+        ]);
+
         $this->blueprint
             ->shouldReceive('addColumn')
             ->with('geometrycollection', 'col')
-            ->once();
+            ->once()
+            ->andReturn($expectedCol);
 
-        $this->blueprint->geometrycollection('col');
+        $result = $this->blueprint->geometrycollection('col');
+
+        $this->assertSame($expectedCol, $result);
     }
 }

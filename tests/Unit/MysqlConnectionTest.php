@@ -2,9 +2,10 @@
 
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
 use Grimzy\LaravelMysqlSpatial\Schema\Builder;
+use PHPUnit\Framework\TestCase;
 use Stubs\PDOStub;
 
-class MysqlConnectionTest extends PHPUnit_Framework_TestCase
+class MysqlConnectionTest extends TestCase
 {
     private $mysqlConnection;
 
