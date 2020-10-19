@@ -59,6 +59,24 @@ trait SpatialTrait
     ];
 
     /**
+     * The options to be passed to the ST_GeomFromText() function.
+     * If not set, it defaults to 'axis-order=long-lat'. May be set to false
+     * to not pass the options parameter.
+     *
+     * @var string
+     *
+     * protected $wktOptions = 'axis-order=long-lat';
+     */
+
+    /**
+     * The default options passed to the ST_GeomFromText() function if
+     * $wktOptions is not set.
+     *
+     * @var string
+     */
+    protected $wktOptionsDefault = 'axis-order=long-lat';
+
+    /**
      * Create a new Eloquent query builder for the model.
      *
      * @param \Illuminate\Database\Query\Builder $query
@@ -67,7 +85,7 @@ trait SpatialTrait
      */
     public function newEloquentBuilder($query)
     {
-        return new Builder($query);
+        return (new Builder($query))->withWktOptions($this->getWktOptionsValue());
     }
 
     protected function newBaseQueryBuilder()
@@ -86,7 +104,7 @@ trait SpatialTrait
         foreach ($this->attributes as $key => $value) {
             if ($value instanceof GeometryInterface) {
                 $this->geometries[$key] = $value; //Preserve the geometry objects prior to the insert
-                $this->attributes[$key] = new SpatialExpression($value);
+                $this->attributes[$key] = (new SpatialExpression($value))->withWktOptions($this->getWktOptionsValue());
             }
         }
 
@@ -121,6 +139,31 @@ trait SpatialTrait
         }
     }
 
+    /**
+     * Get the options argument (with comma prepended) for use in
+     * ST_GeomFromText().
+     *
+     * @return string
+     */
+    protected function getWktOptions()
+    {
+        if ($wktOptions = $this->getWktOptionsValue()) {
+            return ", '$wktOptions'";
+        }
+
+        return '';
+    }
+
+    /**
+     * Get the options value for use in ST_GeomFromText().
+     *
+     * @return string
+     */
+    protected function getWktOptionsValue()
+    {
+        return $this->wktOptions ?? $this->wktOptionsDefault;
+    }
+
     public function isColumnAllowed($geometryColumn)
     {
         if (!in_array($geometryColumn, $this->getSpatialFields())) {
@@ -134,7 +177,7 @@ trait SpatialTrait
     {
         $this->isColumnAllowed($geometryColumn);
 
-        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) <= ?", [
+        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?{$this->getWktOptions()})) <= ?", [
             $geometry->toWkt(),
             $geometry->getSrid(),
             $distance,
@@ -149,7 +192,7 @@ trait SpatialTrait
 
         $query = $this->scopeDistance($query, $geometryColumn, $geometry, $distance);
 
-        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0", [
+        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?{$this->getWktOptions()})) != 0", [
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
@@ -167,7 +210,7 @@ trait SpatialTrait
             $query->select('*');
         }
 
-        $query->selectRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) as distance", [
+        $query->selectRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?{$this->getWktOptions()})) as distance", [
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
@@ -177,7 +220,7 @@ trait SpatialTrait
     {
         $this->isColumnAllowed($geometryColumn);
 
-        $query->whereRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) <= ?", [
+        $query->whereRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?{$this->getWktOptions()})) <= ?", [
             $geometry->toWkt(),
             $geometry->getSrid(),
             $distance,
@@ -192,7 +235,7 @@ trait SpatialTrait
 
         $query = $this->scopeDistanceSphere($query, $geometryColumn, $geometry, $distance);
 
-        $query->whereRaw("st_distance_sphere($geometryColumn, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0", [
+        $query->whereRaw("st_distance_sphere($geometryColumn, ST_GeomFromText(?, ?{$this->getWktOptions()})) != 0", [
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
@@ -209,7 +252,7 @@ trait SpatialTrait
         if (!$columns) {
             $query->select('*');
         }
-        $query->selectRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) as distance", [
+        $query->selectRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?{$this->getWktOptions()})) as distance", [
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
@@ -223,7 +266,7 @@ trait SpatialTrait
             throw new UnknownSpatialRelationFunction($relationship);
         }
 
-        $query->whereRaw("st_{$relationship}(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat'))", [
+        $query->whereRaw("st_{$relationship}(`$geometryColumn`, ST_GeomFromText(?, ?{$this->getWktOptions()}))", [
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
@@ -279,7 +322,7 @@ trait SpatialTrait
             throw new UnknownSpatialFunctionException($orderFunction);
         }
 
-        $query->orderByRaw("st_{$orderFunction}(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) {$direction}", [
+        $query->orderByRaw("st_{$orderFunction}(`$geometryColumn`, ST_GeomFromText(?, ?{$this->getWktOptions()})) {$direction}", [
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
