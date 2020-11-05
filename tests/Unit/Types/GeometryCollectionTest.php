@@ -33,6 +33,12 @@ class GeometryCollectionTest extends BaseTestCase
         $this->assertSame('{"type":"GeometryCollection","geometries":[{"type":"LineString","coordinates":[[0,0],[1,0],[1,1],[0,1],[0,0]]},{"type":"Point","coordinates":[200,100]}]}', json_encode($this->getGeometryCollection()->jsonSerialize()));
     }
 
+    public function testToGeoJson()
+    {
+        $this->assertJson($this->getGeometryCollection()->toGeoJson());
+        $this->assertJsonStringEqualsJsonString('{"type":"GeometryCollection","geometries":[{"type":"LineString","coordinates":[[0,0],[1,0],[1,1],[0,1],[0,0]]},{"type":"Point","coordinates":[200,100]}]}', $this->getGeometryCollection()->toGeoJson());
+    }
+
     public function testCanCreateEmptyGeometryCollection()
     {
         $geometryCollection = new GeometryCollection([]);

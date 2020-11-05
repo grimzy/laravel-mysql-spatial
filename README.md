@@ -290,6 +290,16 @@ $point = new Point(40.7484404, -73.9878441);
 json_encode($point); // or $point->toJson();
 
 // {
+//    "type": "Point",
+//    "coordinates": [
+//     -73.9878441,
+//     40.7484404
+//    ]
+// }
+
+$point->toGeoJson();
+
+// {
 //   "type": "Feature",
 //   "properties": {},
 //   "geometry": {

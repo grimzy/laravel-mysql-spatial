@@ -59,6 +59,16 @@ class MultiPointTest extends BaseTestCase
         $this->assertSame('{"type":"MultiPoint","coordinates":[[0,0],[1,0],[1,1]]}', json_encode($multipoint));
     }
 
+    public function testToGeoJson()
+    {
+        $collection = [new Point(0, 0), new Point(0, 1), new Point(1, 1)];
+
+        $multipoint = new MultiPoint($collection);
+
+        $this->assertJson($multipoint->toGeoJson());
+        $this->assertJsonStringEqualsJsonString('{"type":"Feature","geometry":{"type":"MultiPoint","coordinates":[[0,0],[1,0],[1,1]]},"properties":{}}', $multipoint->toGeoJson());
+    }
+
     public function testInvalidArgumentExceptionAtLeastOneEntry()
     {
         $this->assertException(

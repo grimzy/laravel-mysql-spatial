@@ -83,4 +83,23 @@ class PointTest extends BaseTestCase
         $this->assertInstanceOf(\GeoJson\Geometry\Point::class, $point->jsonSerialize());
         $this->assertSame('{"type":"Point","coordinates":[3.4,1.2]}', json_encode($point));
     }
+
+    public function testToGeoJson()
+    {
+        $point = new Point(1.2, 3.4);
+
+        $this->assertJson($point->toGeoJson());
+        $this->assertJsonStringEqualsJsonString('{"type":"Feature","geometry":{"type":"Point","coordinates":[3.4,1.2]},"properties":{}}
+        ', $point->toGeoJson());
+    }
+
+    public function testToGeoJsonWithProperties()
+    {
+        $point = new Point(1.2, 3.4);
+
+        $properties = ['key' => 'value', 'key_1' => true, 'key_2' => 0, 'key_3' => null, 'key_4' => [1, 2, 'a']];
+
+        $this->assertJson($point->toGeoJson($properties));
+        $this->assertJsonStringEqualsJsonString('{"type":"Feature","geometry":{"type":"Point","coordinates":[3.4,1.2]},"properties":{"key":"value","key_1":true,"key_2":0,"key_3":null,"key_4":[1,2,"a"]}}', $point->toGeoJson($properties));
+    }
 }

@@ -3,6 +3,7 @@
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use GeoIO\WKB\Parser\Parser;
+use GeoJson\Feature\Feature;
 use GeoJson\GeoJson;
 use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownWKTTypeException;
 use Illuminate\Contracts\Support\Jsonable;
@@ -116,5 +117,12 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
     public function toJson($options = 0)
     {
         return json_encode($this, $options);
+    }
+
+    public function toGeoJson($properties = [], $options = 0)
+    {
+        $feature = new Feature($this->jsonSerialize(), $properties);
+
+        return json_encode($feature->jsonSerialize(), $options);
     }
 }
