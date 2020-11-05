@@ -6,7 +6,6 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialFunctionException;
 use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialRelationFunction;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class Builder extends EloquentBuilder
 {
@@ -120,7 +119,7 @@ class Builder extends EloquentBuilder
         return $this;
     }
 
-    public function comparison($geometryColumn, $geometry, $relationship): self
+    public function comparison($geometryColumn, $geometry, $relationship)
     {
         $this->model->isColumnAllowed($geometryColumn);
 
