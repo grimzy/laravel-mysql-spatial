@@ -7,6 +7,7 @@ use ArrayIterator;
 use Countable;
 use GeoJson\Feature\FeatureCollection;
 use GeoJson\GeoJson;
+use GeoJson\Geometry\GeometryCollection as GeometryGeometryCollection;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
@@ -129,12 +130,31 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, FeatureCollection::class)) {
-            throw new InvalidGeoJsonException('Expected '.FeatureCollection::class.', got '.get_class($geoJson));
+        if (is_a($geoJson, FeatureCollection::class)) {
+            return self::featureCollectionFromJson($geoJson);
         }
 
+        if (is_a($geoJson, GeometryGeometryCollection::class)) {
+            return self::geometryCollectionFromJson($geoJson);
+        }
+
+        throw new InvalidGeoJsonException('Expected '.FeatureCollection::class.' or '.GeometryGeometryCollection::class.', got '.get_class($geoJson));
+    }
+
+    protected static function featureCollectionFromJson(FeatureCollection $geoJson)
+    {
         $set = [];
         foreach ($geoJson->getFeatures() as $feature) {
+            $set[] = parent::fromJson($feature);
+        }
+
+        return new self($set);
+    }
+
+    protected static function geometryCollectionFromJson(GeometryGeometryCollection $geoJson)
+    {
+        $set = [];
+        foreach ($geoJson->getGeometries() as $feature) {
             $set[] = parent::fromJson($feature);
         }
 
