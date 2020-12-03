@@ -17,6 +17,10 @@ class Builder extends MySqlBuilder
      */
     protected function createBlueprint($table, Closure $callback = null)
     {
-        return new Blueprint($table, $callback);
+        $prefix = $this->connection->getConfig('prefix_indexes')
+                    ? $this->connection->getConfig('prefix')
+                   : '';
+
+        return new Blueprint($table, $callback, $prefix);
     }
 }
