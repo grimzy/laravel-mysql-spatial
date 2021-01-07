@@ -3,6 +3,7 @@
 namespace Grimzy\LaravelMysqlSpatial\Connectors;
 
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Connectors\ConnectionFactory as IlluminateConnectionFactory;
 use PDO;
 
@@ -19,8 +20,8 @@ class ConnectionFactory extends IlluminateConnectionFactory
      */
     protected function createConnection($driver, $connection, $database, $prefix = '', array $config = [])
     {
-        if ($this->container->bound($key = "db.connection.{$driver}")) {
-            return $this->container->make($key, [$connection, $database, $prefix, $config]);    // @codeCoverageIgnore
+        if ($resolver = Connection::getResolver($driver)) {
+            return $resolver($connection, $database, $prefix, $config);    // @codeCoverageIgnore
         }
 
         if ($driver === 'mysql') {
