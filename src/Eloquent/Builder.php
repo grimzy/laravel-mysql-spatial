@@ -5,6 +5,10 @@ namespace Grimzy\LaravelMysqlSpatial\Eloquent;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
+/**
+ * @template TModelClass
+ * @extends EloquentBuilder<TModelClass>
+ */
 class Builder extends EloquentBuilder
 {
     public function update(array $values)
