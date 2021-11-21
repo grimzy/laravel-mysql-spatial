@@ -5,7 +5,9 @@ namespace Grimzy\LaravelMysqlSpatial;
 use Doctrine\DBAL\Types\Type as DoctrineType;
 use Grimzy\LaravelMysqlSpatial\Schema\Builder;
 use Grimzy\LaravelMysqlSpatial\Schema\Grammars\MySqlGrammar;
+use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\MySqlConnection as IlluminateMySqlConnection;
+use Illuminate\Support\Facades\Event;
 
 class MysqlConnection extends IlluminateMySqlConnection
 {
@@ -14,6 +16,13 @@ class MysqlConnection extends IlluminateMySqlConnection
         parent::__construct($pdo, $database, $tablePrefix, $config);
 
         if (class_exists(DoctrineType::class)) {
+            $this->registerDoctrineTypeMappings();
+        }
+    }
+
+    protected function registerDoctrineTypeMappings()
+    {
+        Event::listen(function (MigrationsStarted $event) {
             // Prevent geometry type fields from throwing a 'type not found' error when changing them
             $geometries = [
                 'geometry',
@@ -30,7 +39,7 @@ class MysqlConnection extends IlluminateMySqlConnection
             foreach ($geometries as $type) {
                 $dbPlatform->registerDoctrineTypeMapping($type, 'string');
             }
-        }
+        });
     }
 
     /**
