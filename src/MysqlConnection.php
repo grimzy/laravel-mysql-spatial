@@ -5,9 +5,8 @@ namespace Grimzy\LaravelMysqlSpatial;
 use Doctrine\DBAL\Types\Type as DoctrineType;
 use Grimzy\LaravelMysqlSpatial\Schema\Builder;
 use Grimzy\LaravelMysqlSpatial\Schema\Grammars\MySqlGrammar;
-use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Database\MySqlConnection as IlluminateMySqlConnection;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\ParallelTesting;
 
 class MysqlConnection extends IlluminateMySqlConnection
 {
@@ -15,31 +14,29 @@ class MysqlConnection extends IlluminateMySqlConnection
     {
         parent::__construct($pdo, $database, $tablePrefix, $config);
 
-        if (class_exists(DoctrineType::class)) {
+        if (class_exists(DoctrineType::class) && ! ParallelTesting::token()) {
             $this->registerDoctrineTypeMappings();
         }
     }
 
     protected function registerDoctrineTypeMappings()
     {
-        Event::listen(function (MigrationsStarted $event) {
-            // Prevent geometry type fields from throwing a 'type not found' error when changing them
-            $geometries = [
-                'geometry',
-                'point',
-                'linestring',
-                'polygon',
-                'multipoint',
-                'multilinestring',
-                'multipolygon',
-                'geometrycollection',
-                'geomcollection',
-            ];
-            $dbPlatform = $this->getDoctrineSchemaManager()->getDatabasePlatform();
-            foreach ($geometries as $type) {
-                $dbPlatform->registerDoctrineTypeMapping($type, 'string');
-            }
-        });
+        // Prevent geometry type fields from throwing a 'type not found' error when changing them
+        $geometries = [
+            'geometry',
+            'point',
+            'linestring',
+            'polygon',
+            'multipoint',
+            'multilinestring',
+            'multipolygon',
+            'geometrycollection',
+            'geomcollection',
+        ];
+        $dbPlatform = $this->getDoctrineSchemaManager()->getDatabasePlatform();
+        foreach ($geometries as $type) {
+            $dbPlatform->registerDoctrineTypeMapping($type, 'string');
+        }
     }
 
     /**
