@@ -149,7 +149,7 @@ trait SpatialTrait
 
         $query = $this->scopeDistance($query, $geometryColumn, $geometry, $distance);
 
-        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0", [
+        $query->whereRaw("st_distance(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) > 0.1", [
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
@@ -192,7 +192,7 @@ trait SpatialTrait
 
         $query = $this->scopeDistanceSphere($query, $geometryColumn, $geometry, $distance);
 
-        $query->whereRaw("st_distance_sphere($geometryColumn, ST_GeomFromText(?, ?, 'axis-order=long-lat')) != 0", [
+        $query->whereRaw("st_distance_sphere($geometryColumn, ST_GeomFromText(?, ?, 'axis-order=long-lat')) > 0.1", [
             $geometry->toWkt(),
             $geometry->getSrid(),
         ]);
