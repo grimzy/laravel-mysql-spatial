@@ -89,7 +89,7 @@ class MultiPolygon extends GeometryCollection
         return $polygons;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->validateItemType($value);
 
@@ -127,7 +127,7 @@ class MultiPolygon extends GeometryCollection
      *
      * @return \GeoJson\Geometry\MultiPolygon
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $polygons = [];
         foreach ($this->items as $polygon) {
