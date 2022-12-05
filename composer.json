@@ -18,13 +18,13 @@
         "php": ">=7.3",
         "ext-pdo": "*",
         "ext-json": "*",
-        "illuminate/database": "^8.0",
+        "illuminate/database": "^8.0|^9.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.5",
-        "laravel/laravel": "^8.0",
+        "laravel/laravel": "^8.0|^9.0",
         "doctrine/dbal": "^2.5",
         "laravel/browser-kit-testing": "^2.0",
         "mockery/mockery": "^1.3"
