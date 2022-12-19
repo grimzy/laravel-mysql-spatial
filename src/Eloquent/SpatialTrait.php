@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
  *
  * @method static distance($geometryColumn, $geometry, $distance)
  * @method static distanceExcludingSelf($geometryColumn, $geometry, $distance)
+ * @method static distanceValue($geometryColumn, $geometry)
  * @method static distanceSphere($geometryColumn, $geometry, $distance)
  * @method static distanceSphereExcludingSelf($geometryColumn, $geometry, $distance)
  * @method static comparison($geometryColumn, $geometry, $relationship)
