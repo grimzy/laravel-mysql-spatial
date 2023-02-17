@@ -15,7 +15,7 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
      *
      * @return \Illuminate\Foundation\Application
      */
-    public function createApplication()
+    public function createApplication(): Illuminate\Foundation\Application
     {
         $app = require __DIR__.'/../../vendor/laravel/laravel/bootstrap/app.php';
         $app->register(SpatialServiceProvider::class);

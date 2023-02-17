@@ -11,12 +11,12 @@ class SpatialExpression extends Expression
         return "ST_GeomFromText(?, ?, 'axis-order=long-lat')";
     }
 
-    public function getSpatialValue()
+    public function getSpatialValue(): string
     {
         return $this->value->toWkt();
     }
 
-    public function getSrid()
+    public function getSrid(): int
     {
         return $this->value->getSrid();
     }

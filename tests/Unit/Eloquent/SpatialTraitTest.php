@@ -11,15 +11,9 @@ class SpatialTraitTest extends BaseTestCase
 {
     use MockeryPHPUnitIntegration;
 
-    /**
-     * @var TestModel
-     */
-    protected $model;
+    protected TestModel $model;
 
-    /**
-     * @var array
-     */
-    protected $queries;
+    protected array $queries;
 
     public function setUp(): void
     {

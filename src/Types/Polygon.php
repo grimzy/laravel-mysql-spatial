@@ -8,12 +8,12 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
 class Polygon extends MultiLineString
 {
-    public function toWKT()
+    public function toWKT(): string
     {
         return sprintf('POLYGON(%s)', (string) $this);
     }
 
-    public static function fromJson($geoJson)
+    public static function fromJson(string|GeoJson $geoJson): self
     {
         if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
@@ -40,6 +40,7 @@ class Polygon extends MultiLineString
      *
      * @return \GeoJson\Geometry\Polygon
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $linearRings = [];

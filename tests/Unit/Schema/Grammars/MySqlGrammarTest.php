@@ -3,6 +3,7 @@
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 use Grimzy\LaravelMysqlSpatial\Schema\Grammars\MySqlGrammar;
+use Illuminate\Database\Connection;
 
 class MySqlGrammarBaseTest extends BaseTestCase
 {
@@ -186,10 +187,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $this->assertEquals($expectedSql, $dropStatements[4]);
     }
 
-    /**
-     * @return Connection
-     */
-    protected function getConnection()
+    protected function getConnection(): Connection
     {
         return Mockery::mock(MysqlConnection::class);
     }

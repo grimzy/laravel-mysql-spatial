@@ -8,10 +8,8 @@ class CreateLocationTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('geometry', function (Blueprint $table) {
             $table->charset = 'utf8mb4';
@@ -50,10 +48,8 @@ class CreateLocationTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('geometry');
         Schema::drop('no_spatial_fields');

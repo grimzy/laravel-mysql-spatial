@@ -12,7 +12,20 @@ jobs:
   phpstan:
     name: phpstan
     runs-on: ubuntu-latest
+
+    env:
+      DB_DATABASE: "laravel"
+      DB_HOST: "127.0.0.1"
+      DB_PORT: "3306"
+      DB_USERNAME: "root"
+      DB_PASSWORD: "root"
+
     steps:
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE laravel' -uroot -proot
+
       - uses: actions/checkout@v3
 
       - name: Setup PHP
