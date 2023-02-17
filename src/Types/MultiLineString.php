@@ -62,7 +62,7 @@ class MultiLineString extends GeometryCollection
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, GeoJsonMultiLineString::class)) {
+        if (! is_a($geoJson, GeoJsonMultiLineString::class)) {
             throw new InvalidGeoJsonException('Expected '.GeoJsonMultiLineString::class.', got '.get_class($geoJson));
         }
 

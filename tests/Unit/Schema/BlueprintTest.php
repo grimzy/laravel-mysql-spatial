@@ -14,7 +14,7 @@ class BlueprintTest extends BaseTestCase
      */
     protected $blueprint;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -9,9 +9,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a geometry column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
+     * @param  string  $column
+     * @param  null|int  $srid
      * @return \Illuminate\Support\Fluent
      */
     public function geometry($column, $srid = null)
@@ -22,9 +21,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a point column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
+     * @param  string  $column
+     * @param  null|int  $srid
      * @return \Illuminate\Support\Fluent
      */
     public function point($column, $srid = null)
@@ -35,9 +33,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a linestring column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
+     * @param  string  $column
+     * @param  null|int  $srid
      * @return \Illuminate\Support\Fluent
      */
     public function lineString($column, $srid = null)
@@ -48,9 +45,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a polygon column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
+     * @param  string  $column
+     * @param  null|int  $srid
      * @return \Illuminate\Support\Fluent
      */
     public function polygon($column, $srid = null)
@@ -61,9 +57,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a multipoint column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
+     * @param  string  $column
+     * @param  null|int  $srid
      * @return \Illuminate\Support\Fluent
      */
     public function multiPoint($column, $srid = null)
@@ -74,9 +69,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a multilinestring column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
+     * @param  string  $column
+     * @param  null|int  $srid
      * @return \Illuminate\Support\Fluent
      */
     public function multiLineString($column, $srid = null)
@@ -87,9 +81,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a multipolygon column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
+     * @param  string  $column
+     * @param  null|int  $srid
      * @return \Illuminate\Support\Fluent
      */
     public function multiPolygon($column, $srid = null)
@@ -100,9 +93,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a geometrycollection column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
+     * @param  string  $column
+     * @param  null|int  $srid
      * @return \Illuminate\Support\Fluent
      */
     public function geometryCollection($column, $srid = null)
@@ -113,9 +105,8 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Specify a spatial index for the table.
      *
-     * @param string|array $columns
-     * @param string       $name
-     *
+     * @param  string|array  $columns
+     * @param  string  $name
      * @return \Illuminate\Support\Fluent
      */
     public function spatialIndex($columns, $name = null)
@@ -126,8 +117,7 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Indicate that the given index should be dropped.
      *
-     * @param string|array $index
-     *
+     * @param  string|array  $index
      * @return \Illuminate\Support\Fluent
      */
     public function dropSpatialIndex($index)

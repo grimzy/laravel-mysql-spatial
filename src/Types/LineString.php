@@ -48,7 +48,7 @@ class LineString extends PointCollection
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, GeoJsonLineString::class)) {
+        if (! is_a($geoJson, GeoJsonLineString::class)) {
             throw new InvalidGeoJsonException('Expected '.GeoJsonLineString::class.', got '.get_class($geoJson));
         }
 

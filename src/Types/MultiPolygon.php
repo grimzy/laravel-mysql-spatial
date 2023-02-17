@@ -67,7 +67,6 @@ class MultiPolygon extends GeometryCollection
      * "((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1))",
      * "((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1))"
      *
-     * @param array $parts
      *
      * @return array
      */
@@ -78,7 +77,7 @@ class MultiPolygon extends GeometryCollection
 
         for ($i = 0; $i < $count; $i++) {
             if ($i % 2 !== 0) {
-                list($end, $start) = explode(',', $parts[$i]);
+                [$end, $start] = explode(',', $parts[$i]);
                 $polygons[$i - 1] .= $end;
                 $polygons[++$i] = $start.$parts[$i];
             } else {
@@ -102,7 +101,7 @@ class MultiPolygon extends GeometryCollection
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, GeoJsonMultiPolygon::class)) {
+        if (! is_a($geoJson, GeoJsonMultiPolygon::class)) {
             throw new InvalidGeoJsonException('Expected '.GeoJsonMultiPolygon::class.', got '.get_class($geoJson));
         }
 

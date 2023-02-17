@@ -2,9 +2,9 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Tests;
 
+use Grimzy\LaravelMysqlSpatial\LaravelMysqlSpatialServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Grimzy\LaravelMysqlSpatial\LaravelMysqlSpatialServiceProvider;
 
 class TestCase extends Orchestra
 {

@@ -19,7 +19,7 @@ class Polygon extends MultiLineString
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, GeoJsonPolygon::class)) {
+        if (! is_a($geoJson, GeoJsonPolygon::class)) {
             throw new InvalidGeoJsonException('Expected '.GeoJsonPolygon::class.', got '.get_class($geoJson));
         }
 

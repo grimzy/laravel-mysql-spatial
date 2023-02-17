@@ -44,18 +44,18 @@ class SpatialServiceProvider extends DatabaseServiceProvider
         if (class_exists(DoctrineType::class)) {
             // Prevent geometry type fields from throwing a 'type not found' error when changing them
             $geometries = [
-                'geometry'           => Geometry::class,
-                'point'              => Point::class,
-                'linestring'         => LineString::class,
-                'polygon'            => Polygon::class,
-                'multipoint'         => MultiPoint::class,
-                'multilinestring'    => MultiLineString::class,
-                'multipolygon'       => MultiPolygon::class,
+                'geometry' => Geometry::class,
+                'point' => Point::class,
+                'linestring' => LineString::class,
+                'polygon' => Polygon::class,
+                'multipoint' => MultiPoint::class,
+                'multilinestring' => MultiLineString::class,
+                'multipolygon' => MultiPolygon::class,
                 'geometrycollection' => GeometryCollection::class,
             ];
             $typeNames = array_keys(DoctrineType::getTypesMap());
             foreach ($geometries as $type => $class) {
-                if (!in_array($type, $typeNames)) {
+                if (! in_array($type, $typeNames)) {
                     DoctrineType::addType($type, $class);
                 }
             }

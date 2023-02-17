@@ -47,7 +47,7 @@ class Point extends Geometry
 
     public static function fromPair($pair, $srid = 0)
     {
-        list($lng, $lat) = explode(' ', trim($pair, "\t\n\r \x0B()"));
+        [$lng, $lat] = explode(' ', trim($pair, "\t\n\r \x0B()"));
 
         return new static((float) $lat, (float) $lng, (int) $srid);
     }
@@ -69,7 +69,6 @@ class Point extends Geometry
 
     /**
      * @param $geoJson  \GeoJson\Feature\Feature|string
-     *
      * @return \Grimzy\LaravelMysqlSpatial\Types\Point
      */
     public static function fromJson($geoJson)
@@ -78,7 +77,7 @@ class Point extends Geometry
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, GeoJsonPoint::class)) {
+        if (! is_a($geoJson, GeoJsonPoint::class)) {
             throw new InvalidGeoJsonException('Expected '.GeoJsonPoint::class.', got '.get_class($geoJson));
         }
 

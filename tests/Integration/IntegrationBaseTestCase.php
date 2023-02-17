@@ -7,6 +7,7 @@ use Laravel\BrowserKitTesting\TestCase as BaseTestCase;
 abstract class IntegrationBaseTestCase extends BaseTestCase
 {
     protected $after_fix = false;
+
     protected $migrations = [];
 
     /**
@@ -41,10 +42,8 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
 
     /**
      * Setup DB before each test.
-     *
-     * @return void
      */
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -59,7 +58,7 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
         //});
     }
 
-    public function tearDown():void
+    public function tearDown(): void
     {
         $this->onMigrations(function ($migrationClass) {
             (new $migrationClass())->down();
@@ -90,7 +89,7 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
     {
         if (method_exists(parent::class, 'expectException')) {
             parent::expectException($exceptionName);
-            if (!is_null($exceptionMessage)) {
+            if (! is_null($exceptionMessage)) {
                 $this->expectExceptionMessage($exceptionMessage);
             }
         } else {
@@ -98,7 +97,7 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
         }
     }
 
-    private function onMigrations(\Closure $closure, $reverse_sort = false)
+    private function onMigrations(Closure $closure, $reverse_sort = false)
     {
         $migrations = $this->migrations;
         $reverse_sort ? rsort($migrations, SORT_STRING) : sort($migrations, SORT_STRING);
