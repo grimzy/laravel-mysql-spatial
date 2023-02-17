@@ -1,5 +1,9 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration;
+
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Models\GeometryModel;
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Models\NoSpatialFieldsModel;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
 use Grimzy\LaravelMysqlSpatial\Types\MultiPoint;
@@ -7,11 +11,11 @@ use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 
-class SpatialTest extends IntegrationBaseTestCase
+class SpatialTest extends IntegrationBaseCase
 {
     protected $migrations = [
-        CreateLocationTable::class,
-        UpdateLocationTable::class,
+        CreateTables::class,
+        UpdateTables::class,
     ];
 
     public function testSpatialFieldsNotDefinedException()

@@ -1,11 +1,15 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Connectors;
+
 use Grimzy\LaravelMysqlSpatial\Connectors\ConnectionFactory;
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase;
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\Stubs\PDOStub;
 use Illuminate\Container\Container;
-use Stubs\PDOStub;
+use Mockery;
 
-class ConnectionFactoryBaseTest extends BaseTestCase
+class ConnectionFactoryTest extends BaseTestCase
 {
     public function testMakeCallsCreateConnection()
     {

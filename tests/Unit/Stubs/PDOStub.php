@@ -1,6 +1,6 @@
 <?php
 
-namespace Stubs;
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Stubs;
 
 class PDOStub extends \PDO
 {

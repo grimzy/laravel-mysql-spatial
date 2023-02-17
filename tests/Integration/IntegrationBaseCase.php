@@ -1,10 +1,14 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration;
+
 use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Migrations\CreateTables;
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Migrations\UpdateTables;
 use Illuminate\Support\Facades\DB;
 use Laravel\BrowserKitTesting\TestCase as BaseTestCase;
 
-abstract class IntegrationBaseTestCase extends BaseTestCase
+abstract class IntegrationBaseCase extends BaseTestCase
 {
     protected $after_fix = false;
 
@@ -12,10 +16,8 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
 
     /**
      * Boots the application.
-     *
-     * @return \Illuminate\Foundation\Application
      */
-    public function createApplication(): Illuminate\Foundation\Application
+    public function createApplication(): \Illuminate\Foundation\Application
     {
         $app = require __DIR__.'/../../vendor/laravel/laravel/bootstrap/app.php';
         $app->register(SpatialServiceProvider::class);
@@ -49,9 +51,10 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
 
         $this->after_fix = $this->isMySQL8AfterFix();
 
-        $this->onMigrations(function ($migrationClass) {
-            (new $migrationClass())->up();
-        });
+        $this->artisan('migrate:fresh');
+
+        (new CreateTables)->up();
+        (new UpdateTables)->up();
 
         //\DB::listen(function($sql) {
         //    var_dump($sql);
@@ -60,9 +63,8 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
 
     public function tearDown(): void
     {
-        $this->onMigrations(function ($migrationClass) {
-            (new $migrationClass())->down();
-        }, true);
+        (new UpdateTables)->down();
+        (new CreateTables)->down();
 
         parent::tearDown();
     }
@@ -70,7 +72,7 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
     // MySQL 8.0.4 fixed bug #26941370 and bug #88031
     private function isMySQL8AfterFix()
     {
-        $results = DB::select(DB::raw('select version()'));
+        $results = DB::select(DB::raw('select version()')->getValue(DB::connection()->getQueryGrammar()));
         $mysql_version = $results[0]->{'version()'};
 
         return version_compare($mysql_version, '8.0.4', '>=');

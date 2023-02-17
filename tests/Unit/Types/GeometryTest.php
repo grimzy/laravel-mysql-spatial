@@ -1,6 +1,9 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Types;
+
 use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownWKTTypeException;
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Types\Geometry;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;

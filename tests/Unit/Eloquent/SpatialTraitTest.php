@@ -1,11 +1,14 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Eloquent;
+
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
-use Grimzy\LaravelMysqlSpatial\MysqlConnection;
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use Mockery as m;
 
 class SpatialTraitTest extends BaseTestCase
 {
@@ -17,6 +20,8 @@ class SpatialTraitTest extends BaseTestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->model = new TestModel();
         $this->queries = &$this->model->getConnection()->getPdo()->queries;
     }
@@ -213,10 +218,17 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testSpatialFieldsNotDefinedException()
     {
-        $model = new TestNoSpatialModel();
+        $model = new class extends Model
+        {
+            use SpatialTrait;
+        };
         $this->assertException(
             SpatialFieldsNotDefinedException::class,
-            'TestNoSpatialModel has to define $spatialFields'
+            'TestNoSpatialModel'
+        );
+        $this->assertException(
+            SpatialFieldsNotDefinedException::class,
+            ' has to define $spatialFields'
         );
         $model->getSpatialFields();
     }
@@ -297,7 +309,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue(DB::connection()->getQueryGrammar()));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -313,7 +325,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue(DB::connection()->getQueryGrammar()));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -329,7 +341,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue(DB::connection()->getQueryGrammar()));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -345,7 +357,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue(DB::connection()->getQueryGrammar()));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -517,83 +529,5 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertStringContainsString('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) asc', $q->orders[0]['sql']);
         $this->assertEquals('POINT(2 1)', $bindings[0]);
-    }
-}
-
-class TestModel extends Model
-{
-    use \Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
-
-    protected $spatialFields = ['point'];   // TODO: only required when fetching, not saving
-
-    public $timestamps = false;
-
-    public static $pdo;
-
-    public static function resolveConnection($connection = null)
-    {
-        if (is_null(static::$pdo)) {
-            static::$pdo = m::mock('TestPDO')->makePartial();
-        }
-
-        return new MysqlConnection(static::$pdo);
-    }
-
-    public function testrelatedmodels()
-    {
-        return $this->hasMany(TestRelatedModel::class);
-    }
-
-    public function testrelatedmodels2()
-    {
-        return $this->belongsToMany(TestRelatedModel::class);
-    }
-}
-
-class TestRelatedModel extends TestModel
-{
-    public function testmodel()
-    {
-        return $this->belongsTo(TestModel::class);
-    }
-
-    public function testmodels()
-    {
-        return $this->belongsToMany(TestModel::class);
-    }
-}
-
-class TestNoSpatialModel extends Model
-{
-    use \Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
-}
-
-class TestPDO extends PDO
-{
-    public $queries = [];
-
-    public $counter = 1;
-
-    public function prepare($statement, $driver_options = [])
-    {
-        $this->queries[] = $statement;
-
-        $stmt = m::mock('PDOStatement');
-        $stmt->shouldReceive('bindValue')->zeroOrMoreTimes();
-        $stmt->shouldReceive('execute');
-        $stmt->shouldReceive('fetchAll')->andReturn([['id' => 1, 'point' => 'POINT(1 2)']]);
-        $stmt->shouldReceive('rowCount')->andReturn(1);
-
-        return $stmt;
-    }
-
-    public function lastInsertId($name = null)
-    {
-        return $this->counter++;
-    }
-
-    public function resetQueries()
-    {
-        $this->queries = [];
     }
 }

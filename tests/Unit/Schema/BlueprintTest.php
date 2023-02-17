@@ -1,13 +1,13 @@
 <?php
 
-namespace Schema;
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Schema;
 
-use BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase as UnitBaseTestCase;
 use Illuminate\Database\Schema\ColumnDefinition;
 use Mockery;
 
-class BlueprintTest extends BaseTestCase
+class BlueprintTest extends UnitBaseTestCase
 {
     protected \Grimzy\LaravelMysqlSpatial\Schema\Blueprint $blueprint;
 

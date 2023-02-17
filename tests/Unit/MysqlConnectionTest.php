@@ -1,9 +1,11 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit;
+
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
 use Grimzy\LaravelMysqlSpatial\Schema\Builder;
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\Stubs\PDOStub;
 use PHPUnit\Framework\TestCase;
-use Stubs\PDOStub;
 
 class MysqlConnectionTest extends TestCase
 {
