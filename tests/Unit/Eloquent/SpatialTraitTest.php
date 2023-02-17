@@ -21,13 +21,13 @@ class SpatialTraitTest extends BaseTestCase
      */
     protected $queries;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->model = new TestModel();
         $this->queries = &$this->model->getConnection()->getPdo()->queries;
     }
 
-    public function tearDown()
+    public function tearDown():void
     {
         $this->model->getConnection()->getPdo()->resetQueries();
     }
