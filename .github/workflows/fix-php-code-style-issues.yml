@@ -3,7 +3,9 @@ name: Fix PHP code style issues
 on:
   push:
     paths:
-      - '**.php'
+      - "**.php"
+  pull_request:
+    branches: [master]
 
 jobs:
   php-code-styling:

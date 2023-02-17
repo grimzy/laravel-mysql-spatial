@@ -71,7 +71,7 @@ class GeometryCollectionTest extends BaseTestCase
     {
         $geometryCollection = $this->getGeometryCollection();
 
-        $this->assertInternalType('array', $geometryCollection->toArray());
+        $this->assertIsArray($geometryCollection->toArray());
     }
 
     public function testIteratorAggregate()
