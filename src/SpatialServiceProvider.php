@@ -41,6 +41,10 @@ class SpatialServiceProvider extends DatabaseServiceProvider
             return new DatabaseManager($app, $app['db.factory']);
         });
 
+        $this->app->bind('db.schema', function ($app) {
+          return $app['db']->connection()->getSchemaBuilder();
+        });
+
         if (class_exists(DoctrineType::class)) {
             // Prevent geometry type fields from throwing a 'type not found' error when changing them
             $geometries = [
