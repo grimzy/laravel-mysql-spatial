@@ -140,5 +140,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
         if (!empty($column->srid) && is_int($column->srid) && $column->srid > 0) {
             return ' srid '.$column->srid;
         }
+        
+        return null;
     }
 }
