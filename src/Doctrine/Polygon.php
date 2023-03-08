@@ -9,12 +9,12 @@ class Polygon extends Type
 {
     const POLYGON = 'polygon';
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return 'polygon';
     }
 
-    public function getName()
+    public function getName(): string
     {
         return self::POLYGON;
     }

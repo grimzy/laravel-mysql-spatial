@@ -9,7 +9,7 @@ use Illuminate\Contracts\Support\Jsonable;
 
 abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializable
 {
-    protected static $wkb_types = [
+    protected static array $wkb_types = [
         1 => Point::class,
         2 => LineString::class,
         3 => Polygon::class,
@@ -19,14 +19,14 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         7 => GeometryCollection::class,
     ];
 
-    protected $srid;
+    protected int $srid;
 
     public function __construct($srid = 0)
     {
         $this->srid = (int) $srid;
     }
 
-    public function getSrid()
+    public function getSrid(): int
     {
         return $this->srid;
     }
@@ -36,7 +36,7 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         $this->srid = (int) $srid;
     }
 
-    public static function getWKTArgument($value)
+    public static function getWKTArgument($value): string
     {
         $left = strpos($value, '(');
         $right = strrpos($value, ')');
@@ -44,32 +44,24 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         return substr($value, $left + 1, $right - $left - 1);
     }
 
-    public static function getWKTClass($value)
+    public static function getWKTClass($value): string
     {
         $left = strpos($value, '(');
         $type = trim(substr($value, 0, $left));
 
-        switch (strtoupper($type)) {
-            case 'POINT':
-                return Point::class;
-            case 'LINESTRING':
-                return LineString::class;
-            case 'POLYGON':
-                return Polygon::class;
-            case 'MULTIPOINT':
-                return MultiPoint::class;
-            case 'MULTILINESTRING':
-                return MultiLineString::class;
-            case 'MULTIPOLYGON':
-                return MultiPolygon::class;
-            case 'GEOMETRYCOLLECTION':
-                return GeometryCollection::class;
-            default:
-                throw new UnknownWKTTypeException('Type was '.$type);
-        }
+        return match (strtoupper($type)) {
+            'POINT' => Point::class,
+            'LINESTRING' => LineString::class,
+            'POLYGON' => Polygon::class,
+            'MULTIPOINT' => MultiPoint::class,
+            'MULTILINESTRING' => MultiLineString::class,
+            'MULTIPOLYGON' => MultiPolygon::class,
+            'GEOMETRYCOLLECTION' => GeometryCollection::class,
+            default => throw new UnknownWKTTypeException('Type was ' . $type),
+        };
     }
 
-    public static function fromWKB($wkb)
+    public static function fromWKB($wkb): Geometry
     {
         $srid = substr($wkb, 0, 4);
         $srid = unpack('L', $srid)[1];
@@ -113,7 +105,7 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
         return $type::fromJson($geoJson);
     }
 
-    public function toJson($options = 0)
+    public function toJson($options = 0): bool|string
     {
         return json_encode($this, $options);
     }

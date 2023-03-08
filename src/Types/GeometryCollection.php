@@ -11,6 +11,7 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
 use IteratorAggregate;
+use ReturnTypeWillChange;
 
 class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAccess, Arrayable, Countable
 {
@@ -19,29 +20,29 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
      *
      * @var int
      */
-    protected $minimumCollectionItems = 0;
+    protected int $minimumCollectionItems = 0;
 
     /**
      * The class of the items in the collection.
      *
      * @var string
      */
-    protected $collectionItemType = GeometryInterface::class;
+    protected string $collectionItemType = GeometryInterface::class;
 
     /**
      * The items contained in the spatial collection.
      *
      * @var GeometryInterface[]
      */
-    protected $items = [];
+    protected array $items = [];
 
     /**
      * @param GeometryInterface[] $geometries
-     * @param int                 $srid
+     * @param int $srid
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(array $geometries, $srid = 0)
+    public function __construct(array $geometries, int $srid = 0)
     {
         parent::__construct($srid);
 
@@ -50,12 +51,12 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         $this->items = $geometries;
     }
 
-    public function getGeometries()
+    public function getGeometries(): array
     {
         return $this->items;
     }
 
-    public function toWKT()
+    public function toWKT(): string
     {
         return sprintf('GEOMETRYCOLLECTION(%s)', (string) $this);
     }
@@ -67,42 +68,48 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }, $this->items));
     }
 
-    public static function fromString($wktArgument, $srid = 0)
+    public static function fromString($wktArgument, $srid = 0): static
     {
         if (empty($wktArgument)) {
             return new static([]);
         }
 
-        $geometry_strings = preg_split('/,\s*(?=[A-Za-z])/', $wktArgument);
+        $geometryStrings = preg_split('/,\s*(?=[A-Za-z])/', $wktArgument);
 
-        return new static(array_map(function ($geometry_string) {
-            $klass = Geometry::getWKTClass($geometry_string);
+        return new static(
+            array_map(
+                function ($geometryString) {
+                    $klass = Geometry::getWKTClass($geometryString);
 
-            return call_user_func($klass.'::fromWKT', $geometry_string);
-        }, $geometry_strings), $srid);
+                    return call_user_func($klass.'::fromWKT', $geometryString);
+                },
+                $geometryStrings
+            ),
+            $srid
+        );
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->items;
     }
 
-    public function getIterator()
+    #[ReturnTypeWillChange] public function getIterator()
     {
         return new ArrayIterator($this->items);
     }
 
-    public function offsetExists($offset)
+    #[ReturnTypeWillChange] public function offsetExists($offset)
     {
         return isset($this->items[$offset]);
     }
 
-    public function offsetGet($offset)
+    #[ReturnTypeWillChange] public function offsetGet($offset)
     {
         return $this->offsetExists($offset) ? $this->items[$offset] : null;
     }
 
-    public function offsetSet($offset, $value)
+    #[ReturnTypeWillChange] public function offsetSet($offset, $value)
     {
         $this->validateItemType($value);
 
@@ -113,17 +120,17 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
         }
     }
 
-    public function offsetUnset($offset)
+    #[ReturnTypeWillChange] public function offsetUnset($offset)
     {
         unset($this->items[$offset]);
     }
 
-    public function count()
+    #[ReturnTypeWillChange] public function count()
     {
         return count($this->items);
     }
 
-    public static function fromJson($geoJson)
+    public static function fromJson($geoJson): GeometryCollection
     {
         if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
@@ -146,7 +153,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
      *
      * @return \GeoJson\Geometry\GeometryCollection
      */
-    public function jsonSerialize()
+    #[ReturnTypeWillChange] public function jsonSerialize()
     {
         $geometries = [];
         foreach ($this->items as $geometry) {

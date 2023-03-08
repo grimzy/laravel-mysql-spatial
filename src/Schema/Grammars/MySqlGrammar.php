@@ -25,7 +25,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function typeGeometry(Fluent $column)
+    public function typeGeometry(Fluent $column): string
     {
         return 'GEOMETRY';
     }
@@ -37,7 +37,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function typePoint(Fluent $column)
+    public function typePoint(Fluent $column): string
     {
         return 'POINT';
     }
@@ -49,7 +49,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function typeLinestring(Fluent $column)
+    public function typeLinestring(Fluent $column): string
     {
         return 'LINESTRING';
     }
@@ -61,7 +61,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function typePolygon(Fluent $column)
+    public function typePolygon(Fluent $column): string
     {
         return 'POLYGON';
     }
@@ -73,7 +73,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function typeMultipoint(Fluent $column)
+    public function typeMultipoint(Fluent $column): string
     {
         return 'MULTIPOINT';
     }
@@ -85,7 +85,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function typeMultilinestring(Fluent $column)
+    public function typeMultilinestring(Fluent $column): string
     {
         return 'MULTILINESTRING';
     }
@@ -97,7 +97,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function typeMultipolygon(Fluent $column)
+    public function typeMultipolygon(Fluent $column): string
     {
         return 'MULTIPOLYGON';
     }
@@ -109,7 +109,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function typeGeometrycollection(Fluent $column)
+    public function typeGeometrycollection(Fluent $column): string
     {
         return 'GEOMETRYCOLLECTION';
     }
@@ -122,7 +122,7 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string
      */
-    public function compileSpatial(Blueprint $blueprint, Fluent $command)
+    public function compileSpatial(Blueprint $blueprint, Fluent $command): string
     {
         return $this->compileKey($blueprint, $command, 'spatial');
     }
@@ -135,10 +135,12 @@ class MySqlGrammar extends IlluminateMySqlGrammar
      *
      * @return string|null
      */
-    protected function modifySrid(\Illuminate\Database\Schema\Blueprint $blueprint, Fluent $column)
+    protected function modifySrid(\Illuminate\Database\Schema\Blueprint $blueprint, Fluent $column): ?string
     {
-        if (!is_null($column->srid) && is_int($column->srid) && $column->srid > 0) {
+        if (!empty($column->srid) && is_int($column->srid) && $column->srid > 0) {
             return ' srid '.$column->srid;
         }
+        
+        return null;
     }
 }

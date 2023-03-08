@@ -13,21 +13,21 @@ class LineString extends PointCollection
      *
      * @var int
      */
-    protected $minimumCollectionItems = 2;
+    protected int $minimumCollectionItems = 2;
 
-    public function toWKT()
+    public function toWKT(): string
     {
         return sprintf('LINESTRING(%s)', $this->toPairList());
     }
 
-    public static function fromWkt($wkt, $srid = 0)
+    public static function fromWkt($wkt, $srid = 0): LineString|static
     {
         $wktArgument = Geometry::getWKTArgument($wkt);
 
         return static::fromString($wktArgument, $srid);
     }
 
-    public static function fromString($wktArgument, $srid = 0)
+    public static function fromString($wktArgument, $srid = 0): static
     {
         $pairs = explode(',', trim($wktArgument));
         $points = array_map(function ($pair) {
@@ -42,7 +42,7 @@ class LineString extends PointCollection
         return $this->toPairList();
     }
 
-    public static function fromJson($geoJson)
+    public static function fromJson($geoJson): GeometryCollection
     {
         if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
@@ -65,7 +65,7 @@ class LineString extends PointCollection
      *
      * @return \GeoJson\Geometry\LineString
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): GeoJsonLineString
     {
         $points = [];
         foreach ($this->items as $point) {

@@ -3,19 +3,21 @@
 namespace Grimzy\LaravelMysqlSpatial\Connectors;
 
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Connectors\ConnectionFactory as IlluminateConnectionFactory;
 use PDO;
 
 class ConnectionFactory extends IlluminateConnectionFactory
 {
     /**
-     * @param string       $driver
+     * @param string $driver
      * @param \Closure|PDO $connection
-     * @param string       $database
-     * @param string       $prefix
-     * @param array        $config
+     * @param string $database
+     * @param string $prefix
+     * @param array $config
      *
      * @return \Illuminate\Database\ConnectionInterface
+     * @throws BindingResolutionException
      */
     protected function createConnection($driver, $connection, $database, $prefix = '', array $config = [])
     {

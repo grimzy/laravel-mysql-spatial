@@ -9,12 +9,12 @@ class LineString extends Type
 {
     const LINESTRING = 'linestring';
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return 'linestring';
     }
 
-    public function getName()
+    public function getName(): string
     {
         return self::LINESTRING;
     }

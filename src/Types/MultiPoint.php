@@ -13,21 +13,21 @@ class MultiPoint extends PointCollection
      *
      * @var int
      */
-    protected $minimumCollectionItems = 1;
+    protected int $minimumCollectionItems = 1;
 
-    public function toWKT()
+    public function toWKT(): string
     {
         return sprintf('MULTIPOINT(%s)', (string) $this);
     }
 
-    public static function fromWkt($wkt, $srid = 0)
+    public static function fromWkt($wkt, $srid = 0): MultiPoint|static
     {
         $wktArgument = Geometry::getWKTArgument($wkt);
 
         return static::fromString($wktArgument, $srid);
     }
 
-    public static function fromString($wktArgument, $srid = 0)
+    public static function fromString($wktArgument, $srid = 0): static
     {
         $matches = [];
         preg_match_all('/\(\s*(\d+\s+\d+)\s*\)/', trim($wktArgument), $matches);
@@ -46,7 +46,7 @@ class MultiPoint extends PointCollection
         }, $this->items));
     }
 
-    public static function fromJson($geoJson)
+    public static function fromJson($geoJson): GeometryCollection
     {
         if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
@@ -69,7 +69,7 @@ class MultiPoint extends PointCollection
      *
      * @return \GeoJson\Geometry\MultiPoint
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): GeoJsonMultiPoint
     {
         $points = [];
         foreach ($this->items as $point) {

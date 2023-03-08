@@ -8,6 +8,7 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\UnknownSpatialRelationFunction;
 use Grimzy\LaravelMysqlSpatial\Types\Geometry;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Trait SpatialTrait.
@@ -40,9 +41,9 @@ trait SpatialTrait
      * protected $spatialFields = [];
      */
 
-    public $geometries = [];
+    public array $geometries = [];
 
-    protected $stRelations = [
+    protected array $stRelations = [
         'within',
         'crosses',
         'contains',
@@ -53,7 +54,7 @@ trait SpatialTrait
         'touches',
     ];
 
-    protected $stOrderFunctions = [
+    protected array $stOrderFunctions = [
         'distance',
         'distance_sphere',
     ];
@@ -65,12 +66,12 @@ trait SpatialTrait
      *
      * @return \Grimzy\LaravelMysqlSpatial\Eloquent\Builder
      */
-    public function newEloquentBuilder($query)
+    #[Pure] public function newEloquentBuilder($query): Builder
     {
         return new Builder($query);
     }
 
-    protected function newBaseQueryBuilder()
+    protected function newBaseQueryBuilder(): BaseBuilder
     {
         $connection = $this->getConnection();
 
@@ -81,7 +82,7 @@ trait SpatialTrait
         );
     }
 
-    protected function performInsert(EloquentBuilder $query, array $options = [])
+    protected function performInsert(EloquentBuilder $query, array $options = []): bool
     {
         foreach ($this->attributes as $key => $value) {
             if ($value instanceof GeometryInterface) {
@@ -121,7 +122,7 @@ trait SpatialTrait
         }
     }
 
-    public function isColumnAllowed($geometryColumn)
+    public function isColumnAllowed($geometryColumn): bool
     {
         if (!in_array($geometryColumn, $this->getSpatialFields())) {
             throw new SpatialFieldsNotDefinedException();
@@ -157,7 +158,7 @@ trait SpatialTrait
         return $query;
     }
 
-    public function scopeDistanceValue($query, $geometryColumn, $geometry)
+    public function scopeDistanceValue($query, $geometryColumn, $geometry): void
     {
         $this->isColumnAllowed($geometryColumn);
 
@@ -200,7 +201,7 @@ trait SpatialTrait
         return $query;
     }
 
-    public function scopeDistanceSphereValue($query, $geometryColumn, $geometry)
+    public function scopeDistanceSphereValue($query, $geometryColumn, $geometry): void
     {
         $this->isColumnAllowed($geometryColumn);
 

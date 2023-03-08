@@ -13,16 +13,16 @@ class MultiPolygon extends GeometryCollection
      *
      * @var int
      */
-    protected $minimumCollectionItems = 1;
+    protected int $minimumCollectionItems = 1;
 
     /**
      * The class of the items in the collection.
      *
      * @var string
      */
-    protected $collectionItemType = Polygon::class;
+    protected string $collectionItemType = Polygon::class;
 
-    public function toWKT()
+    public function toWKT(): string
     {
         return sprintf('MULTIPOLYGON(%s)', (string) $this);
     }
@@ -34,14 +34,20 @@ class MultiPolygon extends GeometryCollection
         }, $this->items));
     }
 
-    public static function fromString($wktArgument, $srid = 0)
+    public static function fromString($wktArgument, $srid = 0): static
     {
         $parts = preg_split('/(\)\s*\)\s*,\s*\(\s*\()/', $wktArgument, -1, PREG_SPLIT_DELIM_CAPTURE);
         $polygons = static::assembleParts($parts);
 
-        return new static(array_map(function ($polygonString) {
-            return Polygon::fromString($polygonString);
-        }, $polygons), $srid);
+        return new static(
+            array_map(
+                function ($polygonString) {
+                    return Polygon::fromString($polygonString);
+                },
+                $polygons
+            ),
+            $srid
+        );
     }
 
     /**
@@ -49,7 +55,7 @@ class MultiPolygon extends GeometryCollection
      *
      * @return array|Polygon[]
      */
-    public function getPolygons()
+    public function getPolygons(): array
     {
         return $this->items;
     }
@@ -71,7 +77,7 @@ class MultiPolygon extends GeometryCollection
      *
      * @return array
      */
-    protected static function assembleParts(array $parts)
+    protected static function assembleParts(array $parts): array
     {
         $polygons = [];
         $count = count($parts);
@@ -96,7 +102,7 @@ class MultiPolygon extends GeometryCollection
         parent::offsetSet($offset, $value);
     }
 
-    public static function fromJson($geoJson)
+    public static function fromJson($geoJson): GeometryCollection
     {
         if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
@@ -127,7 +133,7 @@ class MultiPolygon extends GeometryCollection
      *
      * @return \GeoJson\Geometry\MultiPolygon
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): GeoJsonMultiPolygon
     {
         $polygons = [];
         foreach ($this->items as $polygon) {

@@ -2,6 +2,7 @@
 
 namespace Grimzy\LaravelMysqlSpatial;
 
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Type as DoctrineType;
 use Grimzy\LaravelMysqlSpatial\Connectors\ConnectionFactory;
 use Grimzy\LaravelMysqlSpatial\Doctrine\Geometry;
@@ -24,8 +25,9 @@ class SpatialServiceProvider extends DatabaseServiceProvider
      * Register the service provider.
      *
      * @return void
+     * @throws Exception
      */
-    public function register()
+    public function register(): void
     {
         // The connection factory is used to create the actual connection instances on
         // the database. We will inject the factory into the manager so that it may
