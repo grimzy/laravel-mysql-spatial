@@ -1,0 +1,6 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "use_arrow_functions": true
+    }
+}

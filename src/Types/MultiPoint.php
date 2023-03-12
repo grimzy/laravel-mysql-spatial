@@ -6,53 +6,50 @@ use GeoJson\GeoJson;
 use GeoJson\Geometry\MultiPoint as GeoJsonMultiPoint;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
-class MultiPoint extends PointCollection
+/**
+ * @implements GeometryInterface<Point>
+ */
+class MultiPoint extends PointCollection implements GeometryInterface
 {
     /**
      * The minimum number of items required to create this collection.
-     *
-     * @var int
      */
-    protected $minimumCollectionItems = 1;
+    protected int $minimumCollectionItems = 1;
 
-    public function toWKT()
+    public function toWKT(): string
     {
         return sprintf('MULTIPOINT(%s)', (string) $this);
     }
 
-    public static function fromWkt($wkt, $srid = 0)
+    public static function fromWKT(string $wkt, int $srid = 0): static
     {
         $wktArgument = Geometry::getWKTArgument($wkt);
 
         return static::fromString($wktArgument, $srid);
     }
 
-    public static function fromString($wktArgument, $srid = 0)
+    public static function fromString(string $wktArgument, int $srid = 0): static
     {
         $matches = [];
         preg_match_all('/\(\s*(\d+\s+\d+)\s*\)/', trim($wktArgument), $matches);
 
-        $points = array_map(function ($pair) {
-            return Point::fromPair($pair);
-        }, $matches[1]);
+        $points = array_map(fn ($pair) => Point::fromPair($pair), $matches[1]);
 
         return new static($points, $srid);
     }
 
     public function __toString()
     {
-        return implode(',', array_map(function (Point $point) {
-            return sprintf('(%s)', $point->toPair());
-        }, $this->items));
+        return implode(',', array_map(fn (Point $point) => sprintf('(%s)', $point->toPair()), $this->items));
     }
 
-    public static function fromJson($geoJson)
+    public static function fromJson(string|GeoJson $geoJson): self
     {
         if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, GeoJsonMultiPoint::class)) {
+        if (! is_a($geoJson, GeoJsonMultiPoint::class)) {
             throw new InvalidGeoJsonException('Expected '.GeoJsonMultiPoint::class.', got '.get_class($geoJson));
         }
 
@@ -66,8 +63,6 @@ class MultiPoint extends PointCollection
 
     /**
      * Convert to GeoJson MultiPoint that is jsonable to GeoJSON.
-     *
-     * @return \GeoJson\Geometry\MultiPoint
      */
     public function jsonSerialize()
     {

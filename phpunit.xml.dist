@@ -1,45 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="./vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
-        </testsuite>
-        <testsuite name="integration">
-            <directory suffix="Test.php">./tests/Integration</directory>
-        </testsuite>
-    </testsuites>
-    <listeners>
-        <listener class="\Mockery\Adapter\Phpunit\TestListener"
-                  file="vendor/mockery/mockery/library/Mockery/Adapter/Phpunit/TestListener.php">
-        </listener>
-    </listeners>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
-    <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_DEBUG" value="true"/>
-        <env name="APP_KEY" value="V4EYYl0MjI4Bin9GkFPUE3cpAARPCF27"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
-        <env name="DB_DATABASE" value="spatial_test"/>
-        <env name="DB_HOST" value="127.0.0.1"/>
-        <env name="DB_PORT" value="3306"/>
-        <env name="DB_USERNAME" value="root"/>
-        <env name="DB_PASSWORD" value=""/>
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" processIsolation="false" stopOnFailure="false" executionOrder="random" failOnWarning="true" failOnRisky="true" failOnEmptyTestSuite="true" beStrictAboutOutputDuringTests="true" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
+  <testsuites>
+    <testsuite name="Test Suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <coverage>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <report>
+      <html outputDirectory="build/coverage"/>
+      <text outputFile="build/coverage.txt"/>
+      <clover outputFile="build/logs/clover.xml"/>
+    </report>
+  </coverage>
+  <logging>
+    <junit outputFile="build/report.junit.xml"/>
+  </logging>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="APP_DEBUG" value="true"/>
+    <env name="APP_KEY" value="V4EYYl0MjI4Bin9GkFPUE3cpAARPCF27"/>
+    <env name="CACHE_DRIVER" value="array"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="QUEUE_DRIVER" value="sync"/>
+    <env name="DB_DATABASE" value="laravel"/>
+    <env name="DB_HOST" value="127.0.0.1"/>
+    <env name="DB_PORT" value="3306"/>
+    <env name="DB_USERNAME" value="root"/>
+    <env name="DB_PASSWORD" value="root"/>
+  </php>
 </phpunit>

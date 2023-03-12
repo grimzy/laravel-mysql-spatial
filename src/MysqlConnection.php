@@ -26,7 +26,7 @@ class MysqlConnection extends IlluminateMySqlConnection
                 'geometrycollection',
                 'geomcollection',
             ];
-            $dbPlatform = $this->getDoctrineSchemaManager()->getDatabasePlatform();
+            $dbPlatform = $this->getDoctrineConnection()->getDatabasePlatform();
             foreach ($geometries as $type) {
                 $dbPlatform->registerDoctrineTypeMapping($type, 'string');
             }
@@ -35,20 +35,16 @@ class MysqlConnection extends IlluminateMySqlConnection
 
     /**
      * Get the default schema grammar instance.
-     *
-     * @return \Illuminate\Database\Grammar
      */
-    protected function getDefaultSchemaGrammar()
+    protected function getDefaultSchemaGrammar(): \Illuminate\Database\Grammar
     {
         return $this->withTablePrefix(new MySqlGrammar());
     }
 
     /**
      * Get a schema builder instance for the connection.
-     *
-     * @return \Illuminate\Database\Schema\MySqlBuilder
      */
-    public function getSchemaBuilder()
+    public function getSchemaBuilder(): \Illuminate\Database\Schema\MySqlBuilder
     {
         if (is_null($this->schemaGrammar)) {
             $this->useDefaultSchemaGrammar();

@@ -1,12 +1,16 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration;
+
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Migrations\CreateTables;
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Migrations\UpdateTables;
 use Illuminate\Support\Facades\DB;
 
-class MigrationTest extends IntegrationBaseTestCase
+class MigrationTest extends IntegrationBaseCase
 {
     protected $migrations = [
-        CreateLocationTable::class,
-        UpdateLocationTable::class,
+        CreateTables::class,
+        UpdateTables::class,
     ];
 
     public function testTableWasCreatedWithRightTypes()

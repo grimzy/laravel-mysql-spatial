@@ -1,17 +1,17 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration\Migrations;
+
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateLocationTable extends Migration
+class UpdateTables extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // MySQL < 5.7.5: table has to be MyISAM
         \DB::statement('ALTER TABLE geometry ENGINE = MyISAM');
@@ -36,10 +36,8 @@ class UpdateLocationTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('geometry', function (Blueprint $table) {
             $table->dropSpatialIndex(['location']); // either an array of column names or the index name

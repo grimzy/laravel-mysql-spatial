@@ -1,12 +1,12 @@
 <?php
 
-namespace Eloquent;
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Eloquent;
 
-use BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Eloquent\Builder;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialExpression;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase as UnitBaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
@@ -15,12 +15,13 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
 use Mockery;
 
-class BuilderTest extends BaseTestCase
+class BuilderTest extends UnitBaseTestCase
 {
     protected $builder;
+
     protected $queryBuilder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $connection = Mockery::mock(MysqlConnection::class)->makePartial();
         $grammar = Mockery::mock(MySqlGrammar::class)->makePartial();
@@ -32,7 +33,14 @@ class BuilderTest extends BaseTestCase
             ->andReturn($this->queryBuilder);
 
         $this->builder = new Builder($this->queryBuilder);
-        $this->builder->setModel(new TestBuilderModel());
+        $this->builder->setModel(new class extends Model
+        {
+            use SpatialTrait;
+
+            public $timestamps = false;
+
+            protected $spatialFields = ['point', 'linestring', 'polygon'];
+        });
     }
 
     public function testUpdatePoint()
@@ -128,12 +136,4 @@ class BuilderTest extends BaseTestCase
 
         $this->assertSame(1, $result);
     }
-}
-
-class TestBuilderModel extends Model
-{
-    use SpatialTrait;
-
-    public $timestamps = false;
-    protected $spatialFields = ['point', 'linestring', 'polygon'];
 }

@@ -1,5 +1,8 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Types;
+
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 
@@ -7,7 +10,7 @@ class LineStringTest extends BaseTestCase
 {
     private $points;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->points = [new Point(0, 0), new Point(1, 1), new Point(2, 2)];
     }
@@ -47,7 +50,7 @@ class LineStringTest extends BaseTestCase
     {
         $this->assertException(
             \Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class,
-            sprintf('Expected %s, got %s', \GeoJson\Geometry\LineString::class, GeoJson\Geometry\Point::class)
+            sprintf('Expected %s, got %s', \GeoJson\Geometry\LineString::class, \GeoJson\Geometry\Point::class)
         );
         LineString::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }

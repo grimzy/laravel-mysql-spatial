@@ -1,0 +1,11 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 6
+    paths:
+        - src
+    tmpDir: build/phpstan
+    checkModelProperties: true
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false

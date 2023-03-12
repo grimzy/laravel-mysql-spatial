@@ -1,7 +1,11 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Types;
+
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Types\MultiPoint;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
+use InvalidArgumentException;
 
 class MultiPointTest extends BaseTestCase
 {
@@ -44,7 +48,7 @@ class MultiPointTest extends BaseTestCase
     {
         $this->assertException(
             \Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException::class,
-            sprintf('Expected %s, got %s', GeoJson\Geometry\MultiPoint::class, GeoJson\Geometry\Point::class)
+            sprintf('Expected %s, got %s', \GeoJson\Geometry\MultiPoint::class, \GeoJson\Geometry\Point::class)
         );
         MultiPoint::fromJson('{"type":"Point","coordinates":[3.4,1.2]}');
     }
@@ -101,53 +105,5 @@ class MultiPointTest extends BaseTestCase
             'Grimzy\LaravelMysqlSpatial\Types\MultiPoint must be a collection of Grimzy\LaravelMysqlSpatial\Types\Point'
         );
         $multipoint[] = 1;
-    }
-
-    public function testDeprecatedPrependPoint()
-    {
-        $point1 = new Point(1, 1);
-        $point2 = new Point(2, 2);
-        $multipoint = new MultiPoint([$point1, $point2]);
-
-        $point0 = new Point(0, 0);
-        $multipoint->prependPoint($point0);
-
-        $this->assertEquals($point0, $multipoint[0]);
-        $this->assertEquals($point1, $multipoint[1]);
-        $this->assertEquals($point2, $multipoint[2]);
-    }
-
-    public function testDeprecatedAppendPoint()
-    {
-        $point0 = new Point(0, 0);
-        $point1 = new Point(1, 1);
-        $multipoint = new MultiPoint([$point0, $point1]);
-
-        $point2 = new Point(2, 2);
-        $multipoint->appendPoint($point2);
-
-        $this->assertEquals($point0, $multipoint[0]);
-        $this->assertEquals($point1, $multipoint[1]);
-        $this->assertEquals($point2, $multipoint[2]);
-    }
-
-    public function testDeprecatedInsertPoint()
-    {
-        $point1 = new Point(1, 1);
-        $point3 = new Point(3, 3);
-        $multipoint = new MultiPoint([$point1, $point3]);
-
-        $point2 = new Point(2, 2);
-        $multipoint->insertPoint(1, $point2);
-
-        $this->assertEquals($point1, $multipoint[0]);
-        $this->assertEquals($point2, $multipoint[1]);
-        $this->assertEquals($point3, $multipoint[2]);
-
-        $this->assertException(
-            InvalidArgumentException::class,
-            '$index is greater than the size of the array'
-        );
-        $multipoint->insertPoint(100, new Point(100, 100));
     }
 }

@@ -61,8 +61,7 @@ trait SpatialTrait
     /**
      * Create a new Eloquent query builder for the model.
      *
-     * @param \Illuminate\Database\Query\Builder $query
-     *
+     * @param  \Illuminate\Database\Query\Builder  $query
      * @return \Grimzy\LaravelMysqlSpatial\Eloquent\Builder
      */
     public function newEloquentBuilder($query)
@@ -123,7 +122,7 @@ trait SpatialTrait
 
     public function isColumnAllowed($geometryColumn)
     {
-        if (!in_array($geometryColumn, $this->getSpatialFields())) {
+        if (! in_array($geometryColumn, $this->getSpatialFields())) {
             throw new SpatialFieldsNotDefinedException();
         }
 
@@ -163,7 +162,7 @@ trait SpatialTrait
 
         $columns = $query->getQuery()->columns;
 
-        if (!$columns) {
+        if (! $columns) {
             $query->select('*');
         }
 
@@ -206,7 +205,7 @@ trait SpatialTrait
 
         $columns = $query->getQuery()->columns;
 
-        if (!$columns) {
+        if (! $columns) {
             $query->select('*');
         }
         $query->selectRaw("st_distance_sphere(`$geometryColumn`, ST_GeomFromText(?, ?, 'axis-order=long-lat')) as distance", [
@@ -219,7 +218,7 @@ trait SpatialTrait
     {
         $this->isColumnAllowed($geometryColumn);
 
-        if (!in_array($relationship, $this->stRelations)) {
+        if (! in_array($relationship, $this->stRelations)) {
             throw new UnknownSpatialRelationFunction($relationship);
         }
 
@@ -275,7 +274,7 @@ trait SpatialTrait
     {
         $this->isColumnAllowed($geometryColumn);
 
-        if (!in_array($orderFunction, $this->stOrderFunctions)) {
+        if (! in_array($orderFunction, $this->stOrderFunctions)) {
             throw new UnknownSpatialFunctionException($orderFunction);
         }
 

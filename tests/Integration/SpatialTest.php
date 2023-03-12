@@ -1,5 +1,9 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration;
+
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Models\GeometryModel;
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Models\NoSpatialFieldsModel;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
 use Grimzy\LaravelMysqlSpatial\Types\MultiPoint;
@@ -7,11 +11,11 @@ use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 
-class SpatialTest extends IntegrationBaseTestCase
+class SpatialTest extends IntegrationBaseCase
 {
     protected $migrations = [
-        CreateLocationTable::class,
-        UpdateLocationTable::class,
+        CreateTables::class,
+        UpdateTables::class,
     ];
 
     public function testSpatialFieldsNotDefinedException()
@@ -212,7 +216,7 @@ class SpatialTest extends IntegrationBaseTestCase
         $a = GeometryModel::distanceValue('location', $loc1->location)->get();
         $this->assertCount(2, $a);
         $this->assertEquals(0, $a[0]->distance);
-        $this->assertEquals(1.4142135623, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+        $this->assertEqualsWithDelta(1.4142135623, $a[1]->distance, 0.00000001); // PHP floats' 11th+ digits don't matter
     }
 
     public function testDistanceSphereValue()
@@ -230,9 +234,9 @@ class SpatialTest extends IntegrationBaseTestCase
         $this->assertEquals(0, $a[0]->distance);
 
         if ($this->after_fix) {
-            $this->assertEquals(44.7414064842, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+            $this->assertEqualsWithDelta(44.7414064842, $a[1]->distance, 0.00000001); // PHP floats' 11th+ digits don't matter
         } else {
-            $this->assertEquals(44.7414064845, $a[1]->distance); // PHP floats' 11th+ digits don't matter
+            $this->assertEqualsWithDelta(44.7414064845, $a[1]->distance, 0.00000001); // PHP floats' 11th+ digits don't matter
         }
     }
 

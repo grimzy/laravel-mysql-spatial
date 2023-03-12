@@ -8,13 +8,8 @@ class Blueprint extends IlluminateBlueprint
 {
     /**
      * Add a geometry column on the table.
-     *
-     * @param string   $column
-     * @param null|int $srid
-     *
-     * @return \Illuminate\Support\Fluent
      */
-    public function geometry($column, $srid = null)
+    public function geometry($column, ?int $srid = null): \Illuminate\Support\Fluent
     {
         return $this->addColumn('geometry', $column, compact('srid'));
     }
@@ -22,90 +17,57 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Add a point column on the table.
      *
-     * @param string   $column
-     * @param null|int $srid
-     *
-     * @return \Illuminate\Support\Fluent
+     * @param  ?int  $srid
      */
-    public function point($column, $srid = null)
+    public function point($column, $srid = null): \Illuminate\Support\Fluent
     {
         return $this->addColumn('point', $column, compact('srid'));
     }
 
     /**
      * Add a linestring column on the table.
-     *
-     * @param string   $column
-     * @param null|int $srid
-     *
-     * @return \Illuminate\Support\Fluent
      */
-    public function lineString($column, $srid = null)
+    public function lineString($column, ?int $srid = null): \Illuminate\Support\Fluent
     {
         return $this->addColumn('linestring', $column, compact('srid'));
     }
 
     /**
      * Add a polygon column on the table.
-     *
-     * @param string   $column
-     * @param null|int $srid
-     *
-     * @return \Illuminate\Support\Fluent
      */
-    public function polygon($column, $srid = null)
+    public function polygon($column, ?int $srid = null): \Illuminate\Support\Fluent
     {
         return $this->addColumn('polygon', $column, compact('srid'));
     }
 
     /**
      * Add a multipoint column on the table.
-     *
-     * @param string   $column
-     * @param null|int $srid
-     *
-     * @return \Illuminate\Support\Fluent
      */
-    public function multiPoint($column, $srid = null)
+    public function multiPoint($column, ?int $srid = null): \Illuminate\Support\Fluent
     {
         return $this->addColumn('multipoint', $column, compact('srid'));
     }
 
     /**
      * Add a multilinestring column on the table.
-     *
-     * @param string   $column
-     * @param null|int $srid
-     *
-     * @return \Illuminate\Support\Fluent
      */
-    public function multiLineString($column, $srid = null)
+    public function multiLineString($column, ?int $srid = null): \Illuminate\Support\Fluent
     {
         return $this->addColumn('multilinestring', $column, compact('srid'));
     }
 
     /**
      * Add a multipolygon column on the table.
-     *
-     * @param string   $column
-     * @param null|int $srid
-     *
-     * @return \Illuminate\Support\Fluent
      */
-    public function multiPolygon($column, $srid = null)
+    public function multiPolygon($column, ?int $srid = null): \Illuminate\Support\Fluent
     {
         return $this->addColumn('multipolygon', $column, compact('srid'));
     }
 
     /**
      * Add a geometrycollection column on the table.
-     *
-     * @param string   $column
-     * @param null|int $srid
-     *
-     * @return \Illuminate\Support\Fluent
      */
-    public function geometryCollection($column, $srid = null)
+    public function geometryCollection($column, ?int $srid = null): \Illuminate\Support\Fluent
     {
         return $this->addColumn('geometrycollection', $column, compact('srid'));
     }
@@ -113,12 +75,10 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Specify a spatial index for the table.
      *
-     * @param string|array $columns
-     * @param string       $name
-     *
-     * @return \Illuminate\Support\Fluent
+     * @param  string|array  $columns
+     * @param  string  $name
      */
-    public function spatialIndex($columns, $name = null)
+    public function spatialIndex($columns, $name = null): \Illuminate\Support\Fluent
     {
         return $this->indexCommand('spatial', $columns, $name);
     }
@@ -126,11 +86,9 @@ class Blueprint extends IlluminateBlueprint
     /**
      * Indicate that the given index should be dropped.
      *
-     * @param string|array $index
-     *
-     * @return \Illuminate\Support\Fluent
+     * @param  string|array  $index
      */
-    public function dropSpatialIndex($index)
+    public function dropSpatialIndex($index): \Illuminate\Support\Fluent
     {
         return $this->dropIndexCommand('dropIndex', 'spatial', $index);
     }

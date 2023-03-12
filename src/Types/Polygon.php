@@ -6,20 +6,23 @@ use GeoJson\GeoJson;
 use GeoJson\Geometry\Polygon as GeoJsonPolygon;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
-class Polygon extends MultiLineString
+/**
+ * @implements GeometryInterface<GeoJsonPolygon>
+ */
+class Polygon extends MultiLineString implements GeometryInterface
 {
-    public function toWKT()
+    public function toWKT(): string
     {
         return sprintf('POLYGON(%s)', (string) $this);
     }
 
-    public static function fromJson($geoJson)
+    public static function fromJson(string|GeoJson $geoJson): self
     {
         if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, GeoJsonPolygon::class)) {
+        if (! is_a($geoJson, GeoJsonPolygon::class)) {
             throw new InvalidGeoJsonException('Expected '.GeoJsonPolygon::class.', got '.get_class($geoJson));
         }
 
@@ -37,9 +40,8 @@ class Polygon extends MultiLineString
 
     /**
      * Convert to GeoJson Polygon that is jsonable to GeoJSON.
-     *
-     * @return \GeoJson\Geometry\Polygon
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $linearRings = [];

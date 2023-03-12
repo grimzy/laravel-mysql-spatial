@@ -10,29 +10,25 @@ class LineString extends PointCollection
 {
     /**
      * The minimum number of items required to create this collection.
-     *
-     * @var int
      */
-    protected $minimumCollectionItems = 2;
+    protected int $minimumCollectionItems = 2;
 
-    public function toWKT()
+    public function toWKT(): string
     {
         return sprintf('LINESTRING(%s)', $this->toPairList());
     }
 
-    public static function fromWkt($wkt, $srid = 0)
+    public static function fromWKT(string $wkt, int $srid = 0): static
     {
         $wktArgument = Geometry::getWKTArgument($wkt);
 
         return static::fromString($wktArgument, $srid);
     }
 
-    public static function fromString($wktArgument, $srid = 0)
+    public static function fromString(string $wktArgument, int $srid = 0): static
     {
         $pairs = explode(',', trim($wktArgument));
-        $points = array_map(function ($pair) {
-            return Point::fromPair($pair);
-        }, $pairs);
+        $points = array_map(fn ($pair) => Point::fromPair($pair), $pairs);
 
         return new static($points, $srid);
     }
@@ -42,13 +38,13 @@ class LineString extends PointCollection
         return $this->toPairList();
     }
 
-    public static function fromJson($geoJson)
+    public static function fromJson(string|GeoJson $geoJson): self
     {
         if (is_string($geoJson)) {
             $geoJson = GeoJson::jsonUnserialize(json_decode($geoJson));
         }
 
-        if (!is_a($geoJson, GeoJsonLineString::class)) {
+        if (! is_a($geoJson, GeoJsonLineString::class)) {
             throw new InvalidGeoJsonException('Expected '.GeoJsonLineString::class.', got '.get_class($geoJson));
         }
 
@@ -62,9 +58,8 @@ class LineString extends PointCollection
 
     /**
      * Convert to GeoJson LineString that is jsonable to GeoJSON.
-     *
-     * @return \GeoJson\Geometry\LineString
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $points = [];

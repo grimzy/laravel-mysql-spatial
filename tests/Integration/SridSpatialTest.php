@@ -1,5 +1,8 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration;
+
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Models\WithSridModel;
 use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
 use Grimzy\LaravelMysqlSpatial\Types\MultiPoint;
@@ -7,11 +10,11 @@ use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
 
-class SridSpatialTest extends IntegrationBaseTestCase
+class SridSpatialTest extends IntegrationBaseCase
 {
     protected $migrations = [
-        CreateLocationTable::class,
-        UpdateLocationTable::class,
+        CreateTables::class,
+        UpdateTables::class,
     ];
 
     public function testInsertPointWithSrid()
@@ -108,13 +111,8 @@ class SridSpatialTest extends IntegrationBaseTestCase
         $geo->location = new Point(1, 2);
 
         $this->assertException(
-            Illuminate\Database\QueryException::class,
-            'SQLSTATE[HY000]: General error: 3643 The SRID of the geometry '.
-            'does not match the SRID of the column \'location\'. The SRID '.
-            'of the geometry is 0, but the SRID of the column is 3857. '.
-            'Consider changing the SRID of the geometry or the SRID property '.
-            'of the column. (SQL: insert into `with_srid` (`location`) values '.
-            '(ST_GeomFromText(POINT(2 1), 0, \'axis-order=long-lat\')))'
+            \Illuminate\Database\QueryException::class,
+            "SQLSTATE[HY000]: General error: 3643 The SRID of the geometry does not match the SRID of the column 'location'. The SRID of the geometry is 0, but the SRID of the column is 3857. Consider changing the SRID of the geometry or the SRID property of the column. (Connection: mysql, SQL: insert into `with_srid` (`location`) values (ST_GeomFromText(POINT(2 1), 0, 'axis-order=long-lat')))"
         );
         $geo->save();
     }

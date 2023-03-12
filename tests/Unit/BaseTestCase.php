@@ -1,10 +1,13 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit;
 
-abstract class BaseTestCase extends TestCase
+use Mockery;
+use Orchestra\Testbench\TestCase as Orchestra;
+
+abstract class BaseTestCase extends Orchestra
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }

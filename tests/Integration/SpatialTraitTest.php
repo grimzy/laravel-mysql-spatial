@@ -1,35 +1,37 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration;
+
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
-use Grimzy\LaravelMysqlSpatial\MysqlConnection;
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Eloquent\TestModel;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\DB;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use Mockery as m;
 
-class SpatialTraitTest extends BaseTestCase
+class SpatialTraitTest extends IntegrationBaseCase
 {
     use MockeryPHPUnitIntegration;
 
-    /**
-     * @var TestModel
-     */
-    protected $model;
+    protected TestModel $model;
 
-    /**
-     * @var array
-     */
-    protected $queries;
+    protected array $queries = [];
 
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $this->model = new TestModel();
-        $this->queries = &$this->model->getConnection()->getPdo()->queries;
+        DB::listen(function (QueryExecuted $query) {
+            $this->queries[] = $query->sql;
+        });
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
-        $this->model->getConnection()->getPdo()->resetQueries();
+        $this->queries = [];
     }
 
     public function testInsertUpdatePointHasCorrectSql()
@@ -40,7 +42,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains('insert into `test_models` (`point`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
+        $this->assertStringContainsString('insert into `test_models` (`point`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
         // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
@@ -48,7 +50,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains('update `test_models` set `point` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
+        $this->assertStringContainsString('update `test_models` set `point` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
         // TODO: assert bindings in query
     }
 
@@ -63,7 +65,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains('insert into `test_models` (`linestring`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
+        $this->assertStringContainsString('insert into `test_models` (`linestring`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
         // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
@@ -71,7 +73,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains('update `test_models` set `linestring` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
+        $this->assertStringContainsString('update `test_models` set `linestring` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
         // TODO: assert bindings in query
     }
 
@@ -79,25 +81,32 @@ class SpatialTraitTest extends BaseTestCase
     {
         $point1 = new Point(1, 2);
         $point2 = new Point(2, 3);
-        $linestring1 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2]);
         $point3 = new Point(3, 2);
         $point4 = new Point(2, 1);
-        $linestring2 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point3, $point4]);
+
+        $polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([
+            new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2, $point3, $point4, $point1]),
+        ]);
 
         $this->assertFalse($this->model->exists);
 
-        $this->model->polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2]);
+        $this->model->polygon = $polygon;
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains('insert into `test_models` (`polygon`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
+        $this->assertStringContainsString('insert into `test_models` (`polygon`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
         // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
-        $this->model->polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2]);
+        $polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([
+            new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2, $point3, $point4, $point1]),
+        ]);
+
+        $this->model->polygon = $polygon;
         $this->model->save();
+
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains('update `test_models` set `polygon` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
+        $this->assertStringContainsString('update `test_models` set `polygon` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
         // TODO: assert bindings in query
     }
 
@@ -112,7 +121,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains('insert into `test_models` (`multipoint`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
+        $this->assertStringContainsString('insert into `test_models` (`multipoint`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
         // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
@@ -120,7 +129,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains('update `test_models` set `multipoint` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
+        $this->assertStringContainsString('update `test_models` set `multipoint` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
         // TODO: assert bindings in query
     }
 
@@ -139,14 +148,14 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains('insert into `test_models` (`multilinestring`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
+        $this->assertStringContainsString('insert into `test_models` (`multilinestring`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
         // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->multilinestring = new \Grimzy\LaravelMysqlSpatial\Types\MultiLineString([$linestring1, $linestring2]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains('update `test_models` set `multilinestring` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
+        $this->assertStringContainsString('update `test_models` set `multilinestring` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
         // TODO: assert bindings in query
     }
 
@@ -154,19 +163,19 @@ class SpatialTraitTest extends BaseTestCase
     {
         $point1 = new Point(1, 2);
         $point2 = new Point(2, 3);
-        $linestring1 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2]);
         $point3 = new Point(3, 2);
         $point4 = new Point(2, 1);
-        $linestring2 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point3, $point4]);
-        $polygon1 = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2]);
+        $polygon1 = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([
+            new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2, $point3, $point1]),
+        ]);
 
         $point5 = new Point(4, 5);
         $point6 = new Point(5, 6);
-        $linestring3 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point5, $point6]);
         $point7 = new Point(6, 5);
         $point8 = new Point(5, 4);
-        $linestring4 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point7, $point8]);
-        $polygon2 = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring3, $linestring4]);
+        $polygon2 = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([
+            new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point5, $point6, $point7, $point5]),
+        ]);
 
         $this->assertFalse($this->model->exists);
 
@@ -174,14 +183,14 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains('insert into `test_models` (`multipolygon`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
+        $this->assertStringContainsString('insert into `test_models` (`multipolygon`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
         // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->multipolygon = new \Grimzy\LaravelMysqlSpatial\Types\MultiPolygon([$polygon1, $polygon2]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains('update `test_models` set `multipolygon` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
+        $this->assertStringContainsString('update `test_models` set `multipolygon` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
         // TODO: assert bindings in query
     }
 
@@ -198,14 +207,14 @@ class SpatialTraitTest extends BaseTestCase
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
-        $this->assertContains('insert into `test_models` (`geometrycollection`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
+        $this->assertStringContainsString('insert into `test_models` (`geometrycollection`) values (ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $this->queries[0]);
         // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
         $this->model->geometrycollection = new \Grimzy\LaravelMysqlSpatial\Types\GeometryCollection([$point1, $linestring1]);
         $this->model->save();
         $this->assertStringStartsWith('update', $this->queries[1]);
-        $this->assertContains('update `test_models` set `geometrycollection` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
+        $this->assertStringContainsString('update `test_models` set `geometrycollection` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
         // TODO: assert bindings in query
     }
 
@@ -219,10 +228,17 @@ class SpatialTraitTest extends BaseTestCase
 
     public function testSpatialFieldsNotDefinedException()
     {
-        $model = new TestNoSpatialModel();
+        $model = new class extends Model
+        {
+            use SpatialTrait;
+        };
         $this->assertException(
             SpatialFieldsNotDefinedException::class,
-            'TestNoSpatialModel has to define $spatialFields'
+            'TestNoSpatialModel'
+        );
+        $this->assertException(
+            SpatialFieldsNotDefinedException::class,
+            ' has to define $spatialFields'
         );
         $model->getSpatialFields();
     }
@@ -303,7 +319,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue(DB::connection()->getQueryGrammar()));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -319,7 +335,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue(DB::connection()->getQueryGrammar()));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -335,7 +351,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue(DB::connection()->getQueryGrammar()));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -351,7 +367,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue(DB::connection()->getQueryGrammar()));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -379,7 +395,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_within(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_within(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -392,7 +408,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_within(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_within(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -405,7 +421,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_crosses(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_crosses(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -418,7 +434,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_contains(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_contains(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -431,7 +447,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_disjoint(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_disjoint(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -444,7 +460,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_equals(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_equals(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -457,7 +473,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_intersects(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_intersects(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -470,7 +486,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_overlaps(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_overlaps(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -483,7 +499,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->wheres);
         $bindings = $q->getRawBindings()['where'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_touches(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
+        $this->assertStringContainsString('st_touches(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\'))', $q->wheres[0]['sql']);
         $this->assertEquals('POLYGON((1 1,2 1),(2 1,2 2),(2 2,1 1))', $bindings[0]);
     }
 
@@ -507,7 +523,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->orders);
         $bindings = $q->getRawBindings()['order'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) asc', $q->orders[0]['sql']);
+        $this->assertStringContainsString('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) asc', $q->orders[0]['sql']);
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -521,85 +537,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($q->orders);
         $bindings = $q->getRawBindings()['order'];
         $this->assertNotEmpty($bindings);
-        $this->assertContains('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) asc', $q->orders[0]['sql']);
+        $this->assertStringContainsString('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) asc', $q->orders[0]['sql']);
         $this->assertEquals('POINT(2 1)', $bindings[0]);
-    }
-}
-
-class TestModel extends Model
-{
-    use \Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
-
-    protected $spatialFields = ['point'];   // TODO: only required when fetching, not saving
-
-    public $timestamps = false;
-
-    public static $pdo;
-
-    public static function resolveConnection($connection = null)
-    {
-        if (is_null(static::$pdo)) {
-            static::$pdo = m::mock('TestPDO')->makePartial();
-        }
-
-        return new MysqlConnection(static::$pdo);
-    }
-
-    public function testrelatedmodels()
-    {
-        return $this->hasMany(TestRelatedModel::class);
-    }
-
-    public function testrelatedmodels2()
-    {
-        return $this->belongsToMany(TestRelatedModel::class);
-    }
-}
-
-class TestRelatedModel extends TestModel
-{
-    public function testmodel()
-    {
-        return $this->belongsTo(TestModel::class);
-    }
-
-    public function testmodels()
-    {
-        return $this->belongsToMany(TestModel::class);
-    }
-}
-
-class TestNoSpatialModel extends Model
-{
-    use \Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
-}
-
-class TestPDO extends PDO
-{
-    public $queries = [];
-
-    public $counter = 1;
-
-    public function prepare($statement, $driver_options = [])
-    {
-        $this->queries[] = $statement;
-
-        $stmt = m::mock('PDOStatement');
-        $stmt->shouldReceive('bindValue')->zeroOrMoreTimes();
-        $stmt->shouldReceive('execute');
-        $stmt->shouldReceive('fetchAll')->andReturn([['id' => 1, 'point' => 'POINT(1 2)']]);
-        $stmt->shouldReceive('rowCount')->andReturn(1);
-
-        return $stmt;
-    }
-
-    public function lastInsertId($name = null)
-    {
-        return $this->counter++;
-    }
-
-    public function resetQueries()
-    {
-        $this->queries = [];
     }
 }

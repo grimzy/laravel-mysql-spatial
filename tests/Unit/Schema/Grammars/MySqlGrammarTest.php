@@ -1,10 +1,14 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Schema\Grammars;
+
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 use Grimzy\LaravelMysqlSpatial\Schema\Grammars\MySqlGrammar;
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase;
+use Mockery;
 
-class MySqlGrammarBaseTest extends BaseTestCase
+class MySqlGrammarTest extends BaseTestCase
 {
     public function testAddingGeometry()
     {
@@ -186,10 +190,7 @@ class MySqlGrammarBaseTest extends BaseTestCase
         $this->assertEquals($expectedSql, $dropStatements[4]);
     }
 
-    /**
-     * @return Connection
-     */
-    protected function getConnection()
+    protected function getConnection($connection = null, $table = null)
     {
         return Mockery::mock(MysqlConnection::class);
     }

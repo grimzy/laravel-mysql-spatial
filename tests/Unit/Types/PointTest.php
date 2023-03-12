@@ -1,5 +1,8 @@
 <?php
 
+namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Types;
+
+use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 
 class PointTest extends BaseTestCase
