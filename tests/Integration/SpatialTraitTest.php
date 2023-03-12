@@ -1,34 +1,37 @@
 <?php
 
-namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Eloquent;
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration;
 
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
-use Grimzy\LaravelMysqlSpatial\Tests\Unit\BaseTestCase;
+use Grimzy\LaravelMysqlSpatial\Tests\Integration\Eloquent\TestModel;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Facades\DB;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
-class SpatialTraitTest extends BaseTestCase
+class SpatialTraitTest extends IntegrationBaseCase
 {
     use MockeryPHPUnitIntegration;
 
     protected TestModel $model;
 
-    protected array $queries;
+    protected array $queries = [];
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->model = new TestModel();
-        $this->queries = &$this->model->getConnection()->getPdo()->queries;
+        DB::listen(function (QueryExecuted $query) {
+            $this->queries[] = $query->sql;
+        });
     }
 
     public function tearDown(): void
     {
-        $this->model->getConnection()->getPdo()->resetQueries();
+        $this->queries = [];
     }
 
     public function testInsertUpdatePointHasCorrectSql()
@@ -78,14 +81,16 @@ class SpatialTraitTest extends BaseTestCase
     {
         $point1 = new Point(1, 2);
         $point2 = new Point(2, 3);
-        $linestring1 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2]);
         $point3 = new Point(3, 2);
         $point4 = new Point(2, 1);
-        $linestring2 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point3, $point4]);
+
+        $polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([
+            new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2, $point3, $point4, $point1]),
+        ]);
 
         $this->assertFalse($this->model->exists);
 
-        $this->model->polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2]);
+        $this->model->polygon = $polygon;
         $this->model->save();
 
         $this->assertStringStartsWith('insert', $this->queries[0]);
@@ -93,8 +98,13 @@ class SpatialTraitTest extends BaseTestCase
         // TODO: assert bindings in query
         $this->assertTrue($this->model->exists);
 
-        $this->model->polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2]);
+        $polygon = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([
+            new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2, $point3, $point4, $point1]),
+        ]);
+
+        $this->model->polygon = $polygon;
         $this->model->save();
+
         $this->assertStringStartsWith('update', $this->queries[1]);
         $this->assertStringContainsString('update `test_models` set `polygon` = ST_GeomFromText(?, ?, \'axis-order=long-lat\') where `id` = ?', $this->queries[1]);
         // TODO: assert bindings in query
@@ -153,19 +163,19 @@ class SpatialTraitTest extends BaseTestCase
     {
         $point1 = new Point(1, 2);
         $point2 = new Point(2, 3);
-        $linestring1 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2]);
         $point3 = new Point(3, 2);
         $point4 = new Point(2, 1);
-        $linestring2 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point3, $point4]);
-        $polygon1 = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring1, $linestring2]);
+        $polygon1 = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([
+            new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point1, $point2, $point3, $point1]),
+        ]);
 
         $point5 = new Point(4, 5);
         $point6 = new Point(5, 6);
-        $linestring3 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point5, $point6]);
         $point7 = new Point(6, 5);
         $point8 = new Point(5, 4);
-        $linestring4 = new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point7, $point8]);
-        $polygon2 = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([$linestring3, $linestring4]);
+        $polygon2 = new \Grimzy\LaravelMysqlSpatial\Types\Polygon([
+            new \Grimzy\LaravelMysqlSpatial\Types\LineString([$point5, $point6, $point7, $point5]),
+        ]);
 
         $this->assertFalse($this->model->exists);
 

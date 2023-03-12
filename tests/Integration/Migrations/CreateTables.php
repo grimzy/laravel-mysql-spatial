@@ -13,6 +13,20 @@ class CreateTables extends Migration
      */
     public function up(): void
     {
+        Schema::create('test_models', function (Blueprint $table) {
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
+            $table->increments('id');
+            $table->geometryCollection('geometrycollection')->default(null)->nullable();
+            $table->lineString('linestring')->default(null)->nullable();
+            $table->multiLineString('multilinestring')->default(null)->nullable();
+            $table->multiPoint('multipoint')->default(null)->nullable();
+            $table->multiPolygon('multipolygon')->default(null)->nullable();
+            $table->point('point')->default(null)->nullable();
+            $table->polygon('polygon')->default(null)->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('geometry', function (Blueprint $table) {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
@@ -56,5 +70,6 @@ class CreateTables extends Migration
         Schema::drop('geometry');
         Schema::drop('no_spatial_fields');
         Schema::drop('with_srid');
+        Schema::drop('test_models');
     }
 }

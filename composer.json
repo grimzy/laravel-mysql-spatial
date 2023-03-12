@@ -21,7 +21,7 @@
         "php": "^8.1",
         "ext-json": "*",
         "ext-pdo": "*",
-        "doctrine/dbal": "^3.0",
+        "doctrine/dbal": "^3.5",
         "geo-io/wkb-parser": "^1.0",
         "illuminate/contracts": "^10.0",
         "illuminate/database": "^10.0",

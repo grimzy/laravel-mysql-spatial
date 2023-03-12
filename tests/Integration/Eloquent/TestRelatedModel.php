@@ -1,6 +1,6 @@
 <?php
 
-namespace Grimzy\LaravelMysqlSpatial\Tests\Unit\Eloquent;
+namespace Grimzy\LaravelMysqlSpatial\Tests\Integration\Eloquent;
 
 class TestRelatedModel extends TestModel
 {
