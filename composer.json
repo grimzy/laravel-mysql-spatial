@@ -29,17 +29,17 @@
     },
     "conflict": {},
     "require-dev": {
-        "laravel/pint": "^1.5",
-        "laravel/laravel": "^10.0.2",
+        "laravel/pint": "^1.6",
+        "laravel/laravel": "^10.0.4",
         "laravel/browser-kit-testing": "^7.0",
         "mockery/mockery": "^1.5.1",
-        "nunomaduro/collision": "^7.0.4",
-        "nunomaduro/larastan": "^2.4.1",
-        "orchestra/testbench": "^8.0.1",
+        "nunomaduro/collision": "^7.1.0",
+        "nunomaduro/larastan": "^2.5.1",
+        "orchestra/testbench": "^8.0.8",
         "phpstan/extension-installer": "^1.2",
-        "phpstan/phpstan-deprecation-rules": "^1.1.1",
-        "phpstan/phpstan-phpunit": "^1.3.4",
-        "phpunit/phpunit": "^10.0.7"
+        "phpstan/phpstan-deprecation-rules": "^1.1.2",
+        "phpstan/phpstan-phpunit": "^1.3.10",
+        "phpunit/phpunit": "^10.0.15"
     },
     "autoload": {
         "psr-4": {
