@@ -2,6 +2,9 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Types;
 
+/**
+ * @extends GeometryCollection<Point>
+ */
 abstract class PointCollection extends GeometryCollection
 {
     /**
@@ -21,9 +24,6 @@ abstract class PointCollection extends GeometryCollection
         parent::offsetSet($offset, $value);
     }
 
-    /**
-     * @return array|\Grimzy\LaravelMysqlSpatial\Types\Point[]
-     */
     public function getPoints(): array
     {
         return $this->items;

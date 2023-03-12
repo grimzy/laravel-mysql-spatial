@@ -6,7 +6,10 @@ use GeoJson\GeoJson;
 use GeoJson\Geometry\Point as GeoJsonPoint;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
-class Point extends Geometry
+/**
+ * @implements GeometryInterface<GeoJsonPoint>
+ */
+class Point extends Geometry implements GeometryInterface
 {
     protected float $lat;
 
@@ -88,8 +91,6 @@ class Point extends Geometry
 
     /**
      * Convert to GeoJson Point that is jsonable to GeoJSON.
-     *
-     * @return \GeoJson\Geometry\Point
      */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()

@@ -6,7 +6,12 @@ use GeoJson\GeoJson;
 use GeoJson\Geometry\MultiLineString as GeoJsonMultiLineString;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
-class MultiLineString extends GeometryCollection
+/**
+ * @implements GeometryInterface<LineString>
+ *
+ * @extends GeometryCollection<LineString>
+ */
+class MultiLineString extends GeometryCollection implements GeometryInterface
 {
     /**
      * The minimum number of items required to create this collection.
@@ -72,8 +77,6 @@ class MultiLineString extends GeometryCollection
 
     /**
      * Convert to GeoJson Point that is jsonable to GeoJSON.
-     *
-     * @return \GeoJson\Geometry\MultiLineString
      */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()

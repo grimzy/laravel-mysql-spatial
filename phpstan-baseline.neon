@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface\\:\\:getSrid\\(\\)\\.$#"
-			count: 1
-			path: src/Eloquent/SpatialExpression.php
-
-		-
 			message: "#^PHPDoc type Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface of property Grimzy\\\\LaravelMysqlSpatial\\\\Eloquent\\\\SpatialExpression\\:\\:\\$value is not covariant with PHPDoc type float\\|int\\|string of overridden property Illuminate\\\\Database\\\\Query\\\\Expression\\:\\:\\$value\\.$#"
 			count: 1
 			path: src/Eloquent/SpatialExpression.php
@@ -31,11 +26,6 @@ parameters:
 			path: src/Schema/Grammars/MySqlGrammar.php
 
 		-
-			message: "#^Call to an undefined method GeoJson\\\\GeoJson\\:\\:getGeometry\\(\\)\\.$#"
-			count: 1
-			path: src/Types/Geometry.php
-
-		-
 			message: "#^Method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\Geometry\\:\\:fromWKT\\(\\) should return static\\(Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\Geometry\\) but returns Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface\\.$#"
 			count: 1
 			path: src/Types/Geometry.php
@@ -46,24 +36,9 @@ parameters:
 			path: src/Types/GeometryCollection.php
 
 		-
-			message: "#^Method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface\\:\\:jsonSerialize\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: src/Types/GeometryInterface.php
-
-		-
-			message: "#^Return type \\(GeoJson\\\\Geometry\\\\LineString\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\LineString\\:\\:jsonSerialize\\(\\) should be compatible with return type \\(GeoJson\\\\Geometry\\\\GeometryCollection\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryCollection\\:\\:jsonSerialize\\(\\)$#"
-			count: 1
-			path: src/Types/LineString.php
-
-		-
 			message: "#^Unsafe usage of new static\\(\\)\\.$#"
 			count: 1
 			path: src/Types/LineString.php
-
-		-
-			message: "#^Return type \\(GeoJson\\\\Geometry\\\\MultiLineString\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\MultiLineString\\:\\:jsonSerialize\\(\\) should be compatible with return type \\(GeoJson\\\\Geometry\\\\GeometryCollection\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryCollection\\:\\:jsonSerialize\\(\\)$#"
-			count: 1
-			path: src/Types/MultiLineString.php
 
 		-
 			message: "#^Unsafe usage of new static\\(\\)\\.$#"
@@ -71,34 +46,9 @@ parameters:
 			path: src/Types/MultiLineString.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface\\)\\: mixed\\)\\|null, Closure\\(Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\Point\\)\\: non\\-falsy\\-string given\\.$#"
-			count: 1
-			path: src/Types/MultiPoint.php
-
-		-
-			message: "#^Return type \\(GeoJson\\\\Geometry\\\\MultiPoint\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\MultiPoint\\:\\:jsonSerialize\\(\\) should be compatible with return type \\(GeoJson\\\\Geometry\\\\GeometryCollection\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryCollection\\:\\:jsonSerialize\\(\\)$#"
-			count: 1
-			path: src/Types/MultiPoint.php
-
-		-
 			message: "#^Unsafe usage of new static\\(\\)\\.$#"
 			count: 1
 			path: src/Types/MultiPoint.php
-
-		-
-			message: "#^Method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\MultiPolygon\\:\\:getPolygons\\(\\) should return array\\<Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\Polygon\\> but returns array\\<Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface\\>\\.$#"
-			count: 1
-			path: src/Types/MultiPolygon.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface\\)\\: mixed\\)\\|null, Closure\\(Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\Polygon\\)\\: non\\-falsy\\-string given\\.$#"
-			count: 1
-			path: src/Types/MultiPolygon.php
-
-		-
-			message: "#^Return type \\(GeoJson\\\\Geometry\\\\MultiPolygon\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\MultiPolygon\\:\\:jsonSerialize\\(\\) should be compatible with return type \\(GeoJson\\\\Geometry\\\\GeometryCollection\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryCollection\\:\\:jsonSerialize\\(\\)$#"
-			count: 1
-			path: src/Types/MultiPolygon.php
 
 		-
 			message: "#^Unsafe usage of new static\\(\\)\\.$#"
@@ -110,17 +60,3 @@ parameters:
 			count: 1
 			path: src/Types/Point.php
 
-		-
-			message: "#^Method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\PointCollection\\:\\:getPoints\\(\\) should return array\\<Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\Point\\> but returns array\\<Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface\\>\\.$#"
-			count: 1
-			path: src/Types/PointCollection.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\GeometryInterface\\)\\: mixed\\)\\|null, Closure\\(Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\Point\\)\\: string given\\.$#"
-			count: 1
-			path: src/Types/PointCollection.php
-
-		-
-			message: "#^Return type \\(GeoJson\\\\Geometry\\\\Polygon\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\Polygon\\:\\:jsonSerialize\\(\\) should be compatible with return type \\(GeoJson\\\\Geometry\\\\MultiLineString\\) of method Grimzy\\\\LaravelMysqlSpatial\\\\Types\\\\MultiLineString\\:\\:jsonSerialize\\(\\)$#"
-			count: 1
-			path: src/Types/Polygon.php

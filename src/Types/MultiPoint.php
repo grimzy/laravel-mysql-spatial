@@ -6,7 +6,10 @@ use GeoJson\GeoJson;
 use GeoJson\Geometry\MultiPoint as GeoJsonMultiPoint;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
-class MultiPoint extends PointCollection
+/**
+ * @implements GeometryInterface<Point>
+ */
+class MultiPoint extends PointCollection implements GeometryInterface
 {
     /**
      * The minimum number of items required to create this collection.
@@ -61,7 +64,7 @@ class MultiPoint extends PointCollection
     /**
      * Convert to GeoJson MultiPoint that is jsonable to GeoJSON.
      */
-    public function jsonSerialize(): GeoJsonMultiPoint
+    public function jsonSerialize()
     {
         $points = [];
         foreach ($this->items as $point) {

@@ -4,6 +4,9 @@ namespace Grimzy\LaravelMysqlSpatial\Types;
 
 use GeoJson\GeoJson;
 
+/**
+ * @template T
+ */
 interface GeometryInterface
 {
     public function toWKT(): string;
@@ -16,5 +19,10 @@ interface GeometryInterface
 
     public static function fromJson(string|GeoJson $geoJson): self;
 
+    /**
+     * @return T
+     */
     public function jsonSerialize();
+
+    public function getSrid(): int;
 }

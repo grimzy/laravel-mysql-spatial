@@ -12,7 +12,12 @@ use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
 use IteratorAggregate;
 
-class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAccess, Arrayable, Countable
+/**
+ * @template G
+ *
+ * @implements GeometryInterface<FeatureCollection>
+ */
+class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAccess, Arrayable, Countable, GeometryInterface
 {
     /**
      * The minimum number of items required to create this collection.
@@ -27,7 +32,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
     /**
      * The items contained in the spatial collection.
      *
-     * @var GeometryInterface[]
+     * @var G[]
      */
     protected array $items = [];
 
@@ -46,7 +51,7 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
     }
 
     /**
-     * @return GeometryInterface[]
+     * @return G[]
      */
     public function getGeometries(): array
     {
@@ -140,8 +145,6 @@ class GeometryCollection extends Geometry implements IteratorAggregate, ArrayAcc
 
     /**
      * Convert to GeoJson GeometryCollection that is jsonable to GeoJSON.
-     *
-     * @return \GeoJson\Geometry\GeometryCollection
      */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()

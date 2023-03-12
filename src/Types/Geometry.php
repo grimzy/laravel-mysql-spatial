@@ -98,8 +98,8 @@ abstract class Geometry implements GeometryInterface, Jsonable, \JsonSerializabl
             return GeometryCollection::fromJson($geoJson);
         }
 
+        /** @var Feature $geoJson */
         if ($geoJson->getType() === 'Feature') {
-            /** @var Feature $geoJson */
             $geoJson = $geoJson->getGeometry();
         }
 

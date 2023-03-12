@@ -6,7 +6,12 @@ use GeoJson\GeoJson;
 use GeoJson\Geometry\MultiPolygon as GeoJsonMultiPolygon;
 use Grimzy\LaravelMysqlSpatial\Exceptions\InvalidGeoJsonException;
 
-class MultiPolygon extends GeometryCollection
+/**
+ * @implements GeometryInterface<MultiPolygon>
+ *
+ * @extends GeometryCollection<Polygon>
+ */
+class MultiPolygon extends GeometryCollection implements GeometryInterface
 {
     /**
      * The minimum number of items required to create this collection.
@@ -38,8 +43,6 @@ class MultiPolygon extends GeometryCollection
 
     /**
      * Get the polygons that make up this MultiPolygon.
-     *
-     * @return array|Polygon[]
      */
     public function getPolygons(): array
     {
@@ -112,8 +115,6 @@ class MultiPolygon extends GeometryCollection
 
     /**
      * Convert to GeoJson MultiPolygon that is jsonable to GeoJSON.
-     *
-     * @return \GeoJson\Geometry\MultiPolygon
      */
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
