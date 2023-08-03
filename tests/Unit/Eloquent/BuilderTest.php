@@ -20,7 +20,7 @@ class BuilderTest extends BaseTestCase
     protected $builder;
     protected $queryBuilder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $connection = Mockery::mock(MysqlConnection::class)->makePartial();
         $grammar = Mockery::mock(MySqlGrammar::class)->makePartial();
