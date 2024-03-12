@@ -21,13 +21,13 @@ class SpatialTraitTest extends BaseTestCase
      */
     protected $queries;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->model = new TestModel();
         $this->queries = &$this->model->getConnection()->getPdo()->queries;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->model->getConnection()->getPdo()->resetQueries();
     }
@@ -214,7 +214,7 @@ class SpatialTraitTest extends BaseTestCase
         $attributes['point'] = "\0\0\0\0".'0101000000000000000000f03f0000000000000040';
 
         $this->model->setRawAttributes($attributes);
-        $this->assertInstanceOf(Point::class, ($this->model->point));
+        $this->assertInstanceOf(Point::class, $this->model->point);
     }
 
     public function testSpatialFieldsNotDefinedException()
@@ -580,6 +580,7 @@ class TestPDO extends PDO
 
     public $counter = 1;
 
+    #[\ReturnTypeWillChange]
     public function prepare($statement, $driver_options = [])
     {
         $this->queries[] = $statement;
@@ -593,6 +594,7 @@ class TestPDO extends PDO
         return $stmt;
     }
 
+    #[\ReturnTypeWillChange]
     public function lastInsertId($name = null)
     {
         return $this->counter++;

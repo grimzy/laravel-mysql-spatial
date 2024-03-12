@@ -44,7 +44,7 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -59,7 +59,7 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
         //});
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->onMigrations(function ($migrationClass) {
             (new $migrationClass())->down();
@@ -71,7 +71,8 @@ abstract class IntegrationBaseTestCase extends BaseTestCase
     // MySQL 8.0.4 fixed bug #26941370 and bug #88031
     private function isMySQL8AfterFix()
     {
-        $results = DB::select(DB::raw('select version()'));
+        $expression = DB::raw('select version()');
+        $results = DB::select($expression->getValue(DB::connection()->getQueryGrammar()));
         $mysql_version = $results[0]->{'version()'};
 
         return version_compare($mysql_version, '8.0.4', '>=');

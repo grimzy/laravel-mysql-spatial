@@ -9,7 +9,7 @@ class MysqlConnectionTest extends TestCase
 {
     private $mysqlConnection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $mysqlConfig = ['driver' => 'mysql', 'prefix' => 'prefix', 'database' => 'database', 'name' => 'foo'];
         $this->mysqlConnection = new MysqlConnection(new PDOStub(), 'database', 'prefix', $mysqlConfig);

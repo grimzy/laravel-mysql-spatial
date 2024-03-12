@@ -15,27 +15,27 @@
         }
     ],
     "require": {
-        "php": ">=7.3",
+        "php": "^8.2",
         "ext-pdo": "*",
         "ext-json": "*",
-        "illuminate/database": "^8.0",
+        "illuminate/database": "^11.0",
         "geo-io/wkb-parser": "^1.0",
         "jmikola/geojson": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~6.5",
-        "laravel/laravel": "^8.0",
-        "doctrine/dbal": "^2.5",
-        "laravel/browser-kit-testing": "^2.0",
-        "mockery/mockery": "^1.3"
+        "phpunit/phpunit": "^10.0",
+        "laravel/laravel": "^11.0",
+        "doctrine/dbal": "^3.4",
+        "laravel/browser-kit-testing": "^7.0",
+        "mockery/mockery": "^1.5"
     },
     "autoload": {
         "psr-4": {
             "Grimzy\\LaravelMysqlSpatial\\": "src/"
         }
     },
-    "autoload-dev" : {
-        "classmap" : [
+    "autoload-dev": {
+        "classmap": [
             "tests/Unit",
             "tests/Integration"
         ]
