@@ -42,7 +42,7 @@ class SpatialServiceProvider extends DatabaseServiceProvider
         });
 
         $this->app->bind('db.schema', function ($app) {
-          return $app['db']->connection()->getSchemaBuilder();
+            return $app['db']->connection()->getSchemaBuilder();
         });
 
         if (class_exists(DoctrineType::class)) {
